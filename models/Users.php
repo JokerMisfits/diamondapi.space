@@ -19,9 +19,7 @@ use yii\web\IdentityInterface;
  * @property string|null $auth_key Кука
  * @property string $last_activity Дата последней активности
  * @property int|null $member_id ID пользователя
- * @property int $role_id ID роли 
  * 
- * @property Roles $role 
  */
 class Users extends ActiveRecord implements IdentityInterface{
     public string $password_repeat = '';

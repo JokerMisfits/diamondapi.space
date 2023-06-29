@@ -41,7 +41,7 @@ if(isset($params['pk'])){
         echo '</button>';
         echo '</a>';
     }
-    if(isset($pk)){
+    if(isset($pk)){//toDO need to test on host
         $form = ActiveForm::begin([
             'id' => 'payCryptoHref',
             'action' => ['payment/route',  'method' => 'PayKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']), 'userId' => $params['userId'], 'days' => $params['days'], 'hash' => $params['hash']],

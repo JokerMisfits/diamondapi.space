@@ -75,7 +75,11 @@ $config = [
             'ruleTable' => '{{%auth_rule}}',
             'itemChildTable' => '{{%auth_item_child}}',
             'defaultRoles' => ['guest']
-        ]
+        ],
+        'captcha' => [
+            'class' => 'yii\captcha\CaptchaAction',
+            'fixedVerifyCode' => null,
+        ],
     ],
     'params' => $params,
 ];

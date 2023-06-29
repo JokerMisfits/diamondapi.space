@@ -44,7 +44,7 @@ class AppController extends Controller{
         return parent::beforeAction($action);
     }
 
-    protected static function getConfig(string $shop, bool $checkEnable = false) : array|false {
+    protected static function getConfig(string $shop, bool $checkEnable = false, $method = null) : array|false {
         $sql = "SELECT bot_token, robokassa, paykassa, freekassa, paypall FROM clients WHERE shop = :shop ORDER BY id DESC limit 1";
         $result = Yii::$app->db->createCommand($sql)
         ->bindValue(':shop', $shop)
@@ -54,11 +54,22 @@ class AppController extends Controller{
             $key = Yii::$app->params['apikey0'];
             $key1 = Yii::$app->params['apikey1'];
             $return['bot_token'] = $security->decryptByPassword(base64_decode($result['bot_token']), $key);
-            $robo = json_decode($security->decryptByPassword(base64_decode($result['robokassa']), $key1), true);
-            $pay = json_decode($security->decryptByPassword(base64_decode($result['paykassa']), $key1), true);
-            $free = json_decode($security->decryptByPassword(base64_decode($result['freekassa']), $key1), true);
-            $pp = json_decode($security->decryptByPassword(base64_decode($result['paypall']), $key1), true);
-            if(isset($robo['enable']) && $robo['enable'] === true){
+            if($method != null && $method == 'bot_token'){
+                return $return;
+            }
+            if($method == null || $method == 'robokassa'){
+                $robo = json_decode($security->decryptByPassword(base64_decode($result['robokassa']), $key1), true);
+            }
+            if($method == null || $method == 'paykassa'){
+                $pay = json_decode($security->decryptByPassword(base64_decode($result['paykassa']), $key1), true);
+            }
+            if($method == null || $method == 'freekassa'){
+                $free = json_decode($security->decryptByPassword(base64_decode($result['freekassa']), $key1), true);
+            }
+            if($method == null || $method == 'paypall'){
+                $pp = json_decode($security->decryptByPassword(base64_decode($result['paypall']), $key1), true);
+            }
+            if(isset($robo['enable']) && $robo['enable'] === true && ($method == null || $method == 'robokassa')){
                 $return['robokassa']['is_test'] = $robo['is_test'];
                 if(!$checkEnable){
                     $return['robokassa'][0] = $security->decryptByPassword(base64_decode($robo[0]), $key);
@@ -66,17 +77,25 @@ class AppController extends Controller{
                     $return['robokassa'][2] = $security->decryptByPassword(base64_decode($robo[2]), $key);
                     $return['robokassa'][3] = $security->decryptByPassword(base64_decode($robo[3]), $key);
                 }
+                if($method == 'robokassa'){
+                    return $return;
+                }
                 unset($robo);
             }
-            if(isset($pay['enable']) && $pay['enable'] === true){
+            if(isset($pay['enable']) && $pay['enable'] === true && ($method == null || $method == 'paykassa')){
                 $return['paykassa']['is_test'] = $pay['is_test'];
-                $return['paykassa']['merchant_id'] = $security->decryptByPassword(base64_decode($pay['merchant_id']), $key);
-                $return['paykassa']['merchant_password'] = $security->decryptByPassword(base64_decode($pay['merchant_password']), $key);
-                $return['paykassa']['api_id'] = $security->decryptByPassword(base64_decode($pay['api_id']), $key);
-                $return['paykassa']['api_password'] = $security->decryptByPassword(base64_decode($pay['api_password']), $key);
+                if(!$checkEnable){
+                    $return['paykassa']['merchant_id'] = $security->decryptByPassword(base64_decode($pay['merchant_id']), $key);
+                    $return['paykassa']['merchant_password'] = $security->decryptByPassword(base64_decode($pay['merchant_password']), $key);
+                    $return['paykassa']['api_id'] = $security->decryptByPassword(base64_decode($pay['api_id']), $key);
+                    $return['paykassa']['api_password'] = $security->decryptByPassword(base64_decode($pay['api_password']), $key);
+                }
+                if($method == 'paykassa'){
+                    return $return;
+                }
                 unset($pay);
             }
-            if(isset($free['enable']) && $free['enable'] === true){
+            if(isset($free['enable']) && $free['enable'] === true && ($method == null || $method == 'freekassa')){
                 $return['freekassa']['is_test'] = $free['is_test'];
                 if(!$checkEnable){
                     $return['freekassa']['secret'][0] = $security->decryptByPassword(base64_decode($free['secret'][0]), $key);
@@ -84,15 +103,21 @@ class AppController extends Controller{
                     $return['freekassa']['api_key'] = $security->decryptByPassword(base64_decode($free['api_key']), $key);
                     $return['freekassa']['merchant_id'] = $security->decryptByPassword(base64_decode($free['merchant_id']), $key);
                 }
+                if($method == 'freekassa'){
+                    return $return;
+                }
                 unset($free);
             }
-            if(isset($pp['enable']) && $pp['enable'] === true){
+            if(isset($pp['enable']) && $pp['enable'] === true && ($method == null || $method == 'paypall')){
                 $return['paypall']['is_test'] = $pp['is_test'];
                 if(!$checkEnable){
                     $return['paypall']['client_id'] = $security->decryptByPassword(base64_decode($pp['client_id']), $key);
                     $return['paypall']['test_client_id'] = $security->decryptByPassword(base64_decode($pp['test_client_id']), $key);
                     $return['paypall']['secret'] = $security->decryptByPassword(base64_decode($pp['secret']), $key);
                     $return['paypall']['test_secret'] = $security->decryptByPassword(base64_decode($pp['test_secret']), $key);
+                }
+                if($method == 'paypall'){
+                    return $return;
                 }
                 unset($pp);
             }
@@ -125,6 +150,9 @@ class AppController extends Controller{
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         $result = curl_exec($ch);
+        if($result === false){
+            Yii::error('Method: ' . $method . ' ,shop: ' . $shop . ', Curl ошибка отправки сообщения : ' .  curl_error($ch), 'curl');
+        }
         curl_close($ch);
         return $result;
     }
