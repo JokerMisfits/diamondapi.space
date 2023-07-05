@@ -142,7 +142,7 @@ class AppController extends Controller{
     }
 
     protected static function curlSendMessage(array $data, string $shop, string $method = '/sendMessage'){
-        self::debug(self::getBotToken($shop), 1);//Todo уддаалить после теста
+        self::debug(self::getBotToken($shop), 1);//Todo удалить после теста
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot' . self::getBotToken($shop) . $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));

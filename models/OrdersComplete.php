@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "orders_complete".
@@ -19,21 +20,18 @@ use Yii;
  * @property Clients $client
  * @property Orders $order
  */
-class OrdersComplete extends \yii\db\ActiveRecord
-{
+class OrdersComplete extends ActiveRecord{
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName(){
         return 'orders_complete';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules(){
         return [
             [['shop', 'count', 'method', 'fee', 'order_id', 'client_id'], 'required'],
             [['count', 'order_id', 'client_id'], 'integer'],
@@ -48,8 +46,7 @@ class OrdersComplete extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels(){
         return [
             'id' => 'ID',
             'shop' => 'Название магазина',
@@ -67,8 +64,7 @@ class OrdersComplete extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient()
-    {
+    public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
@@ -77,8 +73,7 @@ class OrdersComplete extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|OrdersQuery
      */
-    public function getOrder()
-    {
+    public function getOrder(){
         return $this->hasOne(Orders::class, ['id' => 'order_id']);
     }
 
@@ -86,8 +81,7 @@ class OrdersComplete extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return OrdersCompleteQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find(){
         return new OrdersCompleteQuery(get_called_class());
     }
 }

@@ -18,13 +18,14 @@ use yii\web\IdentityInterface;
  * @property string|null $phone Номер телефона
  * @property string|null $auth_key Кука
  * @property string $last_activity Дата последней активности
+ * @property string $registration_date Дата регистрации
  * @property int|null $member_id ID пользователя
  * 
  */
 class Users extends ActiveRecord implements IdentityInterface{
     public string $password_repeat = '';
     public bool $rememberMe = true;
-    private static $_user = false;
+    private static false|object $_user = false;
 
     /**
      * {@inheritdoc}
@@ -47,8 +48,8 @@ class Users extends ActiveRecord implements IdentityInterface{
         return [
             [['username', 'password'], 'required'],
             [['password_repeat'], 'required', 'on' => 'signup'],
-            [['tg_user_id', 'member_id', 'role_id'], 'integer'],
-            [['last_activity'], 'safe'],
+            [['tg_user_id', 'member_id'], 'integer'],
+            [['last_activity', 'registration_date'], 'safe'],
             [['rememberMe'], 'boolean'],
             [['rememberMe'], 'required', 'on' => 'login'],
             [['username'], 'string', 'min' => 4],
@@ -66,8 +67,7 @@ class Users extends ActiveRecord implements IdentityInterface{
             [['phone', 'email'], 'trim' , 'on' => 'update'],
             [['password'], 'validateModelPassword', 'on' => 'login'],
             ['username', 'match', 'pattern' => '/^[a-z]\w*$/i','message' => '{attribute} должно начинаться и содержать символы только латинского алфавита'],
-            ['phone', 'match', 'pattern' => '/^((\+7|7|8)+([0-9]){10})$/', 'message' => 'Недействительный номер'],
-            [['role_id'], 'exist', 'skipOnError' => false, 'targetClass' => Roles::class, 'targetAttribute' => ['role_id' => 'id']],
+            ['phone', 'match', 'pattern' => '/^((\+7|7|8)+([0-9]){10})$/', 'message' => 'Недействительный номер']
         ];
     }
 
@@ -86,19 +86,10 @@ class Users extends ActiveRecord implements IdentityInterface{
             'rememberMe' => 'Запомнить меня',
             'auth_key' => 'Кука',
             'last_activity' => 'Дата последней активности',
-            'member_id' => 'ID пользователя',
-            'role_id' => 'ID роли'
+            'registration_date' => 'Дата регистрации',
+            'member_id' => 'ID пользователя'
         ];
     }
-
-    /** 
-    * Gets query for [[Role]]. 
-    * 
-    * @return \yii\db\ActiveQuery|yii\db\ActiveQuery 
-    */ 
-   public function getRole(){ 
-       return $this->hasOne(Roles::class, ['id' => 'role_id']); 
-   }
 
     /**
      * {@inheritdoc}
@@ -167,9 +158,8 @@ class Users extends ActiveRecord implements IdentityInterface{
      * This method serves as the inline validation for password.
      *
      * @param string $attribute the attribute currently being validated
-     * @param array $params the additional name-value pairs given in the rule
      */
-    public function validateModelPassword($attribute, $params){
+    public function validateModelPassword(string $attribute){
         if(!$this->hasErrors()){
             self::getUser();
             if(!self::$_user || !self::validatePassword($this->password)){
@@ -194,7 +184,7 @@ class Users extends ActiveRecord implements IdentityInterface{
      * @return bool if password provided is valid for current user
      */
     private function validatePassword($password) : bool{
-        return Yii::$app->security->validatePassword($password,self::$_user->password);
+        return Yii::$app->security->validatePassword($password, self::$_user->password);
     }
 
     private static function generateAuthKey() : void{

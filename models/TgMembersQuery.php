@@ -2,13 +2,14 @@
 
 namespace app\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[TgMembers]].
  *
  * @see TgMembers
  */
-class TgMembersQuery extends \yii\db\ActiveQuery
-{
+class TgMembersQuery extends ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');
@@ -18,8 +19,7 @@ class TgMembersQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return TgMembers[]|array
      */
-    public function all($db = null)
-    {
+    public function all($db = null){
         return parent::all($db);
     }
 
@@ -27,8 +27,7 @@ class TgMembersQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return TgMembers|array|null
      */
-    public function one($db = null)
-    {
+    public function one($db = null){
         return parent::one($db);
     }
 }

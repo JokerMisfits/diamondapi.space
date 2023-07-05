@@ -25,7 +25,7 @@ $this->title = 'Авторизация';
                 'validateOnSubmit' => true // Валидация формы при отправке
             ]);
      ?>
-        <h1 class="text-center mb-1 mt-1"><?= Html::encode($this->title); ?></h1><br>
+        <h1 class="text-center mb-1 mt-1"><?= Html::encode($this->title); ?></h1><hr>
 
         <?= $form->field($model, 'username')->textInput(['minlength' => 5, 'maxlength' => 32, 'placeholder' => 'Введите ваш логин', 'class' => 'form-control']); ?>
         <?= $form->field($model, 'password')->passwordInput(['enableAjaxValidation' => false, 'minlength' => 6, 'maxlength' => 64, 'placeholder' => 'Введите ваш пароль', 'class' => 'form-control']); ?>

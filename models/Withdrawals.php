@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "withdrawals".
@@ -24,21 +25,19 @@ use Yii;
  *
  * @property Clients $client
  */
-class Withdrawals extends \yii\db\ActiveRecord
+class Withdrawals extends ActiveRecord
 {
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName(){
         return 'withdrawals';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules(){
         return [
             [['tg_user_id', 'count', 'card_number', 'comment', 'client_id'], 'required'],
             [['tg_user_id', 'status', 'is_test', 'count', 'commission', 'client_id'], 'integer'],
@@ -53,8 +52,7 @@ class Withdrawals extends \yii\db\ActiveRecord
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels(){
         return [
             'id' => 'ID',
             'tg_user_id' => 'ID пользователя в telegram',
@@ -78,8 +76,7 @@ class Withdrawals extends \yii\db\ActiveRecord
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient()
-    {
+    public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
@@ -87,8 +84,7 @@ class Withdrawals extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return WithdrawalsQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find(){
         return new WithdrawalsQuery(get_called_class());
     }
 }

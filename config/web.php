@@ -35,7 +35,7 @@ $config = [
         ],
         'user' => [
             'identityClass' => 'app\models\Users',
-            'enableAutoLogin' => true,
+            'enableAutoLogin' => true
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -62,10 +62,12 @@ $config = [
             'showScriptName' => false,
             'suffix' => '',
             'rules' => [
-                '<action:(about|contact|update|signup|login|logout)>' => 'site/<action>',
+                '<action:(index|about|contact|update|signup|login|logout)>' => 'site/<action>',
                 'payment' => 'payment/index',
+                'lk' => 'lk/index',
                 'confirmation' => 'payment/confirmation',
                 'admin/test' => 'admin/default/test'
+
             ],
         ],
         'authManager' => [

@@ -40,15 +40,16 @@ $name = Yii::$app->name;
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav'],
                 'items' => [
-                    ['label' => 'Home', 'url' => ['/index']],
-                    ['label' => 'About', 'url' => ['/about']],
-                    ['label' => 'Contact', 'url' => ['/contact']],
+                    ['label' => 'Главная', 'url' => ['/index']],
+                    ['label' => 'О нас', 'url' => ['/about']],
+                    //['label' => 'Contact', 'url' => ['/contact']],
+                    Yii::$app->user->isGuest ? '' : ['label' => 'Личный кабинет', 'url' => ['/lk']],
                     Yii::$app->user->isGuest
-                        ? ['label' => 'Login', 'url' => ['/login']]
+                        ? ['label' => 'Войти', 'url' => ['/login']]
                         : '<li class="nav-item">'
                             . Html::beginForm(['/logout'])
                             . Html::submitButton(
-                                'Logout (' . Yii::$app->user->identity->username . ')',
+                                'Выйти (' . Yii::$app->user->identity->username . ')',
                                 ['class' => 'nav-link btn btn-link logout']
                             )
                             . Html::endForm()

@@ -2,7 +2,8 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveQuery;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "clients".
@@ -43,7 +44,7 @@ use Yii;
  * @property OrdersComplete[] $ordersCompletes
  * @property Withdrawals[] $withdrawals
  */
-class Clients extends \yii\db\ActiveRecord{
+class Clients extends ActiveRecord{
     /**
      * {@inheritdoc}
      */
@@ -104,7 +105,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[BotConfigs]].
      *
-     * @return \yii\db\ActiveQuery|BotConfigsQuery
+     * @return ActiveQuery|BotConfigsQuery
      */
     public function getBotConfigs(){
         return $this->hasMany(BotConfigs::class, ['client_id' => 'id']);
@@ -113,7 +114,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[BotGifts]].
      *
-     * @return \yii\db\ActiveQuery|BotGiftsQuery
+     * @return ActiveQuery|BotGiftsQuery
      */
     public function getBotGifts(){
         return $this->hasMany(BotGifts::class, ['client_id' => 'id']);
@@ -122,7 +123,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[BotMembers]].
      *
-     * @return \yii\db\ActiveQuery|BotMembersQuery
+     * @return ActiveQuery|BotMembersQuery
      */
     public function getBotMembers(){
         return $this->hasMany(BotMembers::class, ['client_id' => 'id']);
@@ -131,7 +132,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[BotTexts]].
      *
-     * @return \yii\db\ActiveQuery|BotTextsQuery
+     * @return ActiveQuery|BotTextsQuery
      */
     public function getBotTexts(){
         return $this->hasMany(BotTexts::class, ['client_id' => 'id']);
@@ -140,7 +141,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[BotTickets]].
      *
-     * @return \yii\db\ActiveQuery|BotTicketsQuery
+     * @return ActiveQuery|BotTicketsQuery
      */
     public function getBotTickets(){
         return $this->hasMany(BotTickets::class, ['client_id' => 'id']);
@@ -149,7 +150,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[Orders]].
      *
-     * @return \yii\db\ActiveQuery|yii\db\ActiveQuery
+     * @return ActiveQuery|OrdersQuery
      */
     public function getOrders(){
         return $this->hasMany(Orders::class, ['client_id' => 'id']);
@@ -158,7 +159,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[OrdersCompletes]].
      *
-     * @return \yii\db\ActiveQuery|OrdersCompleteQuery
+     * @return ActiveQuery|OrdersCompleteQuery
      */
     public function getOrdersCompletes(){
         return $this->hasMany(OrdersComplete::class, ['client_id' => 'id']);
@@ -167,7 +168,7 @@ class Clients extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[Withdrawals]].
      *
-     * @return \yii\db\ActiveQuery|yii\db\ActiveQuery
+     * @return ActiveQuery|WithdrawalsQuery
      */
     public function getWithdrawals(){
         return $this->hasMany(Withdrawals::class, ['client_id' => 'id']);

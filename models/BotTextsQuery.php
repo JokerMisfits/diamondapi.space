@@ -5,11 +5,11 @@ namespace app\models;
 use yii\db\ActiveQuery;
 
 /**
- * This is the ActiveQuery class for [[OrdersComplete]].
+ * This is the ActiveQuery class for [[BotTexts]].
  *
- * @see OrdersComplete
+ * @see BotTexts
  */
-class OrdersCompleteQuery extends ActiveQuery{
+class BotTextsQuery extends ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');
@@ -17,7 +17,7 @@ class OrdersCompleteQuery extends ActiveQuery{
 
     /**
      * {@inheritdoc}
-     * @return OrdersComplete[]|array
+     * @return BotTexts[]|array
      */
     public function all($db = null){
         return parent::all($db);
@@ -25,7 +25,7 @@ class OrdersCompleteQuery extends ActiveQuery{
 
     /**
      * {@inheritdoc}
-     * @return OrdersComplete|array|null
+     * @return BotTexts|array|null
      */
     public function one($db = null){
         return parent::one($db);

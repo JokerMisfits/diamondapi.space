@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "tg_members".
@@ -11,35 +11,30 @@ use Yii;
  * @property int $tg_user_id ID пользователя в telegram
  * @property string|null $tg_username Имя пользователя в telegram
  */
-class TgMembers extends \yii\db\ActiveRecord
-{
+class TgMembers extends ActiveRecord{
     /**
      * {@inheritdoc}
      */
-    public static function tableName()
-    {
+    public static function tableName(){
         return 'tg_members';
     }
 
     /**
      * {@inheritdoc}
      */
-    public function rules()
-    {
+    public function rules(){
         return [
-            [['id', 'tg_user_id'], 'required'],
-            [['id', 'tg_user_id'], 'integer'],
+            [['tg_user_id'], 'required'],
+            [['tg_user_id'], 'integer'],
             [['tg_username'], 'string', 'max' => 255],
             [['tg_user_id'], 'unique'],
-            [['id'], 'unique'],
         ];
     }
 
     /**
      * {@inheritdoc}
      */
-    public function attributeLabels()
-    {
+    public function attributeLabels(){
         return [
             'id' => 'ID',
             'tg_user_id' => 'ID пользователя в telegram',
@@ -51,8 +46,7 @@ class TgMembers extends \yii\db\ActiveRecord
      * {@inheritdoc}
      * @return TgMembersQuery the active query used by this AR class.
      */
-    public static function find()
-    {
+    public static function find(){
         return new TgMembersQuery(get_called_class());
     }
 }

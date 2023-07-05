@@ -2,13 +2,14 @@
 
 namespace app\models;
 
+use yii\db\ActiveQuery;
+
 /**
  * This is the ActiveQuery class for [[Withdrawals]].
  *
  * @see Withdrawals
  */
-class WithdrawalsQuery extends \yii\db\ActiveQuery
-{
+class WithdrawalsQuery extends ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');
@@ -18,8 +19,7 @@ class WithdrawalsQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Withdrawals[]|array
      */
-    public function all($db = null)
-    {
+    public function all($db = null){
         return parent::all($db);
     }
 
@@ -27,8 +27,7 @@ class WithdrawalsQuery extends \yii\db\ActiveQuery
      * {@inheritdoc}
      * @return Withdrawals|array|null
      */
-    public function one($db = null)
-    {
+    public function one($db = null){
         return parent::one($db);
     }
 }

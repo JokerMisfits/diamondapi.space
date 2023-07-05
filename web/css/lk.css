@@ -1,0 +1,23 @@
+.btn-lk{
+    margin: 5px 0 5px 0;
+    border-radius: 0;
+    background: none;
+    border: none;
+    color: #212529;
+    font-size: 20px;
+    font-weight: 600;
+    font-family: sans-serif;
+}
+.btn-lk:hover{
+    color: #0056b3;
+    background: none;
+    border: none;
+}
+.btn-lk:active, .btn-lk:focus{
+    color: #0056b3;
+    background: none;
+    border: none;
+}
+.btn-lk:disabled{
+    color: #0056b3;
+}
