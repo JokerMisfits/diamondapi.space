@@ -14,7 +14,7 @@ $this->title = 'Profile';
     }
 </style>
 
-<div  class="lk-index">
+<div class="lk-index">
 
     <h1 class="text-center mt-2">Добро пожаловать <?= $username ?></h1><hr>
 
@@ -29,6 +29,9 @@ $this->title = 'Profile';
             echo Html::submitButton('Приступить <i class="fab fa-telegram"></i>', ['class' => 'col-12 col-md-6 col-lg-3 mt-2 btn btn-primary']);
             echo Html::endForm();
             echo '</div><hr>';
+        }
+        else{
+            
         }
     ?>
 

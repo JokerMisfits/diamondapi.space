@@ -34,8 +34,13 @@ class DefaultController extends AppAdminController{
 
     public function actionTest(){
 
+        //Присвоение роли
         // $authManager = Yii::$app->authManager;
-        // $authManager->revoke($authManager->getRole('tg-verify'), Yii::$app->user->identity->id);//Забрать роль
+        // $authManager->assign($authManager->getRole('tg-verify'), Yii::$app->user->identity->id);
+
+        //Удаление роли
+        // $authManager = Yii::$app->authManager;
+        // $authManager->revoke($authManager->getRole('tg-verify'), Yii::$app->user->identity->id);
 
         // $authManager = Yii::$app->authManager;// Создание новой роли
         // $role = $authManager->createRole('tg-verify');

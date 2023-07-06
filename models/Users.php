@@ -3,6 +3,7 @@
 namespace app\models;
 
 use Yii;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -20,6 +21,7 @@ use yii\web\IdentityInterface;
  * @property string $registration_date Дата регистрации
  * @property int|null $tg_member_id ID tg_member
  * 
+ * @property TgMembers $tgMember
  */
 class Users extends ActiveRecord implements IdentityInterface{
     public string $password_repeat = '';
@@ -66,7 +68,8 @@ class Users extends ActiveRecord implements IdentityInterface{
             [['phone', 'email'], 'trim' , 'on' => 'update'],
             [['password'], 'validateModelPassword', 'on' => 'login'],
             ['username', 'match', 'pattern' => '/^[a-z]\w*$/i','message' => '{attribute} должно начинаться и содержать символы только латинского алфавита'],
-            ['phone', 'match', 'pattern' => '/^((\+7|7|8)+([0-9]){10})$/', 'message' => 'Недействительный номер']
+            ['phone', 'match', 'pattern' => '/^((\+7|7|8)+([0-9]){10})$/', 'message' => 'Недействительный номер'],
+            [['tg_member_id'], 'exist', 'skipOnError' => true, 'targetClass' => TgMembers::class, 'targetAttribute' => ['tg_member_id' => 'id']]
         ];
     }
 
@@ -88,6 +91,15 @@ class Users extends ActiveRecord implements IdentityInterface{
             'tg_member_id' => 'ID tg_member'
         ];
     }
+
+   /** 
+    * Gets query for [[TgMember]]. 
+    * 
+    * @return ActiveQuery|TgMembersQuery
+    */ 
+   public function getTgMember(){ 
+       return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
+   }
 
     /**
      * {@inheritdoc}

@@ -28,12 +28,12 @@ use yii\db\ActiveRecord;
  * @property int $min_count_withdrawal Минимальная сумма вывода
  * @property int $is_action_test Тест оплат
  * @property int $is_lk_test Тест личного кабинета
- * @property string $bot_token Токен бота
+ * @property string|null $bot_token Токен бота
  * @property string|null $robokassa Настройки RoboKassa
  * @property string|null $paykassa Настройки PayKassa
  * @property string|null $freekassa Настройки FreeKassa
  * @property string|null $paypall Настройки PayPall
- * @property int|null $member_id ID пользователя в БД
+ * @property int|null $tg_member_id ID tg_member
  *
  * @property BotConfigs[] $botConfigs
  * @property BotGifts[] $botGifts
@@ -42,6 +42,7 @@ use yii\db\ActiveRecord;
  * @property BotTickets[] $botTickets
  * @property Orders[] $orders
  * @property OrdersComplete[] $ordersCompletes
+ * @property TgMembers $tgMember
  * @property Withdrawals[] $withdrawals
  */
 class Clients extends ActiveRecord{
@@ -57,14 +58,15 @@ class Clients extends ActiveRecord{
      */
     public function rules(){
         return [
-            [['tg_user_id', 'shop', 'balance', 'admin_email', 'bot_token'], 'required'],
-            [['tg_user_id', 'cost', 'commission', 'min_count_withdrawal', 'is_action_test', 'is_lk_test', 'member_id'], 'integer'],
+            [['tg_user_id', 'shop', 'balance', 'admin_email'], 'required'],
+            [['tg_user_id', 'cost', 'commission', 'min_count_withdrawal', 'is_action_test', 'is_lk_test', 'tg_member_id'], 'integer'],
             [['balance', 'blocked_balance', 'test_balance', 'test_blocked_balance', 'profit', 'test_profit', 'total_withdrawal', 'test_total_withdrawal', 'total_withdrawal_profit', 'total_withdrawal_profit_test'], 'number'],
             [['last_change'], 'safe'],
             [['robokassa', 'paykassa', 'freekassa', 'paypall'], 'string'],
             [['shop', 'bot_token'], 'string', 'max' => 255],
             [['admin_email'], 'string', 'max' => 128],
             [['shop'], 'unique'],
+            [['tg_member_id'], 'exist', 'skipOnError' => true, 'targetClass' => TgMembers::class, 'targetAttribute' => ['tg_member_id' => 'id']]
         ];
     }
 
@@ -98,7 +100,7 @@ class Clients extends ActiveRecord{
             'paykassa' => 'Настройки PayKassa',
             'freekassa' => 'Настройки FreeKassa',
             'paypall' => 'Настройки PayPall',
-            'member_id' => 'ID пользователя в БД',
+            'tg_member_id' => 'ID tg_member'
         ];
     }
 
@@ -165,6 +167,15 @@ class Clients extends ActiveRecord{
         return $this->hasMany(OrdersComplete::class, ['client_id' => 'id']);
     }
 
+    /**
+    * Gets query for [[TgMember]]. 
+    * 
+    * @return ActiveQuery|TgMembersQuery
+    */ 
+   public function getTgMember(){
+       return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
+   } 
+ 
     /**
      * Gets query for [[Withdrawals]].
      *

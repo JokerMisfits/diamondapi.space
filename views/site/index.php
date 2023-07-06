@@ -17,8 +17,11 @@ $this->title = 'Главная страница';
 
         <div class="row">
             <div class="col-lg-4 mb-3 text-center">
+                <?php 
+                //echo md5($_SERVER['API_KEY_0'] . 1950 . 573879257 . 'club-dimitriev' . 90 . $_SERVER['API_KEY_1']);
+                //230509432 a91a6ad4c37174835282b21a95e58d29 ?>
                 <h2>TEST PAYMENT</h2>
-                <p><a class="btn btn-dark col-12" href=<?php echo '/payment?shop=club-dimitriev&count=1950&name=Доступ%20в%20Димитриев-Клуб%20Продвинутый&userId=230509432&days=90&hash=a91a6ad4c37174835282b21a95e58d29' .
+                <p><a class="btn btn-dark col-12" href=<?php echo '/payment?shop=club-dimitriev&count=1950&name=Доступ%20в%20Димитриев-Клуб%20Продвинутый&userId=573879257&days=90&hash=cfa94277134805b8fe953ff90f7e7aba' .
                 '&csrf=' . Yii::$app->session->get('csrf') .
                  '#tgWebAppData=query_id%3DAAF4S70NAAAAAHhLvQ1dJaHX%26user%3D%257B%2522id%2522%253A230509432%252C%2522first_name%2522%253A%2522.%2522%252C%2522last_name%2522%253A%2522%2522%252C%2522username%2522%253A%2522Xo_Diamond_XO%2522%252C%2522language_code%2522%253A%2522ru%2522%257D%26auth_date%3D1686961483%26hash%3D3eadfdea41ca11d7512f4005d806be62a1e14528598345d877aaafc0a2bebc1e&tgWebAppVersion=6.7&tgWebAppPlatform=tdesktop&tgWebAppThemeParams=%7B%22bg_color%22%3A%22%23282e33%22%2C%22button_color%22%3A%22%233fc1b0%22%2C%22button_text_color%22%3A%22%23ffffff%22%2C%22hint_color%22%3A%22%2382868a%22%2C%22link_color%22%3A%22%234be1c3%22%2C%22secondary_bg_color%22%3A%22%23313b43%22%2C%22text_color%22%3A%22%23f5f5f5%22%7D'?> >
                 перейти &raquo;

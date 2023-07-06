@@ -4,6 +4,8 @@ namespace app\controllers;
 
 use Yii;
 use app\models\users;
+use app\models\Orders;
+use app\models\Clients;
 use app\models\TgMembers;
 use yii\filters\AccessControl;
 use yii\web\ForbiddenHttpException;
@@ -27,6 +29,15 @@ class LkController extends AppController{
     }
 
     public function beforeAction($action){
+
+        if($action->id == 'channels' || $action->id == 'payments' || $action->id == 'subscriptions' || $action->id == 'finance' || $action->id == 'options'){
+            if(Yii::$app->authManager->checkAccess(Yii::$app->user->identity->id, 'tg-verify')){
+                return parent::beforeAction($action);
+            }
+            else{
+                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+            }
+        }
         if($action->id == 'verify'){
             if(Yii::$app->request->isPost){
                 $params = Yii::$app->request->post();
@@ -103,12 +114,20 @@ class LkController extends AppController{
         ]);
     }
 
-    public function actionChannel(){
-        return $this->render('channel');
+    public function actionChannels(){
+        $model = new Clients();
+        $model = $model->findAll(['tg_member_id' => Yii::$app->user->identity->tg_member_id]);
+        return $this->render('channels', [
+            'model' => $model
+        ]);
     }
 
     public function actionPayments(){
-        return $this->render('payments');
+        $model = new Orders();
+        $model = $model->findAll(['tg_member_id' => Yii::$app->user->identity->tg_member_id, 'status' => 0, 'is_test' => 0]);
+        return $this->render('payments',[
+            'model' => $model
+        ]);
     }
 
     public function actionSubscriptions(){

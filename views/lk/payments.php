@@ -3,8 +3,14 @@
 
 $this->title = 'Payments';
 ?>
-<h1>Payments</h1>
+<h1>Платежи</h1>
 <p>Здесь будет отображаться информация о платежах пользователя</p>
+
+<?php
+    echo '<pre>';
+    var_dump($model);
+    echo '</pre>';
+?>
 
 <script>
 let link = document.getElementById('sideBarPayLink');
