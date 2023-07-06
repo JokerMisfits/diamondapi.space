@@ -13,13 +13,12 @@ use yii\web\IdentityInterface;
  * @property string $username Имя пользователя
  * @property string $password Пароль
  * @property string $password_repeat Пароль
- * @property int|null $tg_user_id ID пользователя в telegram
  * @property string|null $email Email
  * @property string|null $phone Номер телефона
  * @property string|null $auth_key Кука
  * @property string $last_activity Дата последней активности
  * @property string $registration_date Дата регистрации
- * @property int|null $member_id ID пользователя
+ * @property int|null $tg_member_id ID tg_member
  * 
  */
 class Users extends ActiveRecord implements IdentityInterface{
@@ -48,7 +47,7 @@ class Users extends ActiveRecord implements IdentityInterface{
         return [
             [['username', 'password'], 'required'],
             [['password_repeat'], 'required', 'on' => 'signup'],
-            [['tg_user_id', 'member_id'], 'integer'],
+            [['tg_member_id'], 'integer'],
             [['last_activity', 'registration_date'], 'safe'],
             [['rememberMe'], 'boolean'],
             [['rememberMe'], 'required', 'on' => 'login'],
@@ -80,14 +79,13 @@ class Users extends ActiveRecord implements IdentityInterface{
             'username' => 'Имя пользователя',
             'password' => 'Пароль',
             'password_repeat' => 'Подтвердить пароль',
-            'tg_user_id' => 'ID пользователя в telegram',
             'email' => 'Email',
             'phone' => 'Номер телефона',
             'rememberMe' => 'Запомнить меня',
             'auth_key' => 'Кука',
             'last_activity' => 'Дата последней активности',
             'registration_date' => 'Дата регистрации',
-            'member_id' => 'ID пользователя'
+            'tg_member_id' => 'ID tg_member'
         ];
     }
 

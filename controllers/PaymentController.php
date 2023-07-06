@@ -371,7 +371,7 @@ class PaymentController extends AppController{
                                         ->bindValue(':ppid', $ppid)
                                         ->bindValue(':order_id', $invId)
                                         ->execute();
-                                    if($result != false){
+                                    if($result !== false){
                                         Yii::$app->getResponse()->redirect($response->getData()['links'][1]['href'])->send();
                                         exit(0);
                                     }

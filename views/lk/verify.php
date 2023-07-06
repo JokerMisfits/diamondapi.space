@@ -12,6 +12,7 @@ $this->title = 'Verify ' . $target;
 <div class="lk-verify col-12 offset-lg-3 col-lg-6">
     <?php
         if($target == 'telegram'){
+            echo '<script>blockSidebarButtons(false);</script>';
             echo '<span>1. Узнайте ваш telegram id при помощи бота </span><a href="https://t.me/my_id_bot" class="btn btn-warning" target="_blank">Перейти <i class="fas fa-external-link-alt"></i></a>';
             echo Html::beginForm(['/lk/confirmation'], 'post');
             echo '<span>2. Введите ваш telegram id </span>' . Html::Input('string', 'tg_user_id', null, ['class' => 'form-control mb-3']);

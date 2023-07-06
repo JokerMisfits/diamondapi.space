@@ -21,3 +21,7 @@
 .btn-lk:disabled{
     color: #0056b3;
 }
+.btn-lk-disabled{
+    text-decoration: line-through;
+    color: #212529!important;
+}

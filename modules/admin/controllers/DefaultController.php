@@ -2,6 +2,7 @@
 
 namespace app\modules\admin\controllers;
 
+use Yii;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -32,6 +33,15 @@ class DefaultController extends AppAdminController{
     }
 
     public function actionTest(){
+
+        // $authManager = Yii::$app->authManager;
+        // $authManager->revoke($authManager->getRole('tg-verify'), Yii::$app->user->identity->id);//Забрать роль
+
+        // $authManager = Yii::$app->authManager;// Создание новой роли
+        // $role = $authManager->createRole('tg-verify');
+        // $role->description = 'Учетная запись telegram подтверждена';
+        // $authManager->add($role);// Добавление роли в authManager
+
         // $robo = [
         //     'enable' => true,
         //     'is_test' => true,

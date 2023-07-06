@@ -16,6 +16,7 @@ $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15
     'crossorigin' => 'anonymous',
     'position' => View::POS_HEAD,
 ]);
+$this->registerJsFile('@web/js/lk.js', ['position' => View::POS_HEAD]);
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
@@ -45,9 +46,9 @@ $name = Yii::$app->name;
                 'options' => ['class' => 'navbar-nav text-center col-md-9 m-0 p-0'],
                 'items' => [
                     ['label' => 'Личный кабинет', 'url' => ['/lk']],
-                    ['label' => 'Главная', 'url' => ['/index']],
-                    ['label' => 'Главная', 'url' => ['/index']],
-                    ['label' => 'Главная', 'url' => ['/index']]
+                    // ['label' => 'Главная', 'url' => ['/index']],
+                    // ['label' => 'Главная', 'url' => ['/index']],
+                    // ['label' => 'Главная', 'url' => ['/index']]
                 ]
             ]);
 

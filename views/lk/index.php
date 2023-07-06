@@ -19,15 +19,16 @@ $this->title = 'Profile';
     <h1 class="text-center mt-2">Добро пожаловать <?= $username ?></h1><hr>
 
     <?php
-        if(!isset($tg_user_id)){
+        if(!isset($tg_member_id)){
+            echo '<script>blockSidebarButtons();</script>';
             echo '<div class="text-center">';
-            echo 'Для получения доступа к другим разделам личного кабинета необходимо привязать вашу учетную запись telegram к вашему аккаунту' . PHP_EOL;
+            echo 'Для получения доступа к другим разделам личного кабинета необходимо привязать вашу учетную запись telegram к вашему аккаунту.';
             echo Html::beginForm(['/lk/verify'], 'post');
             echo Html::hiddenInput('target', 'telegram');
             echo Html::hiddenInput('csrf', $csrf);
-            echo Html::submitButton('Приступить', ['class' => 'btn btn-success']);
+            echo Html::submitButton('Приступить <i class="fab fa-telegram"></i>', ['class' => 'col-12 col-md-6 col-lg-3 mt-2 btn btn-primary']);
             echo Html::endForm();
-            echo '</div>';
+            echo '</div><hr>';
         }
     ?>
 
