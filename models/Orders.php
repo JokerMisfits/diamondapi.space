@@ -2,7 +2,7 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -24,10 +24,12 @@ use yii\db\ActiveRecord;
  * @property float|null $count_in_currency Сумма в валюте
  * @property float $commission Комиссия платежа
  * @property string|null $paypal_order_id Номер заказа в платежной системе PayPal
+ * @property int|null $tg_member_id ID tg_member
  * @property int $client_id ID клиента
  *
  * @property Clients $client
  * @property OrdersComplete[] $ordersCompletes
+ * @property TgMembers $tgMember 
  */
 class Orders extends ActiveRecord{
     /**
@@ -43,7 +45,7 @@ class Orders extends ActiveRecord{
     public function rules(){
         return [
             [['tg_user_id', 'count', 'method', 'shop', 'access_days', 'client_id'], 'required'],
-            [['tg_user_id', 'status', 'count', 'access_days', 'is_test', 'client_id'], 'integer'],
+            [['tg_user_id', 'status', 'count', 'access_days', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
             [['created_time', 'resulted_time'], 'safe'],
             [['count_in_currency', 'commission'], 'number'],
             [['method'], 'string', 'max' => 25],
@@ -51,6 +53,7 @@ class Orders extends ActiveRecord{
             [['web_app_query_id'], 'string', 'max' => 64],
             [['paypal_order_id'], 'string', 'max' => 40],
             [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']],
+            [['tg_member_id'], 'exist', 'skipOnError' => true, 'targetClass' => TgMembers::class, 'targetAttribute' => ['tg_member_id' => 'id']]
         ];
     }
 
@@ -75,14 +78,15 @@ class Orders extends ActiveRecord{
             'count_in_currency' => 'Сумма в валюте',
             'commission' => 'Комиссия платежа',
             'paypal_order_id' => 'Номер заказа в платежной системе PayPal',
-            'client_id' => 'ID клиента',
+            'tg_member_id' => 'ID tg_member',
+            'client_id' => 'ID клиента'
         ];
     }
 
     /**
      * Gets query for [[Client]].
      *
-     * @return \yii\db\ActiveQuery|ClientsQuery
+     * @return ActiveQuery|ClientsQuery
      */
     public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
@@ -91,11 +95,20 @@ class Orders extends ActiveRecord{
     /**
      * Gets query for [[OrdersCompletes]].
      *
-     * @return \yii\db\ActiveQuery|OrdersCompleteQuery
+     * @return ActiveQuery|OrdersCompleteQuery
      */
     public function getOrdersCompletes(){
         return $this->hasMany(OrdersComplete::class, ['order_id' => 'id']);
     }
+
+   /** 
+    * Gets query for [[TgMember]]. 
+    * 
+    * @return ActiveQuery|TgMembersQuery 
+    */ 
+   public function getTgMember(){ 
+       return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
+   }
 
     /**
      * {@inheritdoc}

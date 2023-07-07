@@ -57,9 +57,6 @@ class PaymentController extends AppController{
                 throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
-        elseif($action->id == 'disput'){//todo удалить после теста - перенести в админку за доп плату
-            return parent::beforeAction($action); 
-        }
         elseif($action->id == 'success'){
             return parent::beforeAction($action); 
         }
@@ -126,7 +123,6 @@ class PaymentController extends AppController{
             try{
                 $result = Yii::$app->db->createCommand($sql, $qParams)->execute();
                 if($result !== false){
-                    $sql = "SELECT id FROM orders WHERE tg_user_id = :user_id ORDER BY id DESC limit 1";
                     $query = new Query();
                     $result = $query->select('id')
                         ->from('orders')
@@ -194,7 +190,6 @@ class PaymentController extends AppController{
                 ];
                 $result = Yii::$app->db->createCommand($sql, $qParams)->execute();
                 if($result !== false){
-                    $sql = "SELECT id FROM orders WHERE tg_user_id = :user_id ORDER BY id DESC limit 1";
                     $query = new Query();
                     $result = $query->select('id')
                         ->from('orders')
@@ -251,7 +246,6 @@ class PaymentController extends AppController{
             try{
                 $result = Yii::$app->db->createCommand($sql, $qParams)->execute();
                 if($result !== false){
-                    $sql = "SELECT id FROM orders WHERE tg_user_id = :user_id ORDER BY id DESC limit 1";
                     $query = new Query();
                     $result = $query->select('id')
                         ->from('orders')
@@ -315,7 +309,6 @@ class PaymentController extends AppController{
                 try{
                     $result = Yii::$app->db->createCommand($sql, $qParams)->execute();
                     if($result != false){
-                        $sql = "SELECT id FROM orders WHERE tg_user_id = :user_id ORDER BY id DESC limit 1";
                         $query = new Query();
                         $result = $query->select('id')
                             ->from('orders')
@@ -520,34 +513,35 @@ class PaymentController extends AppController{
             throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
         }
     }
-    public function actionDisput() : void{
-        $params = Yii::$app->request->get();
-        $config = AppController::getConfig('club-dimitriev')['paypall'];;
-        $client = new Client();
-        $url = 'https://api-m.paypal.com/v1/oauth2/token';//For test https://api-m.sandbox.paypal.com/v1/oauth2/token
-        $headers = [
-            'Content-Type' => 'application/x-www-form-urlencoded',
-            'Authorization' => 'Basic ' . base64_encode($config['client_id'] . ':' . $config['secret']),
-        ];
-        $data = [
-            'grant_type' => 'client_credentials',
-        ];
-        $response = $client->createRequest()// Отправка POST-запроса на получение токена доступа
-        ->setMethod('POST')
-        ->setUrl($url)
-        ->setHeaders($headers)
-        ->setData($data)
-        ->send();
-        $accessToken = $response->data['access_token'];
-        $request = $client->createRequest()
-        ->setMethod('GET')
-        ->setUrl('https://api-m.paypal.com/v1/customer/disputes/')//For test https://api-m.sandbox.paypal.com/v2/checkout/orders/
-        ->addHeaders([
-            'Authorization' => 'Bearer ' . $accessToken,
-        ]);
-        $response = $request->send();
-        AppController::debug($response->getData(), 1);
-    }
+    
+    // public function actionDisput() : void{
+    //     $params = Yii::$app->request->get();
+    //     $config = AppController::getConfig('club-dimitriev')['paypall'];;
+    //     $client = new Client();
+    //     $url = 'https://api-m.paypal.com/v1/oauth2/token';//For test https://api-m.sandbox.paypal.com/v1/oauth2/token
+    //     $headers = [
+    //         'Content-Type' => 'application/x-www-form-urlencoded',
+    //         'Authorization' => 'Basic ' . base64_encode($config['client_id'] . ':' . $config['secret']),
+    //     ];
+    //     $data = [
+    //         'grant_type' => 'client_credentials',
+    //     ];
+    //     $response = $client->createRequest()// Отправка POST-запроса на получение токена доступа
+    //     ->setMethod('POST')
+    //     ->setUrl($url)
+    //     ->setHeaders($headers)
+    //     ->setData($data)
+    //     ->send();
+    //     $accessToken = $response->data['access_token'];
+    //     $request = $client->createRequest()
+    //     ->setMethod('GET')
+    //     ->setUrl('https://api-m.paypal.com/v1/customer/disputes/')//For test https://api-m.sandbox.paypal.com/v2/checkout/orders/
+    //     ->addHeaders([
+    //         'Authorization' => 'Bearer ' . $accessToken,
+    //     ]);
+    //     $response = $request->send();
+    //     AppController::debug($response->getData(), 1);
+    // }
 
     public function actionSuccess() : void{//todo дописать для PayPall
         $params = Yii::$app->request->post();

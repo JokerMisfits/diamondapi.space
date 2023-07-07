@@ -85,7 +85,7 @@ $name = Yii::$app->name;
                         <a id="sideBarProfileLink" href="/lk/index" class="col-12"><button id="sideBarProfileBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-id-card-alt"></i> Профиль</button></a>
                         <a id="sideBarChannelLink" href="/lk/channels" class="col-12"><button id="sideBarChannelBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dots"></i> Каналы и чаты</button></a>
                         <a id="sideBarPayLink" href="/lk/payments" class="col-12"><button id="sideBarPayBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dollar"></i> Платежи</button></a>
-                        <a id="sideBarSubLink" href="/lk/subscriptions" class="col-12"><button id="sideBarSubBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-users"></i> Подписки</button></a>
+                        <!-- <a id="sideBarSubLink SOON" href="/lk/subscriptions" class="col-12"><button id="sideBarSubBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-users"></i> Подписки</button></a> -->
                         <a id="sideBarFinLink" href="/lk/finance" class="col-12"><button id="sideBarFinBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-wallet"></i> Финансы</button></a>
                         <a id="sideBarOptionLink" href="/lk/options" class="col-12"><button id="sideBarOptionBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-sliders-h"></i> Настройки</button></a>
                     </div>

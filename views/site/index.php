@@ -16,10 +16,7 @@ $this->title = 'Главная страница';
     <div class="body-content">
 
         <div class="row">
-            <div class="col-lg-4 mb-3 text-center">
-                <?php 
-                //echo md5($_SERVER['API_KEY_0'] . 1950 . 573879257 . 'club-dimitriev' . 90 . $_SERVER['API_KEY_1']);
-                //230509432 a91a6ad4c37174835282b21a95e58d29 ?>
+            <div class="col-12 col-md-6 offset-md-3 text-center">
                 <h2>TEST PAYMENT</h2>
                 <p><a class="btn btn-dark col-12" href=<?php echo '/payment?shop=club-dimitriev&count=1950&name=Доступ%20в%20Димитриев-Клуб%20Продвинутый&userId=573879257&days=90&hash=cfa94277134805b8fe953ff90f7e7aba' .
                 '&csrf=' . Yii::$app->session->get('csrf') .
@@ -28,14 +25,14 @@ $this->title = 'Главная страница';
                 </a></p>
                 <p></p>
             </div>
-            <div class="col-lg-4 mb-3 text-center">
+            <!-- <div class="col-lg-4 mb-3 text-center">
                 <h2>TEST Админка</h2>
                 <p><a class="btn btn-primary col-12" href="/admin/order">перейти &raquo;</a></p>
             </div>
             <div class="col-lg-4 text-center">
                 <h2>Test disput</h2>
                 <p><a class="btn btn-danger col-12" href="/payment/disput">перейти &raquo;</a></p>
-            </div>
+            </div> -->
         </div>
 
     </div>

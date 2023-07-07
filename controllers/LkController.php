@@ -3,8 +3,8 @@
 namespace app\controllers;
 
 use Yii;
+use yii\db\Query;
 use app\models\users;
-use app\models\Orders;
 use app\models\Clients;
 use app\models\TgMembers;
 use yii\filters\AccessControl;
@@ -123,9 +123,10 @@ class LkController extends AppController{
     }
 
     public function actionPayments(){
-        $model = new Orders();
-        $model = $model->findAll(['tg_member_id' => Yii::$app->user->identity->tg_member_id, 'status' => 0, 'is_test' => 0]);
-        return $this->render('payments',[
+        $query = new Query();
+        $model = $query->select(['count', 'shop', 'method', 'resulted_time'])
+        ->from('orders')->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id, 'status' => 1, 'is_test' => 0])->all();
+        return $this->render('payments', [
             'model' => $model
         ]);
     }

@@ -4,6 +4,7 @@ namespace app\modules\admin\models;
 
 use app\models\Orders;
 use yii\data\ActiveDataProvider;
+use app\modules\admin\controllers\AppAdminController;
 
 /**
  * OrdersSearch represents the model behind the search form of `app\models\Orders`.
@@ -14,7 +15,7 @@ class OrdersSearch extends Orders{
      */
     public function rules(){
         return [
-            [['id', 'tg_user_id', 'status', 'count', 'access_days', 'is_test', 'client_id'], 'integer'],
+            [['id', 'tg_user_id', 'status', 'count', 'access_days', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
             [['method', 'shop', 'position_name', 'created_time', 'resulted_time', 'web_app_query_id', 'currency', 'paypal_order_id'], 'safe'],
             [['count_in_currency', 'commission'], 'number'],
         ];
@@ -70,7 +71,8 @@ class OrdersSearch extends Orders{
             'is_test' => $this->is_test,
             'count_in_currency' => $this->count_in_currency,
             'commission' => $this->commission,
-            'client_id' => $this->client_id,
+            'tg_member_id' => $this->tg_member_id,
+            'client_id' => $this->client_id
         ]);
 
         $query->andFilterWhere(['like', 'method', $this->method])

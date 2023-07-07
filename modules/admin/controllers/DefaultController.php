@@ -2,7 +2,9 @@
 
 namespace app\modules\admin\controllers;
 
+use Throwable;
 use Yii;
+use yii\db\Query;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -33,6 +35,60 @@ class DefaultController extends AppAdminController{
     }
 
     public function actionTest(){
+
+        // $query = new Query();
+        // $result = $query->select('tg_user_id')
+        // ->from('orders')->all();
+        // $count = count($result);
+        // for($i = 0;$i < $count;$i++){
+        //     $new[$result[$i]['tg_user_id']] = $i;
+        // }
+
+        // $new = array_keys($new);
+        // $count = count($new);
+
+        // for($i = 0; $i < $count; $i++){
+        //     try{
+        //         $result = json_decode(file_get_contents('https://api.telegram.org/bot' . '5751056136:AAEE9KsOAq95R5xzAlqBUGaZxB8HS2eGRWA' . '/getChat?chat_id=' . $new[$i]));
+        //         if($result->ok){
+        //             if(!isset($result->result->username)){
+        //                 $result->result->user_name = null;
+        //             }
+                    // if(!isset($result->result->first_name)){
+                    //     $result->result->first_name = null;
+                    // }
+                    // if(!isset($result->result->last_name)){
+                    //     $result->result->last_name = null;
+                    // }
+                    // if(!isset($result->result->bio)){
+                    //     $result->result->bio = null;
+                    // }
+                    // if(!isset($result->result->type)){
+                    //     $result->result->type = null;
+                    // }
+
+                    // Yii::$app->db->createCommand()
+                    // ->update('tg_members', ['tg_username' => $result->result->username], ['tg_user_id' => $new[$i]])
+                    // ->execute();
+
+                    // $result = Yii::$app->db->createCommand()->insert('tg_members', [
+                    //     'tg_user_id' => $new[$i],
+                    //     'tg_username' => $result->result->username,
+                    //     'tg_first_name' => $result->result->first_name,
+                    //     'tg_last_name' => $result->result->last_name,
+                    //     'tg_bio' => $result->result->bio,
+                    //     'tg_type' => $result->result->type
+                    // ])->execute();
+            //     }
+            //     else{
+            //         exit($i);
+            //     }
+            // }
+            // catch(\Exception|Throwable $e){
+            //     echo $e->getMessage() . PHP_EOL;
+            // }
+            // sleep(1);
+        //}
 
         //Присвоение роли
         // $authManager = Yii::$app->authManager;
