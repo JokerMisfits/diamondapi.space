@@ -135,8 +135,68 @@ class LkController extends AppController{
         return $this->render('subscriptions');
     }
 
-    public function actionFinance(){
-        return $this->render('finance');
+    public function actionFinance(){        
+
+        $query = new Query();
+        $id = $query->select('id')
+        ->from('clients')
+        ->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id])
+        ->all();
+        if(!empty($id)){
+            $modelWithdrawals = new Clients();
+            $countArr = count($id);
+            $allWithdrawals = 1;
+            $withdrawalsPage = 1;
+            $params = Yii::$app->request->get();
+            if(isset($params['allWithdrawals']) && $params['allWithdrawals'] == 1){
+                $allWithdrawals = 4;
+            }
+            if(isset($params['withdrawalsPage']) && $params['withdrawalsPage'] >= 1){
+                $withdrawalsPage = $params['withdrawalsPage'];
+            }
+            $countWithdrawals = 0;
+            for($i = 0; $i < $countArr; $i++){
+                $modelWithdrawals->id = $id[$i]['id'];
+                $withdrawals[$i] = $modelWithdrawals
+                ->getWithdrawals()
+                ->andWhere(['is_test' => 0])
+                ->andWhere(['>=', 'status', 0])
+                ->andWhere(['<=', 'status', $allWithdrawals])
+                ->offset((25 * $withdrawalsPage) - 25)
+                ->limit(25)
+                ->all();
+
+                $countWithdrawals += $modelWithdrawals->getWithdrawals()
+                ->andWhere(['is_test' => 0])
+                ->andWhere(['>=', 'status', 0])
+                ->andWhere(['<=', 'status', $allWithdrawals])
+                ->count();
+
+                if(empty($withdrawals[$i])){
+                    unset($withdrawals[$i]);
+                }
+            }
+            sort($withdrawals);
+            $countArr = count($withdrawals);
+            $j = 0;
+            for($i = 0; $i < $countArr; $i++){
+                $countSubArr = count($withdrawals[$i]);
+                for($k = 0; $k < $countSubArr; $k ++){
+                    $withdrawals[$countArr + $j] = $withdrawals[$i][$k];
+                    $j++;
+                }
+                unset($withdrawals[$i]);
+            }
+            sort($withdrawals);
+        }
+        else{
+            $withdrawals = null;
+        }
+
+        return $this->render('finance', [
+            'withdrawals' => $withdrawals,
+            'withdrawalsCount' => $countWithdrawals
+        ]);
     }
 
     public function actionOptions(){

@@ -60,8 +60,9 @@ yii\web\YiiAsset::register($this);
             [
                 'attribute' => 'paypal_order_id',
                 'visible' => $model->method == 'PayPall'
-            ]
+            ],
             //'client_id',
+            'paypal_order_id'
         ]
     ]) ?>
 

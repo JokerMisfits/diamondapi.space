@@ -10,7 +10,7 @@ return [
     'basePath' => dirname(__DIR__),
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
-        '@npm'   => '@vendor/npm-asset',
+        '@npm'   => '@vendor/npm-asset'
     ],
     'language' => 'en-US',
     'components' => [
@@ -23,24 +23,24 @@ return [
             'messageClass' => 'yii\symfonymailer\Message'
         ],
         'assetManager' => [
-            'basePath' => __DIR__ . '/../web/assets',
+            'basePath' => __DIR__ . '/../web/assets'
         ],
         'urlManager' => [
-            'showScriptName' => true,
+            'showScriptName' => true
         ],
         'user' => [
-            'identityClass' => 'app\models\Users',
+            'identityClass' => 'app\models\Users'
         ],
         'request' => [
             'cookieValidationKey' => 'test',
-            'enableCsrfValidation' => false,
+            'enableCsrfValidation' => false
             // but if you absolutely need it set cookie domain to localhost
             /*
             'csrfCookie' => [
                 'domain' => 'localhost',
             ],
             */
-        ],
+        ]
     ],
-    'params' => $params,
+    'params' => $params
 ];

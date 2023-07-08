@@ -4,7 +4,6 @@ namespace app\modules\admin\models;
 
 use app\models\Orders;
 use yii\data\ActiveDataProvider;
-use app\modules\admin\controllers\AppAdminController;
 
 /**
  * OrdersSearch represents the model behind the search form of `app\models\Orders`.

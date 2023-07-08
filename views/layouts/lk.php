@@ -74,39 +74,37 @@ $name = Yii::$app->name;
     </header>
 
     <main id="main" class="flex-shrink-0" role="main">
-        <button class="btn btn-dark d-block d-md-none" 
-            style="border-radius: 0; z-index: 9999; position: fixed; top: 56px; left: 0; max-height: 132px; max-width: 32px;
-            writing-mode: vertical-rl; padding: 4px!important; justify-content: center; text-orientation: upright;">
-            Menu<i class="fas fa-chevron-right"></i>
+        <button class="btn btn-warning d-block d-md-none" 
+            style="border-radius: 0; z-index: 2; position: fixed; top: 56px; left: 0; max-height: 132px; max-width: 32px;
+            writing-mode: vertical-rl; padding: 0!important; justify-content: center; text-orientation: upright;">
+            <i class="fas fa-chevron-right"></i>
         </button>
-            <div class="row">
-                <div class="col-2 d-none d-md-block fixed-top" style="background-color: #fff; height: calc(100vh - 56px); margin-top: 56px; padding: 0; border-right:1px solid #212529;">
-                    <div class="btn-group-vertical col-12">
-                        <a id="sideBarProfileLink" href="/lk/index" class="col-12"><button id="sideBarProfileBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-id-card-alt"></i> Профиль</button></a>
-                        <a id="sideBarChannelLink" href="/lk/channels" class="col-12"><button id="sideBarChannelBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dots"></i> Каналы и чаты</button></a>
-                        <a id="sideBarPayLink" href="/lk/payments" class="col-12"><button id="sideBarPayBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dollar"></i> Платежи</button></a>
-                        <!-- <a id="sideBarSubLink SOON" href="/lk/subscriptions" class="col-12"><button id="sideBarSubBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-users"></i> Подписки</button></a> -->
-                        <a id="sideBarFinLink" href="/lk/finance" class="col-12"><button id="sideBarFinBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-wallet"></i> Финансы</button></a>
-                        <a id="sideBarOptionLink" href="/lk/options" class="col-12"><button id="sideBarOptionBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-sliders-h"></i> Настройки</button></a>
+
+        <div class="col-2 d-none d-md-block fixed-top" style="background-color: #fff; height: calc(100vh - 56px); margin-top: 56px; padding: 0; border-right:1px solid #212529;">
+            <div class="btn-group-vertical col-12">
+                <a id="sideBarProfileLink" href="/lk/index" class="col-12"><button id="sideBarProfileBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-id-card-alt"></i> Профиль</button></a>
+                <a id="sideBarChannelLink" href="/lk/channels" class="col-12"><button id="sideBarChannelBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dots"></i> Каналы и чаты</button></a>
+                <a id="sideBarPayLink" href="/lk/payments" class="col-12"><button id="sideBarPayBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dollar"></i> Платежи</button></a>
+                <a id="sideBarSubLink" href="/lk/subscriptions" class="col-12"><button id="sideBarSubBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-users"></i> Подписки</button></a>
+                <a id="sideBarFinLink" href="/lk/finance" class="col-12"><button id="sideBarFinBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-wallet"></i> Финансы</button></a>
+                <a id="sideBarOptionLink" href="/lk/options" class="col-12"><button id="sideBarOptionBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-sliders-h"></i> Настройки</button></a>
+            </div>
+        </div>
+
+        <div class="offset-md-2 col-12 col-md-10">
+            <div style="min-height: calc(100vh - 112px); margin: 56px 0 0 0;">
+                <?= Alert::widget(); ?>
+                <?= $content; ?>
+            </div>
+            
+            <footer id="footer" class="mt-auto py-3 bg-light row">
+                <div class="container">
+                    <div class="row text-dark">
+                        <div class="col-12 text-center">&copy; <?= date('Y') . ' Copyright: ' . $name ?></div>
                     </div>
                 </div>
-
-                <div class="offset-1 offset-md-2 col-11 col-md-10 row">
-                    <div style="min-height: calc(100vh - 112px); margin: 56px 0 0 0;">
-                        <?= Alert::widget(); ?>
-                        <?= $content; ?>
-                    </div>
-                    
-                    <footer id="footer" class="mt-auto py-3 bg-light row">
-                    <div class="container">
-                        <div class="row text-dark">
-                            <div class="col-12 text-center">&copy; <?= date('Y') . ' Copyright: ' . $name ?></div>
-                        </div>
-                    </div>
-                </footer>
-
-                </div>
-            </div>      
+            </footer>
+        </div>
     </main>
 
     <?php $this->endBody() ?>

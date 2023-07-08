@@ -20,7 +20,7 @@ $this->title = 'Payments';
         </thead>
         <tbody>
             <?php
-                if(isset($model[0])){
+                if(!empty($model)){
                     $countArr = count($model);
                     for($i = 0; $i < $countArr; $i++){
                         echo '<tr>';

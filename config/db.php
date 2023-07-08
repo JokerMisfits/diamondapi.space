@@ -10,7 +10,7 @@ return [
     'dsn' => $_SERVER['DB_DSN'],
     'username' => $_SERVER['DB_USERNAME'],
     'password' => $_SERVER['DB_PASSWORD'],
-    'charset' => 'utf8mb4',
+    'charset' => 'utf8mb4'
 
     // Schema cache options (for production environment)
     //'enableSchemaCache' => true,
