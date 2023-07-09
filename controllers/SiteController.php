@@ -10,10 +10,6 @@ use yii\web\ForbiddenHttpException;
 
 class SiteController extends AppController{
 
-    public function beforeAction($action){
-        return parent::beforeAction($action); 
-    }
-
     /**
      * {@inheritdoc}
      */
@@ -35,6 +31,7 @@ class SiteController extends AppController{
      * @return string
      */
     public function actionIndex(){
+        //throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
         return $this->render('index');
     }
 
@@ -92,7 +89,7 @@ class SiteController extends AppController{
         return $this->render('about');
     }    
 
-        /**
+    /**
      * Displays signup page.
      *
      * @return Response|string
