@@ -31,25 +31,33 @@ $name = Yii::$app->name;
     <?php $this->beginBody(); ?>
 
     <header id="header">
-        <?php
+    <?php
             NavBar::begin([
-                'brandLabel' => $name,
+                'brandLabel' => '<span style="padding-left: 1.5rem;">' . $name . '</span>',
                 'brandUrl' => Yii::$app->homeUrl,
-                'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top']
+                'options' => ['class' => 'navbar-expand-md navbar-dark bg-dark fixed-top row']
             ]);
             echo Nav::widget([
-                'options' => ['class' => 'navbar-nav'],
+                'options' => ['class' => 'navbar-nav text-center col-md-9 m-0 p-0'],
                 'items' => [
-                    ['label' => 'Главная', 'url' => ['/index']],
-                    ['label' => 'О нас', 'url' => ['/about']],
-                    //['label' => 'Contact', 'url' => ['/contact']],
+                    ['label' => 'Главная', 'url' => ['/']],
                     Yii::$app->user->isGuest ? '' : ['label' => 'Личный кабинет', 'url' => ['/lk']],
+                    // ['label' => 'Главная', 'url' => ['/index']],
+                    // ['label' => 'Главная', 'url' => ['/index']],
+                    // ['label' => 'Главная', 'url' => ['/index']]
+                ]
+            ]);
+
+            echo Nav::widget([
+                'options' => ['class' => 'navbar-nav text-center col-md-3 d-flex justify-content-md-end'],
+                'items' => [
                     Yii::$app->user->isGuest
                         ? ['label' => 'Войти', 'url' => ['/login']]
                         : '<li class="nav-item">'
                             . Html::beginForm(['/logout'])
-                            . Html::submitButton(
-                                'Выйти (' . Yii::$app->user->identity->username . ')',
+                            . Html::submitButton((strlen(Yii::$app->user->identity->username) > 5) 
+                            ? 'Выйти<span class="d-none d-lg-inline">(' . Yii::$app->user->identity->username . ')</span>'
+                            : 'Выйти(' . Yii::$app->user->identity->username . ')',
                                 ['class' => 'nav-link btn btn-link logout']
                             )
                             . Html::endForm()
@@ -57,6 +65,7 @@ $name = Yii::$app->name;
                 ]
             ]);
             NavBar::end();
+
         ?>
     </header>
 

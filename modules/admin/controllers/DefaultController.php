@@ -36,6 +36,9 @@ class DefaultController extends AppAdminController{
 
     public function actionTest(){
 
+        // $token = '';
+        // AppAdminController::debug(AppAdminController::generateEncryptedConfig('6116638534:AAGTB9VxVo8cmTGf3tztNxTvq8ajrmZS9OU'), 1);//getaxe token
+
         // $query = new Query();
         // $result = $query->select('tg_user_id')
         // ->from('orders')->all();
@@ -103,41 +106,42 @@ class DefaultController extends AppAdminController{
         // $role->description = 'Учетная запись telegram подтверждена';
         // $authManager->add($role);// Добавление роли в authManager
 
-        // $robo = [
-        //     'enable' => true,
-        //     'is_test' => true,
-        //     0 => 'Txaty8jx93J1Rmcqr3aj',
-        //     1 => 'QXyMK7biL0H61RqGv1dp',
-        //     2 => 'gTAK3nmko5UF9ZL2T3yq',
-        //     3 => 'GZWdm6thx6Mq818NuVtE'
-        // ];
-        // $pay = [
-        //     'enable' => true,
-        //     'is_test' => true,
-        //     'merchant_id' => 21868,
-        //     'merchant_password' => 'HTTEEGFVfy97ynEAMTLpT3sMrsgnFkVr',
-        //     'api_id' => 23578,
-        //     'api_password' => 'ZMhAahpuYny3WYtGCDYCvxNa45R8kCfp'
-        // ];
-        // $free = [
-        //     'enable' => true,
-        //     'is_test' => true,
-        //     'secret' => [
-        //         0 => '@o5l9/,pqvwV]n-',
-        //         1 => '.M7Ees2_nPtWc^8',
-        //     ],
-        //     'api_key' => 'ff17fbf05287ab387018031f60e8b26e',
-        //     'merchant_id' => 34422
-        // ];
-        // $pp = [
-        //     'enable' => true,
-        //     'is_test' => true,
-        //     'clientId' => 'AdUKh28XXb7FqlbBX2puLlOxB9hFnL4BL3qTVV7i235rxi-3fWBOE4qElAaxYylPGKcXXblfV2B6LwB7',
-        //     'testClientId' => 'AefNr1ARcJHVqGXfmQx6DZV1fjqD6T5EtVIfMN1jNaRRXgO1Zt9rmwtb9mVNpiGptPsiqOEkigY33vEs',
-        //     'secret' => 'EOlktyLebJWYNDd1pOABxCZvYRlQjnkNPLrUXbIqDv0WKAFL_OYrioTM0himgBq5GLFItCXs4Yd41i5M',
-        //     'testSecret' => 'EN0JUOa2DlNpMiJr6eJYflWdbg9_sRxyq3FGyPwmweQpyM1vJVRifuPQkn_Vt-VES5WmyDU6o5F9EbWt'
-        // ];
-        // AppAdminController::debug(AppAdminController::generateEncryptedConfig('5751056136:AAEE9KsOAq95R5xzAlqBUGaZxB8HS2eGRWA', $robo, $pay, $free, $pp), 1);
+        $robo = [
+            'enable' => true,
+            'is_test' => false,
+            'shop' => 'club-dimitriev',
+            0 => 'Txaty8jx93J1Rmcqr3aj',
+            1 => 'QXyMK7biL0H61RqGv1dp',
+            2 => 'gTAK3nmko5UF9ZL2T3yq',
+            3 => 'GZWdm6thx6Mq818NuVtE'
+        ];
+        $pay = [
+            'enable' => false,
+            'is_test' => false,
+            'merchant_id' => 21868,
+            'merchant_password' => 'HTTEEGFVfy97ynEAMTLpT3sMrsgnFkVr',
+            'api_id' => 23578,
+            'api_password' => 'ZMhAahpuYny3WYtGCDYCvxNa45R8kCfp'
+        ];
+        $free = [
+            'enable' => true,
+            'is_test' => false,
+            'secret' => [
+                0 => '@o5l9/,pqvwV]n-',
+                1 => '.M7Ees2_nPtWc^8',
+            ],
+            'api_key' => 'ff17fbf05287ab387018031f60e8b26e',
+            'merchant_id' => 34422
+        ];
+        $pp = [
+            'enable' => false,
+            'is_test' => false,
+            'clientId' => 'AdUKh28XXb7FqlbBX2puLlOxB9hFnL4BL3qTVV7i235rxi-3fWBOE4qElAaxYylPGKcXXblfV2B6LwB7',
+            'testClientId' => 'AefNr1ARcJHVqGXfmQx6DZV1fjqD6T5EtVIfMN1jNaRRXgO1Zt9rmwtb9mVNpiGptPsiqOEkigY33vEs',
+            'secret' => 'EOlktyLebJWYNDd1pOABxCZvYRlQjnkNPLrUXbIqDv0WKAFL_OYrioTM0himgBq5GLFItCXs4Yd41i5M',
+            'testSecret' => 'EN0JUOa2DlNpMiJr6eJYflWdbg9_sRxyq3FGyPwmweQpyM1vJVRifuPQkn_Vt-VES5WmyDU6o5F9EbWt'
+        ];
+        AppAdminController::debug(AppAdminController::generateEncryptedConfig('5751056136:AAEE9KsOAq95R5xzAlqBUGaZxB8HS2eGRWA', $robo, $pay, $free, $pp), 1);
 
     }
 }

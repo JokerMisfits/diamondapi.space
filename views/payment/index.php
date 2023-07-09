@@ -90,7 +90,7 @@ if(isset($params['pk'])){
                 <span style="font-weight: 450;"><?= $params['count'] . ',00 ₽' ?></span><br>
                 <span style="font-size: 14px; font-weight: 400;">Количество: </span>
                 <span style="font-weight: 450;">x1</span>
-                <hr style="margin-right: 10px;">
+                <hr style="margin-right: 10px;" class="mb-0">
                 <span style="font-size: 16px; font-weight: 400;">К оплате: <?= $params['count'] . ',00 ₽' ?></span><br>
             </div>
         </div>

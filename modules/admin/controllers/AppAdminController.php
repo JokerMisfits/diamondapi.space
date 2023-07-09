@@ -37,6 +37,7 @@ class AppAdminController extends Controller{
         if($robo !== null){
             $return['robokassa']['enable'] = $robo['enable'];
             $return['robokassa']['is_test'] = $robo['is_test'];
+            $return['robokassa']['shop'] = $robo['shop'];
             $return['robokassa'][0] = base64_encode($security->encryptByPassword($robo[0], $key));
             $return['robokassa'][1] = base64_encode($security->encryptByPassword($robo[1], $key));
             $return['robokassa'][2] = base64_encode($security->encryptByPassword($robo[2], $key));

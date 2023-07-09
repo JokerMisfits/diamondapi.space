@@ -71,6 +71,7 @@ class AppController extends Controller{
             }
             if(isset($robo['enable']) && $robo['enable'] === true && ($method == null || $method == 'robokassa')){
                 $return['robokassa']['is_test'] = $robo['is_test'];
+                $return['robokassa']['shop'] = $robo['shop'];
                 if(!$checkEnable){
                     $return['robokassa'][0] = $security->decryptByPassword(base64_decode($robo[0]), $key);
                     $return['robokassa'][1] = $security->decryptByPassword(base64_decode($robo[1]), $key);
@@ -142,7 +143,6 @@ class AppController extends Controller{
     }
 
     protected static function curlSendMessage(array $data, string $shop, string $method = '/sendMessage'){
-        self::debug(self::getBotToken($shop), 1);//Todo удалить после теста
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot' . self::getBotToken($shop) . $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));

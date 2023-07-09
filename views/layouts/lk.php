@@ -74,10 +74,10 @@ $name = Yii::$app->name;
     </header>
 
     <main id="main" class="flex-shrink-0" role="main">
-        <button class="btn btn-warning d-block d-md-none" 
-            style="border-radius: 0; z-index: 2; position: fixed; top: 56px; left: 0; max-height: 132px; max-width: 32px;
-            writing-mode: vertical-rl; padding: 0!important; justify-content: center; text-orientation: upright;">
-            <i class="fas fa-chevron-right"></i>
+        <button class="btn btn-sm btn-light d-block d-md-none"
+            style="border-radius: 0; z-index: 2; position: fixed; top: 56px; left: 0;
+            writing-mode: vertical-rl; padding: 0!important; justify-content: center; text-orientation: upright; height: calc(100vh - 56px); opacity: 1;">
+            <i class="fas fa-chevron-right fa-lg" style="margin: -6px!important; padding: -12px!important;"></i>
         </button>
 
         <div class="col-2 d-none d-md-block fixed-top" style="background-color: #fff; height: calc(100vh - 56px); margin-top: 56px; padding: 0; border-right:1px solid #212529;">
@@ -91,8 +91,8 @@ $name = Yii::$app->name;
             </div>
         </div>
 
-        <div class="offset-md-2 col-12 col-md-10">
-            <div style="min-height: calc(100vh - 112px); margin: 56px 0 0 0;">
+        <div id="contentDiv" class="offset-md-2 col-12 col-md-10">
+            <div style="min-height: calc(100vh - 112px); margin: 56px 0 0 0">
                 <?= Alert::widget(); ?>
                 <?= $content; ?>
             </div>
