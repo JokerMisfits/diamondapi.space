@@ -209,8 +209,7 @@ class LkController extends AppController{
             for($i = 0; $i < $countArr; $i++){
                 $modelClients->id = $clients[$i]['id'];
                 $withdrawals[$i] = $modelClients->getWithdrawals()
-                ->andWhere(['>=', 'is_test', 0])
-                ->andWhere(['<=', 'is_test', $showTestWithdrawals])
+                ->andWhere(['=', 'is_test', $showTestWithdrawals])
                 ->andWhere(['>=', 'status', 0])
                 ->andWhere(['<=', 'status', $allWithdrawals])
                 ->offset((25 * $withdrawalsPage) - 25)
@@ -218,7 +217,6 @@ class LkController extends AppController{
                 ->all();
 
                 $countWithdrawals += $modelClients->getWithdrawals()
-                ->andWhere(['=', 'is_test', 0])
                 ->andWhere(['=', 'is_test', $showTestWithdrawals])
                 ->andWhere(['>=', 'status', 0])
                 ->andWhere(['<=', 'status', $allWithdrawals])
@@ -226,7 +224,6 @@ class LkController extends AppController{
 
                 $accruals[$i] = $modelClients->getOrders()
                 ->andWhere(['status' => 1])
-                ->andWhere(['=', 'is_test', 0])
                 ->andWhere(['=', 'is_test', $showTestAccruals])
                 ->offset((25 * $accrualsPage) - 25)
                 ->limit(25)
@@ -234,7 +231,6 @@ class LkController extends AppController{
         
                 $countAccruals += $modelClients->getOrders()
                 ->andWhere(['status' => 1])
-                ->andWhere(['=', 'is_test', 0])
                 ->andWhere(['=', 'is_test', $showTestAccruals])
                 ->count();
 
@@ -274,7 +270,6 @@ class LkController extends AppController{
             sort($accruals);
         }
         else{
-            //$channels = null;
             $withdrawals = null;
             $accruals = null;
         }

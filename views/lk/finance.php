@@ -283,7 +283,18 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
         }
         if($accrualsCount > 25){
             echo '<tr><td colspan=5>';
-            $countButtons = ceil($accrualsCount / 25);
+            if($countArr > 25){
+                $countButtons = ceil($accrualsCount / $countArr);
+                $_GET['accrualsFirstPageCount'] = $countArr;
+            }
+            else{
+                if(isset($_GET['accrualsFirstPageCount']) && $_GET['accrualsFirstPageCount'] > 25){
+                    $countButtons = ceil($accrualsCount / $_GET['accrualsFirstPageCount']);
+                }
+                else{
+                    $countButtons = ceil($accrualsCount / 25);
+                }
+            }
             echo '<nav aria-label="..."><ul class="pagination justify-content-center mb-0">';
             if(!isset($_GET['accrualsPage'])){
                 $currentPage = 1;
