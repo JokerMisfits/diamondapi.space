@@ -45,25 +45,25 @@ $this->title = 'Channels';
                         echo '<span class="fs-5" style="margin-right: 34px;">PayPall: </span><a class="btn btn-sm btn-primary mb-1">Подключить</a><span class="row"></span>';                        
                     }
                     else{
-                        echo '<span class="fs-5">PayPall:<span class="text-success"><span style="margin-right: 32px;"></span> подключена <i class="fas fa-check"></i></span></span><span class="row"></span>';
+                        echo '<span class="fs-5">PayPall:<span class="text-success"><span style="margin-right: 32px;"></span> подключена <i class="fas fa-check"></i></span></span>';
                     }
                     echo '</div>';
                 }
                 else{
-                    echo '<br><a href="/lk/options" class="btn btn-primary col-12 col-md-8 col-lg-4 mb-3" style="border-top-left-radius: 0;">Подключить Бота</a>';
+                    echo '<br><a href="/lk/options" class="btn btn-primary col-12 col-md-8 col-lg-4 mb-2" style="border-top-left-radius: 0;">Подключить Бота</a>';
                 }
-                echo '<br>';
+                
                 $balance = $model[$i]['balance'] - $model[$i]['blocked_balance'];
                 if($balance >= $model[$i]['min_count_withdrawal']){
-                    echo '<span class="fw-bold">Баланс: ' . $balance . ' рублей.</span>' . ' <a href="/lk/finance" class="btn btn-sm btn-warning" target="_self">Подробнее <i class="fas fa-external-link-alt"></i></a>';
+                    echo '<div class="mt-2 mb-1"><span class="fw-bold">Баланс: ' . $balance . ' рублей.</span>' . ' <a href="/lk/finance" class="btn btn-sm btn-warning" target="_self">Подробнее <i class="fas fa-external-link-alt"></i></a></div>';
                 }
                 else{
-                    echo '<span class="fw-bold">Баланс: ' . $balance . ' рублей.</span>';
+                    echo '<div class="mt-2 mb-1"><span class="fw-bold">Баланс: ' . $balance . ' рублей.</span></div>';
                 }
-                echo '<hr class="mt-1 mb-4">';
+                echo '<hr class="mt-0 mb-2">';
             }
         }
-        echo '<a href="/lk/options" class="btn btn-lg btn-secondary mb-4">Добавить канал</a>';
+        echo '<a href="/lk/options" class="btn btn-secondary mt-2 col-12 col-md-8 offset-md-2 col-lg-4 offset-lg-4">Добавить канал</a>';
     ?>
 
 </div>

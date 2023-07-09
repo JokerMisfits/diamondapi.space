@@ -21,7 +21,7 @@ class LkController extends AppController{
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@']
+                        'roles' => ['admin']
                     ]
                 ]
             ],
@@ -135,48 +135,119 @@ class LkController extends AppController{
         return $this->render('subscriptions');
     }
 
-    public function actionFinance(){        
-
+    public function actionFinance(){
         $query = new Query();
-        $id = $query->select('id')
-        ->from('clients')
-        ->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id])
-        ->all();
-        if(!empty($id)){
-            $modelWithdrawals = new Clients();
-            $countArr = count($id);
+        $admin = Yii::$app->authManager->checkAccess(Yii::$app->user->identity->id, 'admin');
+        $params = Yii::$app->request->get();
+        $clientsPage = 1;
+
+        if(isset($params['clientsPage']) && $params['clientsPage'] >= 1){
+            $clientsPage = $params['clientsPage'];
+        }
+        
+        if($admin && isset($params['showTestClients']) && $params['showTestClients'] == 1){
+            $clients = $query->select(['id', 'shop', 'test_balance', 'test_blocked_balance', 'test_total_withdrawal'])
+            ->from('clients')
+            ->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id])
+            ->offset((5 * $clientsPage) - 5)
+            ->limit(5)
+            ->all();
+        }
+        else{
+            $clients = $query->select(['id', 'shop', 'balance', 'blocked_balance', 'total_withdrawal'])
+            ->from('clients')
+            ->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id])
+            ->offset((5 * $clientsPage) - 5)
+            ->limit(5)
+            ->all();
+        }
+
+        $countClients = 0;
+
+        if(!empty($clients)){
+            $modelClients = new Clients();
+            $countArr = count($clients);
+
+            if($countArr < 5){
+                $countClients = $countArr;
+            }
+            else{
+                $countClients = $query->select('id')
+                ->from('clients')
+                ->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id])
+                ->count();
+            }
+
             $allWithdrawals = 1;
+
             $withdrawalsPage = 1;
-            $params = Yii::$app->request->get();
+            $accrualsPage = 1;
+
+            $showTestWithdrawals = 0;
+            $showTestAccruals = 0;
+
             if(isset($params['allWithdrawals']) && $params['allWithdrawals'] == 1){
                 $allWithdrawals = 4;
             }
+
             if(isset($params['withdrawalsPage']) && $params['withdrawalsPage'] >= 1){
                 $withdrawalsPage = $params['withdrawalsPage'];
             }
+            if(isset($params['accrualsPage']) && $params['accrualsPage'] >= 1){
+                $accrualsPage = $params['accrualsPage'];
+            }
+
+            if($admin && isset($params['showTestWithdrawals']) && $params['showTestWithdrawals'] == 1){
+                $showTestWithdrawals = 1;
+            }
+            if($admin && isset($params['showTestAccruals']) && $params['showTestAccruals'] == 1){
+                $showTestAccruals = 1;
+            }
+
             $countWithdrawals = 0;
+            $countAccruals = 0;
             for($i = 0; $i < $countArr; $i++){
-                $modelWithdrawals->id = $id[$i]['id'];
-                $withdrawals[$i] = $modelWithdrawals
-                ->getWithdrawals()
-                ->andWhere(['is_test' => 0])
+                $modelClients->id = $clients[$i]['id'];
+                $withdrawals[$i] = $modelClients->getWithdrawals()
+                ->andWhere(['>=', 'is_test', 0])
+                ->andWhere(['<=', 'is_test', $showTestWithdrawals])
                 ->andWhere(['>=', 'status', 0])
                 ->andWhere(['<=', 'status', $allWithdrawals])
                 ->offset((25 * $withdrawalsPage) - 25)
                 ->limit(25)
                 ->all();
 
-                $countWithdrawals += $modelWithdrawals->getWithdrawals()
-                ->andWhere(['is_test' => 0])
+                $countWithdrawals += $modelClients->getWithdrawals()
+                ->andWhere(['=', 'is_test', 0])
+                ->andWhere(['=', 'is_test', $showTestWithdrawals])
                 ->andWhere(['>=', 'status', 0])
                 ->andWhere(['<=', 'status', $allWithdrawals])
+                ->count();
+
+                $accruals[$i] = $modelClients->getOrders()
+                ->andWhere(['status' => 1])
+                ->andWhere(['=', 'is_test', 0])
+                ->andWhere(['=', 'is_test', $showTestAccruals])
+                ->offset((25 * $accrualsPage) - 25)
+                ->limit(25)
+                ->all();
+        
+                $countAccruals += $modelClients->getOrders()
+                ->andWhere(['status' => 1])
+                ->andWhere(['=', 'is_test', 0])
+                ->andWhere(['=', 'is_test', $showTestAccruals])
                 ->count();
 
                 if(empty($withdrawals[$i])){
                     unset($withdrawals[$i]);
                 }
+                if(empty($accruals[$i])){
+                    unset($accruals[$i]);
+                }
             }
             sort($withdrawals);
+            sort($accruals);
+            
             $countArr = count($withdrawals);
             $j = 0;
             for($i = 0; $i < $countArr; $i++){
@@ -187,15 +258,35 @@ class LkController extends AppController{
                 }
                 unset($withdrawals[$i]);
             }
+            
+            $countArr = count($accruals);
+            $j = 0;
+            for($i = 0; $i < $countArr; $i++){
+                $countSubArr = count($accruals[$i]);
+                for($k = 0; $k < $countSubArr; $k ++){
+                    $accruals[$countArr + $j] = $accruals[$i][$k];
+                    $j++;
+                }
+                unset($accruals[$i]);
+            }
+
             sort($withdrawals);
+            sort($accruals);
         }
         else{
+            //$channels = null;
             $withdrawals = null;
+            $accruals = null;
         }
 
         return $this->render('finance', [
+            'clients' => $clients,
+            'clientsCount' => $countClients,
             'withdrawals' => $withdrawals,
-            'withdrawalsCount' => $countWithdrawals
+            'withdrawalsCount' => $countWithdrawals,
+            'accruals' => $accruals,
+            'accrualsCount' => $countAccruals,
+            'admin' => $admin
         ]);
     }
 

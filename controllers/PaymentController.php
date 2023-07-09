@@ -7,7 +7,6 @@
 //TODO НАПИСАТЬ PAYPALL|SUCCESS
 //TODO ПРОПИСАТЬ TRY CATCH ДЛЯ SUCCESS RESULT
 
-
 namespace app\controllers;
 
 use Yii;
@@ -25,17 +24,15 @@ class PaymentController extends AppController{
             if(isset($params['shop']) && isset($params['count']) && isset($params['name'])  && isset($params['userId']) && isset($params['days']) && isset($params['hash'])){
                 $params['count'] = intval($params['count']);
                 if(md5($_SERVER['API_KEY_0'] . $params['count'] . $params['userId'] . $params['shop'] . $params['days'] . $_SERVER['API_KEY_1']) == $params['hash'] && $params['count'] > 0){
-                    if(Yii::$app->session->has('csrf') && isset($params['csrf'])){
-                        if(Yii::$app->session->get('csrf') == $params['csrf']){
-                            Yii::$app->session->set('csrf', md5(uniqid(rand(), true)));
+                    if(Yii::$app->session->has('csrf')){
+                        Yii::$app->session->set('csrfOLD', md5(uniqid(rand(), true)));
+                        if(Yii::$app->session->get('csrf') == Yii::$app->session->get('csrfOLD')){
                             return parent::beforeAction($action);
-                        }
-                        else{
-                            throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
                         }
                     }
                     else{
-                        throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+                        Yii::$app->session->set('csrf', md5(uniqid(rand(), true)));
+                        return parent::beforeAction($action);
                     }
                 }
             }
@@ -58,10 +55,12 @@ class PaymentController extends AppController{
             }
         }
         elseif($action->id == 'success'){
+            $this->enableCsrfValidation = false;
             return parent::beforeAction($action); 
         }
         elseif($action->id == 'result'){
             if(Yii::$app->request->isPost){
+                $this->enableCsrfValidation = false;
                 Yii::debug('Отладка Payment|Result POST: ' . json_encode($_POST) . ' GET: ' . json_encode($_GET), 'payment');//TODO УДАЛИТЬ ПОСЛЕ ТЕСТА СКОЛЬКО КОММИСИИ
                 sleep(10);//TODO Переписать через promise а в выполнение уже поставить sleep, чтобы не блокироваался процесс
                 return parent::beforeAction($action); 
@@ -71,22 +70,14 @@ class PaymentController extends AppController{
             }
         }
         elseif($action->id == 'fail'){
-            return parent::beforeAction($action); 
+            if(Yii::$app->request->isPost){
+                $this->enableCsrfValidation = false;
+                return parent::beforeAction($action);
+            }
         }
         else{
             throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
         }
-    }
-
-    public function actions(){
-        return [
-            'error' => [
-                'class' => 'yii\web\ErrorAction',
-            ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction'
-            ],
-        ];
     }
 
     public function actionIndex() : string{
@@ -99,7 +90,7 @@ class PaymentController extends AppController{
         return $this->render('index', ['params' => $params, 'csrf' => Yii::$app->session->get('csrf'), 'config' => $config]);
     }
 
-    public function actionRoute() : void{
+    public function actionRoute() : void{//todo переписать извлечение конфига по методу а не весь
         $params = Yii::$app->request->get();
         $config = AppController::getConfig($params['shop'])[strtolower($params['method'])];
         $isTest = $config['is_test'];
@@ -135,13 +126,13 @@ class PaymentController extends AppController{
                         $receipt = "%7B%22items%22:%5B%7B%22name%22:%22$name%22,%22quantity%22:1,%22sum%22:$count,%22tax%22:%22none%22%7D%5D%7D";
                         $receipt_urlencode = urlencode($receipt);
                         $inv_desc = "";
-                        $login = $params['shop'];
+                        $login = $config['shop'];
                         if($isTest){
-                            $crc = md5($params['shop'] . ':' . $count . ':' . $invId . ':' . $receipt . ':' . $config[2]);
+                            $crc = md5($login . ':' . $count . ':' . $invId . ':' . $receipt . ':' . $config[2]);
                             $url = "https://auth.robokassa.ru/Merchant/Index.aspx?MrchLogin=$login&OutSum=$count&InvId=$invId&Receipt=$receipt_urlencode&Desc=$inv_desc&SignatureValue=$crc&Istest=1";
                         } 
                         else{
-                            $crc = md5($params['shop'] . ':' . $count . ':' . $invId . ':' . $receipt . ':' . $config[0]);
+                            $crc = md5($login . ':' . $count . ':' . $invId . ':' . $receipt . ':' . $config[0]);
                             $url = "https://auth.robokassa.ru/Merchant/Index.aspx?MrchLogin=$login&OutSum=$count&InvId=$invId&Receipt=$receipt_urlencode&Desc=$inv_desc&SignatureValue=$crc";
                         }
                         Yii::$app->getResponse()->redirect($url)->send();
@@ -163,63 +154,63 @@ class PaymentController extends AppController{
         }
         elseif($params['method'] == 'PayKassa'){//PayKassa start
             $pk = new PaykassaSCI($config['merchant_id'], $config['merchant_password'], $isTest);
-            @list($system, $currency) = preg_split('~_(?=[^_]*$)~', $params["pscur"]);
+            @list($system, $currency) = preg_split('~_(?=[^_]*$)~', $_POST["pscur"]);
             $pairs = 'RUB_' . strtoupper($currency);
             try{
                 $result = PaykassaCurrency::getCurrencyPairs([$pairs]);//Todo need to TEST on hosting
                 if($result['error']){
                     Yii::error('Method pay не получилось получить курс валютной пары: ' . json_encode($result['message']), 'payment');
-                }
-                else{
                     throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
-                $countInCurrrency = bcmul($result['data'][0][$pairs], $count, 8);
-                $sql = "INSERT INTO orders (tg_user_id, count, method, shop, position_name, access_days, created_time, is_test, web_app_query_id, currency, count_in_currency)
-                VALUES (:user, :count, :method, :shop, :position_name, :access_days, CURRENT_TIMESTAMP(), :is_test, :web_app, :currency, :count_in_currency)";
-                $qParams = [
-                    ':user' => $params['userId'],
-                    ':count' => $count,
-                    ':method' => $params['method'],
-                    ':shop' => $params['shop'],
-                    ':position_name' => $name,
-                    ':access_days' => $params['days'],
-                    ':is_test' => $isTest,
-                    ':web_app' => $params['webApp'],
-                    ':currency' => strtoupper($currency),
-                    ':count_in_currency' => $count,
-                ];
-                $result = Yii::$app->db->createCommand($sql, $qParams)->execute();
-                if($result !== false){
-                    $query = new Query();
-                    $result = $query->select('id')
-                        ->from('orders')
-                        ->where(['tg_user_id' => $params['userId']])
-                        ->orderBy(['id' => SORT_DESC])
-                        ->limit(1)
-                        ->scalar();
+                else{
+                    $countInCurrrency = bcmul($result['data'][0][$pairs], $count, 8);
+                    $sql = "INSERT INTO orders (tg_user_id, count, method, shop, position_name, access_days, created_time, is_test, web_app_query_id, currency, count_in_currency)
+                    VALUES (:user, :count, :method, :shop, :position_name, :access_days, CURRENT_TIMESTAMP(), :is_test, :web_app, :currency, :count_in_currency)";
+                    $qParams = [
+                        ':user' => $params['userId'],
+                        ':count' => $count,
+                        ':method' => $params['method'],
+                        ':shop' => $params['shop'],
+                        ':position_name' => $name,
+                        ':access_days' => $params['days'],
+                        ':is_test' => $isTest,
+                        ':web_app' => $params['webApp'],
+                        ':currency' => strtoupper($currency),
+                        ':count_in_currency' => $count,
+                    ];
+                    $result = Yii::$app->db->createCommand($sql, $qParams)->execute();
                     if($result !== false){
-                        $invId = $result;
-                        $result = $pk->createOrder(
-                            $countInCurrrency,
-                            $system,
-                            $currency,
-                            $invId,
-                            $params['shop'] . ' ' . $name . ' ' .$params['hash'],
-                        );
-                        if($result['error']){
-                            Yii::error('Method pay не получилось создать заказ в PayKassa: ' . json_encode($result['message']), 'payment');
+                        $query = new Query();
+                        $result = $query->select('id')
+                            ->from('orders')
+                            ->where(['tg_user_id' => $params['userId']])
+                            ->orderBy(['id' => SORT_DESC])
+                            ->limit(1)
+                            ->scalar();
+                        if($result !== false){
+                            $invId = $result;
+                            $result = $pk->createOrder(
+                                $countInCurrrency,
+                                $system,
+                                $currency,
+                                $invId,
+                                $params['shop'] . ' ' . $name . ' ' .$params['hash'],
+                            );
+                            if($result['error']){
+                                Yii::error('Method pay не получилось создать заказ в PayKassa: ' . json_encode($result['message']), 'payment');
+                            }
+                            else{
+                                Yii::$app->getResponse()->redirect($result["data"]["url"])->send();
+                                exit(0);                  
+                            }
                         }
                         else{
-                            Yii::$app->getResponse()->redirect($result["data"]["url"])->send();
-                            exit(0);                  
+                            Yii::error('Method pay db SELECT, не получилось извлечь ID: ' . Yii::$app->db->getSchema()->errorInfo(), 'payment');
                         }
                     }
                     else{
-                        Yii::error('Method pay db SELECT, не получилось извлечь ID: ' . Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                        Yii::error('Method pay db, не получилось записать: ' . Yii::$app->db->getSchema()->errorInfo(), 'payment');
                     }
-                }
-                else{
-                    Yii::error('Method pay db, не получилось записать: ' . Yii::$app->db->getSchema()->errorInfo(), 'payment');
                 }
                 throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
@@ -543,6 +534,7 @@ class PaymentController extends AppController{
     //     AppController::debug($response->getData(), 1);
     // }
 
+
     public function actionSuccess() : void{//todo дописать для PayPall
         $params = Yii::$app->request->post();
         if(isset($params['SignatureValue']) && isset($params['InvId']) && isset($params['OutSum'])){//RoboKassa start
@@ -555,7 +547,13 @@ class PaymentController extends AppController{
                 $shop = $result['shop'];
                 $accessDays = $result['access_days'];
                 $webAppQueryId = $result['web_app_query_id'];
-                if($params['SignatureValue'] != md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][0])){//Валидация crc
+                if(isset($params['isTest']) && $params['isTest'] == 1){
+                    $crc = md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][2]);
+                }
+                else{
+                    $crc= md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][0]);
+                }
+                if($params['SignatureValue'] != $crc){//Валидация crc
                     Yii::error('Method RoboKassa|Success crc: ' . json_encode($params), 'payment');
                     throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
@@ -653,7 +651,6 @@ class PaymentController extends AppController{
                 $shop = $result['shop'];
                 $accessDays = $result['access_days'];
                 $webAppQueryId = $result['web_app_query_id'];
-                //$config = AppController::getConfig($shop, false, 'freekassa)['freekassa']; 
                 //TODO НАПИСАТЬ ВАЛИДАЦИЮ CRC
                 if($result['status'] == 1){//Todo написать JS закрытия окна если доступен webapp
                     echo 'Заказ: ' . $invId . ' Успешно оплачен. ' . PHP_EOL . 'Данную страницу можно закрывать.';
@@ -711,7 +708,13 @@ class PaymentController extends AppController{
             if($result !== false && $result['status'] == 0 && $result['method'] == 'RoboKassa'){
                 $days = $result['access_days'];
                 $userId = $result['tg_user_id'];
-                if($params['crc'] != strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][1]))){//Валидация crc
+                if(isset($params['isTest']) && $params['isTest'] = 1){
+                    $crc = strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][3]));
+                }
+                else{
+                    $crc = strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][1]));
+                }
+                if($params['crc'] != $crc){//Валидация crc
                     echo 'OK' . $invId . '\n';
                     Yii::error('Method RoboKassa|Result crc: ' . json_encode($params), 'payment');
                     throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
@@ -852,8 +855,9 @@ class PaymentController extends AppController{
     }
 
     public function actionFail() : void{
-        if(isset($_REQUEST["InvId"])){//RoboKassa start
-            $invId = $_REQUEST["InvId"];
+        $params = Yii::$app->request->post();
+        if(isset($params["InvId"])){//RoboKassa start
+            $invId = $params["InvId"];
             echo $invId . '|Fail';
             $sql = "SELECT shop, web_app_query_id FROM orders WHERE id = :order_id ORDER BY id DESC limit 1";
             $result = Yii::$app->db->createCommand($sql)

@@ -27,7 +27,7 @@ $config = [
     ],
     'components' => [
         'request' => [
-            // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
+            'baseUrl'=> '',
             'cookieValidationKey' => 'mMfzDCvGmhFVcozwVFk4JaCND43MKdO0'
         ],
         'cache' => [
@@ -36,9 +36,6 @@ $config = [
         'user' => [
             'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true
-        ],
-        'errorHandler' => [
-            'errorAction' => 'site/error'
         ],
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
@@ -86,6 +83,7 @@ $config = [
     'params' => $params
 ];
 
+
 if(YII_ENV_DEV){
     // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
@@ -93,6 +91,10 @@ if(YII_ENV_DEV){
         'class' => 'yii\debug\Module'
         // uncomment the following to add your IP if you are not connecting from localhost.
         //'allowedIPs' => ['127.0.0.1', '::1'],
+    ];
+
+    $config['components']['errorHandler'] = [
+        'errorAction' => 'site/error'
     ];
 
     $config['bootstrap'][] = 'gii';

@@ -9,6 +9,7 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'Авторизация';
 ?>
+
 <div class="site-login col-12 col-md-8 offset-md-2">
 
     <?php $form = ActiveForm::begin([
@@ -25,7 +26,9 @@ $this->title = 'Авторизация';
                 'validateOnSubmit' => true // Валидация формы при отправке
             ]);
      ?>
-        <h1 class="text-center mb-1 mt-1"><?= Html::encode($this->title); ?></h1><hr>
+        <h1 class="text-center"><?= Html::encode($this->title); ?></h1>
+        
+        <hr class="mt-0 mb-4">
 
         <?= $form->field($model, 'username')->textInput(['minlength' => 5, 'maxlength' => 32, 'placeholder' => 'Введите ваш логин', 'class' => 'form-control']); ?>
         <?= $form->field($model, 'password')->passwordInput(['enableAjaxValidation' => false, 'minlength' => 6, 'maxlength' => 64, 'placeholder' => 'Введите ваш пароль', 'class' => 'form-control']); ?>

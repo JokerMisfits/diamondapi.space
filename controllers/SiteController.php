@@ -6,20 +6,26 @@ use Yii;
 use yii\web\Response;
 use app\models\Users;
 use yii\widgets\ActiveForm;
+use yii\web\ForbiddenHttpException;
 
 class SiteController extends AppController{
+
+    public function beforeAction($action){
+        return parent::beforeAction($action); 
+    }
+
     /**
      * {@inheritdoc}
      */
     public function actions(){
         return [
             'error' => [
-                'class' => 'yii\web\ErrorAction',
+                'class' => 'yii\web\ErrorAction'
             ],
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => null,
-            ],
+                'fixedVerifyCode' => null
+            ]
         ];
     }
 
@@ -145,8 +151,6 @@ class SiteController extends AppController{
                     'model' => $model,
                 ]);
             }
-
-
         }
         
         return $this->render('signup', [
