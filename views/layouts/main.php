@@ -8,7 +8,6 @@ use yii\bootstrap5\Nav;
 use yii\bootstrap5\Html;
 use app\assets\AppAsset;
 use yii\bootstrap5\NavBar;
-use yii\bootstrap5\Breadcrumbs;
 
 AppAsset::register($this);
 $this->registerCssFile('@web/css/site.css', ['position' => View::POS_HEAD]);

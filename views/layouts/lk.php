@@ -1,6 +1,4 @@
 <?php
-//todo Сделать, чтобы сайдбар сворачивался в навбар
-//todo пофиксить отображение logout в навбар
 
 /** @var yii\web\View $this */
 /** @var string $content */

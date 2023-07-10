@@ -1,5 +1,6 @@
 <?php
 /** @var yii\web\View $this */
+/** @var app\models\Clients|array $model */
 
 $this->title = 'Channels';
 
@@ -12,9 +13,8 @@ $this->title = 'Channels';
     }
 </style>
 
+<h1 class="mt-2" style="margin-bottom: -20px;">Ваши каналы:</h1><hr class="mb-4">
 <div class="lk-channels">
-    <h1 class="mt-2" style="margin-bottom: -20px;">Ваши каналы:</h1><hr class="mb-4">
-
     <?php
         if(isset($model[0]['shop'])){
             $countOfArr = count($model);

@@ -23,7 +23,7 @@ class LkController extends AppController{
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['@']
+                        'roles' => ['admin']//todo открыть после @
                     ]
                 ]
             ],
@@ -31,7 +31,6 @@ class LkController extends AppController{
     }
 
     public function beforeAction($action){
-
         if($action->id == 'channels' || $action->id == 'payments' || $action->id == 'subscriptions' || $action->id == 'finance' || $action->id == 'options'){
             if(Yii::$app->authManager->checkAccess(Yii::$app->user->identity->id, 'tg-verify')){
                 return parent::beforeAction($action);
@@ -77,11 +76,11 @@ class LkController extends AppController{
                                 throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
                             }
                         }
-                        elseif($params['target'] == 'phone'){
-                            throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                        }
                         elseif($params['target'] == 'email'){
-                            throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+                            return parent::beforeAction($action);
+                        }
+                        elseif($params['target'] == 'phone'){
+                            return parent::beforeAction($action);
                         }
                         else{
                             throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
@@ -489,7 +488,7 @@ class LkController extends AppController{
                 ]);
             }
         }
-        elseif($params['target'] == 'email'){
+        elseif($params['target'] == 'email'){//todo настроить smtp в web.php
             $mailer = new Mailer();
             $message = $mailer->compose();
             $message->setFrom(Yii::$app->params['senderEmail']);
@@ -497,11 +496,11 @@ class LkController extends AppController{
             $message->setSubject('Тестовое письмо Yii2');
             $message->setTextBody('Текст сообщения');
             $message->setHtmlBody('<b>Текст сообщения в формате HTML</b><br><div class="bg-dark text-danger" style="min-height: 200px">TEST TEST</div>');
-            if($mailer->send($message)){// Отправка письма
+            if(!$mailer->send($message)){
                 Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
             }
             else{
-                Yii::$app->getSession()->setFlash('success', 'Для подтверждения почтового адреса перейдите по ссылке из письма!');
+                Yii::$app->getSession()->setFlash('success', 'Для подтверждения почтового адреса перейдите по ссылке из письма.');
             }
             return $this->render('index', [
                 'csrf' => Yii::$app->session->get('csrf')
