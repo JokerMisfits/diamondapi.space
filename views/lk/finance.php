@@ -2,8 +2,11 @@
 
 use yii\helpers\Html;
 use yii\helpers\Url;
+use yii\widgets\ActiveForm;
 
 /** @var yii\web\View $this */
+/** @var app\models\Withdrawals $model */
+/** @var ActiveForm $form */
 
 $this->title = 'Finance';
 
@@ -58,9 +61,9 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         echo '<tr>';
                         echo '<th scope="row">' . $i+1 . '</th>';
                         echo '<td>' . $clients[$i]['shop'] . '</td>';
-                        echo '<td>' . $clients[$i]['test_balance'] . ' рублей</td>';
-                        echo '<td>' . $clients[$i]['test_total_withdrawal'] . ' рублей</td>';
-                        echo '<td>' . $clients[$i]['test_blocked_balance'] . ' рублей</td>';
+                        echo '<td>' . $clients[$i]['test_balance'] . ' ₽</td>';
+                        echo '<td>' . $clients[$i]['test_total_withdrawal'] . ' ₽</td>';
+                        echo '<td>' . $clients[$i]['test_blocked_balance'] . ' ₽</td>';
                         echo '</tr>';
                     }
                 }
@@ -69,9 +72,9 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         echo '<tr>';
                         echo '<th scope="row">' . $i+1 . '</th>';
                         echo '<td>' . $clients[$i]['shop'] . '</td>';
-                        echo '<td>' . $clients[$i]['balance'] . ' рублей</td>';
-                        echo '<td>' . $clients[$i]['total_withdrawal'] . ' рублей</td>';
-                        echo '<td>' . $clients[$i]['blocked_balance'] . ' рублей</td>';
+                        echo '<td>' . $clients[$i]['balance'] . ' ₽</td>';
+                        echo '<td>' . $clients[$i]['total_withdrawal'] . ' ₽</td>';
+                        echo '<td>' . $clients[$i]['blocked_balance'] . ' ₽</td>';
                         echo '</tr>';
                     }
                 }
@@ -158,7 +161,7 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
         for($i = 0; $i < $countArr; $i++){
             echo '<tr>';
             echo '<th scope="row">' . $i+1 . '</th>';
-            echo '<td>' . $withdrawals[$i]['count'] . ' рублей</td>';
+            echo '<td>' . $withdrawals[$i]['count'] . ' ₽</td>';
             if($withdrawals[$i]['status'] == 0){
                 echo '<td>' . 'Ожидает подтверждения с почты' . '</td>';
             }
@@ -275,7 +278,7 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
         for($i = 0; $i < $countArr; $i++){
             echo '<tr>';
             echo '<th scope="row">' . $i+1 . '</th>';
-            echo '<td>' . $accruals[$i]['count'] . ' рублей</td>';
+            echo '<td>' . $accruals[$i]['count'] . ' ₽</td>';
             echo '<td>' . $accruals[$i]['method'] . '</td>';
             echo '<td>' . $accruals[$i]['shop'] . '</td>';
             echo '<td>' . (new DateTime($accruals[$i]['created_time'], new DateTimeZone('Europe/Moscow')))->format('d.m.Y H:i:s') . '</td>';
@@ -335,9 +338,36 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
 
     <hr class="mt-4 mb-4">
 
-    <div class="bg-dark text-danger text-center mb-4" style="min-height: 200px">
-        Блок вывода ДС
+    <div class="col-12 col-lg-6 offset-lg-3 mb-4 justify-content-center bg-light text-dark rounded p-2">
+        <?php
+            if(!empty($clients)){
+                $countArr = count($clients);
+                for($i = 0; $i < $countArr; $i++){
+                    if(($clients[$i]['balance'] - $clients[$i]['blocked_balance']) > $clients[$i]['min_count_withdrawal']){
+                        $shop[$i] = $clients[$i]['shop'];
+                    }
+                }
+                if(!empty($shop)){
+                    $form = ActiveForm::begin([
+                        'id' => 'withdrawals-form',
+                        'method' => 'post',
+                        'options' => [
+                            'autocomplete' => 'off',
+                            'class' => 'form-horizontal'
+                        ],
+                    ]);
+                    echo '<legend>Вывод денежных средств</legend>';
+                    echo $form->field($model, 'shop')->dropDownList($shop, ['class' => 'form-control']);
+                    echo $form->field($model, 'count')->textInput();
+                    echo $form->field($model, 'card_number')->textInput();
+                    echo Html::hiddenInput('csrf', $csrf);
+                    echo Html::submitButton('Отправить', ['class' => 'btn btn-dark']);
+                    ActiveForm::end();
+                }
+            }
+        ?>
     </div>
+
 </div>
 
 <script>

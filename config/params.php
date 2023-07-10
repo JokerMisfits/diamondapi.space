@@ -6,9 +6,8 @@ if(!isset($_SERVER['API_KEY_0'])){
 }
 
 return [
-    'adminEmail' => 'admin@www.diamondapi.space',
-    'senderEmail' => 'noreply@www.diamondapi.space',
-    'senderName' => 'www.diamondapi.space mailer',
-    'apikey0' => $_SERVER['API_KEY_0'],
-    'apikey1' => $_SERVER['API_KEY_1']
+    'adminEmail' => 'admin@diamondapi.space',
+    'testEmail' => 'test@diamondapi.space',
+    'senderEmail' => 'noreply@diamondapi.space',
+    'senderName' => 'diamondapi.space'
 ];

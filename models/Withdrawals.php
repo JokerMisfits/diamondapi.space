@@ -2,31 +2,31 @@
 
 namespace app\models;
 
-use Yii;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "withdrawals".
  *
  * @property int $id ID
- * @property int $tg_user_id ID пользователя в telegram
- * @property string|null $shop Название магазина
+ * @property string $shop Название магазина
+ * @property int $count Сумма
  * @property int $status Статус вывода ДС
+ * @property int $is_test Тест? 
+ * @property int $commission Комиссия 
+ * @property string $card_number Номер карты 
+ * @property string|null $comment Комментарий 
  * @property string $created_time Дата создания заявки на вывод ДС
  * @property string|null $confirmed_time Дата подтверждения заявки от клиента
  * @property string|null $resulted_time Дата вывода ДС
- * @property int $is_test Тест?
- * @property int $count Сумма
- * @property int $commission Комиссия
  * @property string $confirmation_link Ссылка для подтверждения
- * @property string $card_number Номер карты
- * @property string $comment Комментарий
+ * @property int $tg_member_id ID tg_member
  * @property int $client_id ID клиента
  *
  * @property Clients $client
  */
-class Withdrawals extends ActiveRecord
-{
+class Withdrawals extends ActiveRecord{
+    
     /**
      * {@inheritdoc}
      */
@@ -39,13 +39,14 @@ class Withdrawals extends ActiveRecord
      */
     public function rules(){
         return [
-            [['tg_user_id', 'count', 'card_number', 'comment', 'client_id'], 'required'],
-            [['tg_user_id', 'status', 'is_test', 'count', 'commission', 'client_id'], 'integer'],
-            [['created_time', 'confirmed_time', 'resulted_time'], 'safe'],
+            [['shop', 'count', 'card_number', 'confirmation_link', 'tg_member_id', 'client_id'], 'required'],
+            [['count', 'status', 'is_test', 'commission', 'tg_member_id', 'client_id'], 'integer'],
             [['comment'], 'string'],
+            [['created_time', 'confirmed_time', 'resulted_time'], 'safe'],
             [['shop', 'confirmation_link'], 'string', 'max' => 255],
             [['card_number'], 'string', 'max' => 19],
             [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']],
+            [['tg_member_id'], 'exist', 'skipOnError' => true, 'targetClass' => TgMembers::class, 'targetAttribute' => ['tg_member_id' => 'id']]
         ];
     }
 
@@ -55,30 +56,39 @@ class Withdrawals extends ActiveRecord
     public function attributeLabels(){
         return [
             'id' => 'ID',
-            'tg_user_id' => 'ID пользователя в telegram',
             'shop' => 'Название магазина',
+            'count' => 'Сумма', 
             'status' => 'Статус вывода ДС',
+            'is_test' => 'Тест?', 
+            'commission' => 'Комиссия', 
+            'card_number' => 'Номер карты', 
+            'comment' => 'Комментарий',
             'created_time' => 'Дата создания заявки на вывод ДС',
             'confirmed_time' => 'Дата подтверждения заявки от клиента',
             'resulted_time' => 'Дата вывода ДС',
-            'is_test' => 'Тест?',
-            'count' => 'Сумма',
-            'commission' => 'Комиссия',
             'confirmation_link' => 'Ссылка для подтверждения',
-            'card_number' => 'Номер карты',
-            'comment' => 'Комментарий',
-            'client_id' => 'ID клиента',
+            'tg_member_id' => 'ID tg_member',
+            'client_id' => 'ID клиента'
         ];
     }
 
     /**
      * Gets query for [[Client]].
      *
-     * @return \yii\db\ActiveQuery|ClientsQuery
+     * @return ActiveQuery|ClientsQuery
      */
     public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
+
+   /** 
+    * Gets query for [[TgMember]]. 
+    * 
+    * @return ActiveQuery|TgMembersQuery
+    */ 
+   public function getTgMember(){ 
+       return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
+   }
 
     /**
      * {@inheritdoc}

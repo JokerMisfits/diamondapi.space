@@ -10,6 +10,19 @@ use yii\web\ForbiddenHttpException;
 
 class SiteController extends AppController{
 
+    public function beforeAction($action){
+
+        if($action->id == 'about'){//todo заглушка потом удалить
+            if(Yii::$app->authManager->checkAccess(Yii::$app->user->identity->id, 'admin')){
+                return parent::beforeAction($action);
+            }
+            else{
+                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+            }
+        }
+        return parent::beforeAction($action);
+    }
+
     /**
      * {@inheritdoc}
      */

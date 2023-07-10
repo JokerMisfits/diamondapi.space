@@ -7,6 +7,8 @@ use yii\db\Query;
 use app\models\users;
 use app\models\Clients;
 use app\models\TgMembers;
+use app\models\Withdrawals;
+use yii\symfonymailer\Mailer;
 use yii\filters\AccessControl;
 use yii\web\ForbiddenHttpException;
 
@@ -21,7 +23,7 @@ class LkController extends AppController{
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin']
+                        'roles' => ['@']
                     ]
                 ]
             ],
@@ -103,13 +105,7 @@ class LkController extends AppController{
     }
 
     public function actionIndex(){
-        $model = new Users();
-        $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
         return $this->render('index', [
-            'username' => $model->username,
-            'tg_member_id' => $model->tg_member_id,
-            'email' => $model->email,
-            'phone' => $model->phone,
             'csrf' => Yii::$app->session->get('csrf')
         ]);
     }
@@ -146,7 +142,7 @@ class LkController extends AppController{
         }
         
         if($admin && isset($params['showTestClients']) && $params['showTestClients'] == 1){
-            $clients = $query->select(['id', 'shop', 'test_balance', 'test_blocked_balance', 'test_total_withdrawal'])
+            $clients = $query->select(['id', 'shop', 'test_balance', 'test_blocked_balance', 'test_total_withdrawal', 'min_count_withdrawal'])
             ->from('clients')
             ->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id])
             ->offset((5 * $clientsPage) - 5)
@@ -154,7 +150,7 @@ class LkController extends AppController{
             ->all();
         }
         else{
-            $clients = $query->select(['id', 'shop', 'balance', 'blocked_balance', 'total_withdrawal'])
+            $clients = $query->select(['id', 'shop', 'balance', 'blocked_balance', 'total_withdrawal', 'min_count_withdrawal'])
             ->from('clients')
             ->where(['tg_member_id' => Yii::$app->user->identity->tg_member_id])
             ->offset((5 * $clientsPage) - 5)
@@ -281,6 +277,8 @@ class LkController extends AppController{
             'withdrawalsCount' => $countWithdrawals,
             'accruals' => $accruals,
             'accrualsCount' => $countAccruals,
+            'model' => new Withdrawals(),
+            'csrf' => Yii::$app->session->get('csrf'),
             'admin' => $admin
         ]);
     }
@@ -292,9 +290,7 @@ class LkController extends AppController{
     public function actionVerify(){
         $target = Yii::$app->request->post()['target'];
         if($target == 'telegram'){
-            $model = new Users();
-            $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
-            if($model->tg_member_id === NULL){
+            if(Yii::$app->user->identity->tg_member_id === NULL){
                 return $this->render('verify', [
                     'target' => 'telegram',
                     'token' => md5(uniqid(rand(), true)),
@@ -305,10 +301,18 @@ class LkController extends AppController{
                 throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
-        elseif($target == 'phone'){
-            throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
-        }
         elseif($target == 'email'){
+            if(Yii::$app->user->identity->email === NULL){
+                return $this->render('verify', [
+                    'target' => 'email',
+                    'csrf' => Yii::$app->session->get('csrf')
+                ]);
+            }
+            else{
+                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+            }
+        }
+        elseif($target == 'phone'){
             throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
         }
         else{
@@ -325,8 +329,6 @@ class LkController extends AppController{
             catch(\Exception|\Throwable $e){
                 if($e->getCode() == 2){
                     Yii::$app->getSession()->setFlash('error', 'Пользователь не найден!');
-                    $model = new Users();
-                    $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
                     return $this->render('verify', [
                         'target' => 'telegram',
                         'token' => md5(uniqid(rand(), true)),
@@ -342,9 +344,7 @@ class LkController extends AppController{
                 $result = $result->result;
                 if(isset($result->bio)){
                     if(stripos($result->bio, $params['token']) === false){
-                        Yii::$app->getSession()->setFlash('error', 'Пункт 3 не был выполнен.<br>Необходимо повторить пункт 3 и 4 повторно!');
-                        $model = new Users();
-                        $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
+                        Yii::$app->getSession()->setFlash('error', 'Пункт 3 не был выполнен.<br>Необходимо выполнить пункт <strong>3 и 4 повторно!</strong>');
                         return $this->render('verify', [
                             'target' => 'telegram',
                             'token' => md5(uniqid(rand(), true)),
@@ -359,7 +359,6 @@ class LkController extends AppController{
                             $model = new Users();
                             $userId = $model->findOne(['tg_member_id' => $id]);
                             if(isset($userId)){
-                                $userId = $userId['id'];
                                 Yii::$app->getSession()->setFlash('error', 'Telegram уже привязан к другому аккаунту.');
                                 return $this->render('verify', [
                                     'target' => 'telegram',
@@ -472,8 +471,6 @@ class LkController extends AppController{
                 }
                 else{
                     Yii::$app->getSession()->setFlash('error', 'Описание пользователя недоступно!');
-                    $model = new Users();
-                    $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
                     return $this->render('verify', [
                         'target' => 'telegram',
                         'token' => md5(uniqid(rand(), true)),
@@ -492,10 +489,25 @@ class LkController extends AppController{
                 ]);
             }
         }
-        elseif($params['target'] == 'phone'){
-            throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
-        }
         elseif($params['target'] == 'email'){
+            $mailer = new Mailer();
+            $message = $mailer->compose();
+            $message->setFrom(Yii::$app->params['senderEmail']);
+            $message->setTo(Yii::$app->params['testEmail']);
+            $message->setSubject('Тестовое письмо Yii2');
+            $message->setTextBody('Текст сообщения');
+            $message->setHtmlBody('<b>Текст сообщения в формате HTML</b><br><div class="bg-dark text-danger" style="min-height: 200px">TEST TEST</div>');
+            if($mailer->send($message)){// Отправка письма
+                Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
+            }
+            else{
+                Yii::$app->getSession()->setFlash('success', 'Для подтверждения почтового адреса перейдите по ссылке из письма!');
+            }
+            return $this->render('index', [
+                'csrf' => Yii::$app->session->get('csrf')
+            ]);
+        }
+        elseif($params['target'] == 'phone'){
             throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
         }
         else{

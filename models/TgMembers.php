@@ -2,6 +2,7 @@
 
 namespace app\models;
 
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 
 /**
@@ -14,6 +15,11 @@ use yii\db\ActiveRecord;
  * @property string|null $tg_last_name Фамилия пользователя в telegram
  * @property string|null $tg_bio Описания пользователя в telegram
  * @property string|null $tg_type Тип аккаунта telegram
+ * @property int $is_filed Заполнено? 
+ * @property Clients[] $clients 
+ * @property Orders[] $orders 
+ * @property Users[] $users 
+ * @property Withdrawals[] $withdrawals 
  */
 class TgMembers extends ActiveRecord{
     /**
@@ -29,15 +35,12 @@ class TgMembers extends ActiveRecord{
     public function rules(){
         return [
             [['tg_user_id'], 'required'],
-            [['tg_user_id'], 'integer'],
+            [['tg_user_id', 'is_filed'], 'integer'],
             [['tg_username', 'tg_first_name', 'tg_last_name', 'tg_bio', 'tg_type'], 'string', 'max' => 255],
-            [['tg_user_id'], 'unique'],
+            [['tg_user_id'], 'unique']
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function attributeLabels(){
         return [
             'id' => 'ID',
@@ -46,9 +49,46 @@ class TgMembers extends ActiveRecord{
             'tg_first_name' => 'Имя пользователя в telegram',
             'tg_last_name' => 'Фамилия пользователя в telegram',
             'tg_bio' => 'Описания пользователя в telegram',
-            'tg_type' => 'Тип аккаунта telegram'
+            'tg_type' => 'Тип аккаунта telegram',
+            'is_filed' => 'Заполнено?'
         ];
     }
+
+   /** 
+    * Gets query for [[Clients]]. 
+    * 
+    * @return ActiveQuery|ClientsQuery 
+    */ 
+    public function getClients(){ 
+        return $this->hasMany(Clients::class, ['tg_member_id' => 'id']); 
+    } 
+  
+    /** 
+     * Gets query for [[Orders]]. 
+     * 
+     * @return ActiveQuery|OrdersQuery 
+     */ 
+    public function getOrders(){ 
+        return $this->hasMany(Orders::class, ['tg_member_id' => 'id']); 
+    } 
+  
+    /** 
+     * Gets query for [[Users]]. 
+     * 
+     * @return ActiveQuery|UsersQuery 
+     */ 
+    public function getUsers(){ 
+        return $this->hasMany(Users::class, ['tg_member_id' => 'id']); 
+    } 
+  
+    /** 
+     * Gets query for [[Withdrawals]]. 
+     * 
+     * @return ActiveQuery|WithdrawalsQuery 
+     */ 
+    public function getWithdrawals(){ 
+        return $this->hasMany(Withdrawals::class, ['tg_member_id' => 'id']); 
+    } 
 
     /**
      * {@inheritdoc}
