@@ -22,7 +22,7 @@ $this->title = 'Profile';
     <?php
         if(!isset(Yii::$app->user->identity->tg_member_id)){
             echo '<script>blockSidebarButtons();</script>';
-            echo '<div class="text-dark text-center mt-2 mb-2 p-2 bg-light rounded col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3 border">';
+            echo '<div class="text-dark text-center my-2 p-2 bg-light rounded col-12 col-md-8 col-lg-6 offset-md-2 offset-lg-3 border">';
             echo Html::beginForm(['/lk/verify'], 'post');
             echo '<legend>Для получения доступа к остальным разделам личного кабинета</legend>' . '<br>' . 'Необходимо привязать вашу учетную запись telegram к вашему аккаунту.';
             echo Html::hiddenInput('target', 'telegram');
@@ -32,7 +32,7 @@ $this->title = 'Profile';
             echo '</div>';
         }
         elseif(!isset(Yii::$app->user->identity->email)){
-            echo '<div class="text-dark text-center mt-2 mb-2 p-2 bg-light rounded col-12 col-lg-8 offset-lg-2 border">';
+            echo '<div class="text-dark text-center my-2 p-2 bg-light rounded col-12 col-lg-8 offset-lg-2 border">';
             echo '<legend>Для получения доступа к выводу ДС</legend>' . '<br>' . 'Необходимо привязать email к вашему аккаунту.';
             echo Html::beginForm(['/lk/verify'], 'post');
             echo Html::hiddenInput('target', 'email');
@@ -42,7 +42,7 @@ $this->title = 'Profile';
             echo '</div>';
         }
         else{
-            echo '<div class="text-danger text-center mt-2 mb-2 p-2 bg-dark col-12" style="min-height: 200px">';
+            echo '<div class="text-danger text-center my-2 p-2 bg-dark col-12" style="min-height: 200px">';
             echo 'БЛОК ВЫВОДА ГРАФИКОВ И СТАТИСТИКА';
             echo '</div>';
         }

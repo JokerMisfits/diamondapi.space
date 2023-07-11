@@ -337,58 +337,68 @@ $test = 123;
         </tbody>
     </table>
 
-    <div id="withdrawalDiv" class="col-12 col-lg-6 offset-lg-3 my-4 bg-light text-dark rounded p-2">
         <?php
-            if(!empty($clients)){
-                $countArr = count($clients);
-                $js = <<<JS
-                let minWithdrawal = new Array();
-                JS;
-                $this->registerJs($js);
-                for($i = 0; $i < $countArr; $i++){
-                    if(($clients[$i]['balance'] - $clients[$i]['blocked_balance']) > $clients[$i]['min_count_withdrawal']){
-                        $shop[$i] = $clients[$i]['shop'];
-                        $minWithdrawal = $clients[$i]['min_count_withdrawal'];
-                        $js = <<<JS
-                        minWithdrawal[$i] = $minWithdrawal;
-                        JS;
-                        $this->registerJs($js);
+            if(Yii::$app->authManager->checkAccess(Yii::$app->user->identity->id, 'email-verify')){
+                if(!empty($clients)){
+                    echo '<div id="withdrawalDiv" class="col-12 col-lg-6 offset-lg-3 my-4 bg-light text-dark rounded p-2">';
+                    $countArr = count($clients);
+                    $js = <<<JS
+                    let minWithdrawal = new Array();
+                    JS;
+                    $this->registerJs($js);
+                    for($i = 0; $i < $countArr; $i++){
+                        if(($clients[$i]['balance'] - $clients[$i]['blocked_balance']) > $clients[$i]['min_count_withdrawal']){
+                            $shop[$i] = $clients[$i]['shop'];
+                            $minWithdrawal = $clients[$i]['min_count_withdrawal'];
+                            $js = <<<JS
+                            minWithdrawal[$i] = $minWithdrawal;
+                            JS;
+                            $this->registerJs($js);
+                        }
                     }
-                }
-                $js = <<<JS
-                $('#shop-select').change(async function(){
-                    const selectedShop = $(this).val();
-                    if(!isNaN(selectedShop)){
-                        $('#min-count').attr('min', minWithdrawal[selectedShop]);
+                    $js = <<<JS
+                    $('#shop-select').change(async function(){
+                        const selectedShop = $(this).val();
+                        if(!isNaN(selectedShop)){
+                            $('#min-count').attr('min', minWithdrawal[selectedShop]);
+                        }
+                    });
+                    JS;
+                    $this->registerJs($js);
+                    if(!empty($shop)){
+                        $form = ActiveForm::begin([
+                            'id' => 'withdrawals-form',
+                            'method' => 'post',
+                            'options' => [
+                                'autocomplete' => 'off',
+                                'class' => 'form-horizontal'
+                            ],
+                        ]);
+                        echo '<legend>Вывод денежных средств</legend>';
+                        echo $form->field($model, 'shop')->dropDownList($shop, ['class' => 'form-control', 'id' => 'shop-select', 'prompt' => 'Выберите канал'])->label('Название канала');
+                        echo $form->field($model, 'count')->input('number', ['min' => 0, 'max' => 100000, 'id' => 'min-count', 'placeholder' => 'Введите сумму']);
+                        echo $form->field($model, 'card_number')->textInput([
+                            'pattern' => '[0-9]{16}',
+                            'placeholder' => 'Введите номер банковской карты',
+                        ]);
+                        echo Html::hiddenInput('csrf', $csrf);
+                        echo Html::submitButton('Отправить', ['class' => 'btn btn-dark']);
+                        ActiveForm::end();
                     }
-                });
-                JS;
-                $this->registerJs($js);
-                if(!empty($shop)){
-                    $form = ActiveForm::begin([
-                        'id' => 'withdrawals-form',
-                        'method' => 'post',
-                        'options' => [
-                            'autocomplete' => 'off',
-                            'class' => 'form-horizontal'
-                        ],
-                    ]);
-                    echo '<legend>Вывод денежных средств</legend>';
-                    echo $form->field($model, 'shop')->dropDownList($shop, ['class' => 'form-control', 'id' => 'shop-select', 'prompt' => 'Выберите канал'])->label('Название канала');
-                    echo $form->field($model, 'count')->input('number', ['min' => 0, 'max' => 100000, 'id' => 'min-count', 'placeholder' => 'Введите сумму']);
-                    echo $form->field($model, 'card_number')->textInput([
-                        'pattern' => '[0-9]{16}',
-                        'placeholder' => 'Введите номер банковской карты',
-                    ]);
-                    echo Html::hiddenInput('csrf', $csrf);
-                    echo Html::submitButton('Отправить', ['class' => 'btn btn-dark']);
-                    ActiveForm::end();
+                    echo '</div>';
                 }
             }
+            else{
+                echo '<div class="text-dark text-center my-4 p-2 bg-light rounded col-12 col-lg-8 offset-lg-2 border">';
+                echo '<legend>Для получения доступа к выводу ДС</legend>' . '<br>' . 'Необходимо привязать email к вашему аккаунту.';
+                echo Html::beginForm(['/lk/verify'], 'post');
+                echo Html::hiddenInput('target', 'email');
+                echo Html::hiddenInput('csrf', $csrf);
+                echo Html::submitButton('Приступить <i class="far fa-envelope"></i>', ['class' => 'btn btn-primary col-12 col-md-8 col-lg-6 mt-2 mb-2']);
+                echo Html::endForm();
+                echo '</div>';
+            }
         ?>
-    </div>
-
-</div>
 
 <script>
 let link = document.getElementById('sideBarFinLink');
