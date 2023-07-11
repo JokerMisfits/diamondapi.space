@@ -16,9 +16,8 @@ $this->title = 'Profile';
 </style>
 
 <div class="lk-index">
-    <h1 class="text-dark text-center mt-4 mb-2">Добро пожаловать <?= Yii::$app->user->identity->username ?></h1>
-    
-    <hr class="mb-2" style="margin-top: -5px;">
+
+    <h1 class="text-center border-bottom pt-2 pb-2 pt-md-0 pb-md-1 mb-0">Добро пожаловать <?= Yii::$app->user->identity->username ?></h1>
 
     <?php
         if(!isset(Yii::$app->user->identity->tg_member_id)){

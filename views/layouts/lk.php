@@ -36,6 +36,15 @@ $name = Yii::$app->name;
     <body class="d-flex flex-column h-100">
     <?php $this->beginBody(); ?>
 
+    <style>
+        @media(max-width: 903px){
+            #sideBarIcon{
+                margin-left: 15px;
+                margin-right: 15px;
+            }
+        }
+    </style>
+
     <header id="header">
         <?php
             NavBar::begin([
@@ -46,15 +55,15 @@ $name = Yii::$app->name;
             echo Nav::widget([
                 'options' => ['class' => 'navbar-nav text-center col-md-6 m-0 p-0'],
                 'items' => [
-                    ['label' => 'Личный кабинет', 'url' => ['/lk/index']]
+                    ['label' => 'Личный кабинет', 'url' => ['/lk']]
                 ]
             ]);
             if(isset(Yii::$app->user->identity->tg_member_id)){
                 echo Nav::widget([
                     'options' => ['class' => 'navbar-nav d-md-none text-center m-0 p-0'],
                     'items' => [
-                        ['label' => 'Профиль', 'url' => ['/lk'], 'class' => ['d-block', 'd-md-none']],
-                        ['label' => 'Каналы и чаты', 'url' => ['/lk/channels'], 'class' => 'd-block d-md-none'],
+                        ['label' => 'Главная', 'url' => ['/lk/index'], 'class' => ['d-block', 'd-md-none']],
+                        ['label' => 'Каналы', 'url' => ['/lk/channels'], 'class' => 'd-block d-md-none'],
                         ['label' => 'Платежи', 'url' => ['/lk/payments'], 'class' => 'd-block d-md-none'],
                         ['label' => 'Подписки', 'url' => ['/lk/subscriptions'], 'class' => 'd-block d-md-none'],
                         ['label' => 'Финансы', 'url' => ['/lk/finance'], 'class' => 'd-block d-md-none'],
@@ -87,12 +96,12 @@ $name = Yii::$app->name;
             if(isset(Yii::$app->user->identity->tg_member_id)){
                 echo '<div class="col-2 d-none d-md-block fixed-top border-end border-dark" style="background-color: #fff; height: calc(100vh - 56px); margin-top: 56px;">';
                 echo '<div class="btn-group-vertical col-12">';
-                echo '<a id="sideBarProfileLink" href="/lk/index" class="col-12"><button id="sideBarProfileBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-id-card-alt"></i> Профиль</button></a>';
-                echo '<a id="sideBarChannelLink" href="/lk/channels" class="col-12"><button id="sideBarChannelBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dots"></i> Каналы и чаты</button></a>';
-                echo '<a id="sideBarPayLink" href="/lk/payments" class="col-12"><button id="sideBarPayBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-comment-dollar"></i> Платежи</button></a>';
-                echo '<a id="sideBarSubLink" href="/lk/subscriptions" class="col-12"><button id="sideBarSubBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-users"></i> Подписки</button></a>';
-                echo '<a id="sideBarFinLink" href="/lk/finance" class="col-12"><button id="sideBarFinBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-wallet"></i> Финансы</button></a>';
-                echo '<a id="sideBarOptionLink" href="/lk/options" class="col-12"><button id="sideBarOptionBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i class="fas fa-sliders-h"></i> Настройки</button></a>';
+                echo '<a id="sideBarProfileLink" href="/lk/index" class="col-12"><button id="sideBarProfileBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i id="sideBarIcon" class="fas fa-id-card-alt"></i> Главная</button></a>';
+                echo '<a id="sideBarChannelLink" href="/lk/channels" class="col-12"><button id="sideBarChannelBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i id="sideBarIcon" class="fas fa-comment-dots"></i> Каналы</button></a>';
+                echo '<a id="sideBarPayLink" href="/lk/payments" class="col-12"><button id="sideBarPayBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i id="sideBarIcon" class="fas fa-comment-dollar"></i> Платежи</button></a>';
+                echo '<a id="sideBarSubLink" href="/lk/subscriptions" class="col-12"><button id="sideBarSubBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i id="sideBarIcon" class="fas fa-users"></i> Подписки</button></a>';
+                echo '<a id="sideBarFinLink" href="/lk/finance" class="col-12"><button id="sideBarFinBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i id="sideBarIcon" class="fas fa-wallet"></i> Финансы</button></a>';
+                echo '<a id="sideBarOptionLink" href="/lk/options" class="col-12"><button id="sideBarOptionBtn" class="btn-lk col-12 border-bottom border-primary p-2 mb-0"><i id="sideBarIcon" class="fas fa-sliders-h"></i> Настройки</button></a>';
                 echo '</div>';
                 echo '</div>';
                 echo '<div id="contentDiv" class="col-12 col-md-10 offset-md-2">';
@@ -100,13 +109,13 @@ $name = Yii::$app->name;
             else{
                 echo '<div id="contentDiv" class="col-12">';
             }
-        ?>
-            <div id="contentInnerDiv" style="min-height: calc(100vh - 112px); margin: 56px 4px 0 4px;">
+        //padding-left: 2px; padding-right: 2px;?>
+            <div id="contentInnerDiv" class="px-0 px-md-1" style="min-height: calc(100vh - 112px); margin-top: 56px;">
                 <?= Alert::widget(); ?>
                 <?= $content; ?>
             </div>
             
-            <footer id="footer" class="mt-auto py-3 bg-light">
+            <footer id="footer" class="mt-auto py-3 bg-light border-top">
                 <div class="container">
                     <div class="row text-dark">
                         <div class="col-12 text-dark text-center">&copy; <?= date('Y') . ' Copyright: ' . $name ?></div>

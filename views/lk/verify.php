@@ -9,9 +9,9 @@ $this->title = 'Verify ' . $target;
 ?>
 
 <div class="lk-verify">
-    <h1 class="text-dark text-center mt-4 mb-2">Подтверждение <?= $target ?></h1>
+    <h1 class="text-center">Подтверждение <?= $target ?></h1>
 
-    <hr class="mb-2" style="margin-top: -5px;">
+    <hr class="my-2">
 
     <div class="text-dark mt-2 mb-2 p-2 bg-light rounded col-12 col-lg-8 offset-lg-2 border">
         <?php
