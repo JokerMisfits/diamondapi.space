@@ -110,7 +110,7 @@ $name = Yii::$app->name;
                 echo '<div id="contentDiv" class="col-12">';
             }
         //padding-left: 2px; padding-right: 2px;?>
-            <div id="contentInnerDiv" class="px-0 px-md-1" style="min-height: calc(100vh - 112px); margin-top: 56px;">
+            <div id="contentInnerDiv" class="px-0 px-md-1" style="min-height: calc(100vh - 113px); margin-top: 56px;">
                 <?= Alert::widget(); ?>
                 <?= $content; ?>
             </div>
