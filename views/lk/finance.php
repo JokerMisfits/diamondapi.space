@@ -266,9 +266,9 @@ $test = 123;
             </caption>
             <tr class="text-center text-md-start">
                 <th scope="col">#</th>
+                <th scope="col">Канал</th>
                 <th scope="col">Сумма</th>
                 <th scope="col">Способ оплаты</th>
-                <th scope="col">Канал</th>
                 <th scope="col">Дата</th>
             </tr>
         </thead>
@@ -279,9 +279,9 @@ $test = 123;
         for($i = 0; $i < $countArr; $i++){
             echo '<tr class="text-center text-md-start">';
             echo '<th scope="row">' . $i+1 . '</th>';
+            echo '<td>' . $accruals[$i]['shop'] . '</td>';
             echo '<td class="text-nowrap">' . $accruals[$i]['count'] . ' ₽</td>';
             echo '<td>' . $accruals[$i]['method'] . '</td>';
-            echo '<td>' . $accruals[$i]['shop'] . '</td>';
             echo '<td>' . (new DateTime($accruals[$i]['created_time'], new DateTimeZone('Europe/Moscow')))->format('d.m.Y H:i:s') . '</td>';
             echo '</tr>';
         }
