@@ -40,8 +40,15 @@ $config = [
         'mailer' => [
             'class' => \yii\symfonymailer\Mailer::class,
             'viewPath' => '@app/mail',
-            // send all mails to a file by default.
-            'useFileTransport' => true
+            'useFileTransport' => false,
+            'transport' => [
+                'class' => 'Swift_SmtpTransport',
+                'host' => 'smtp.mail.ru', // Укажите адрес SMTP-сервера
+                'port' => '465', // Укажите порт SMTP-сервера
+                'encryption' => 'ssl', // Укажите метод шифрования, если необходимо
+                'username' => $_SERVER['EMAIL_ADMIN_LOGIN'], // Укажите имя пользователя для авторизации на SMTP-сервере
+                'password' => $_SERVER['EMAIL_ADMIN_PASSWORD'] // Укажите пароль для авторизации на SMTP-сервере
+            ],
         ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,

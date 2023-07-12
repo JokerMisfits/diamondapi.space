@@ -31,8 +31,8 @@ class AppAdminController extends Controller{
 
     protected static function generateEncryptedConfig(string $botToken, array $robo = null, array $pay = null, array $free = null, array $pp = null) : array|string{
         $security = new Security;
-        $key = Yii::$app->params['apikey0'];
-        $key1 = Yii::$app->params['apikey1'];
+        $key = $_SERVER['API_KEY_0'];
+        $key1 = $_SERVER['API_KEY_1'];
         $return['bot_token'] = base64_encode($security->encryptByPassword($botToken, $key));
         if($robo !== null){
             $return['robokassa']['enable'] = $robo['enable'];

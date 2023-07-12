@@ -51,8 +51,8 @@ class AppController extends Controller{
         ->queryOne();
         if($result !== false){
             $security = new Security;
-            $key = Yii::$app->params['apikey0'];
-            $key1 = Yii::$app->params['apikey1'];
+            $key = $_SERVER['API_KEY_0'];
+            $key1 = $_SERVER['API_KEY_1'];
             $return['bot_token'] = $security->decryptByPassword(base64_decode($result['bot_token']), $key);
             if($method != null && $method == 'bot_token'){
                 return $return;
@@ -136,7 +136,7 @@ class AppController extends Controller{
         ->queryOne();
         if($result !== false){
             $security = new Security;
-            $key = Yii::$app->params['apikey0'];
+            $key = $_SERVER['API_KEY_0'];
             return $security->decryptByPassword(base64_decode($result['bot_token']), $key);
         }
         return false;

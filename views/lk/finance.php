@@ -49,21 +49,21 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         }
                     ?>
                 </caption>
-                <tr class="text-center">
+                <tr>
                     <?php
                         if(isset($admin) && $admin && isset($_GET['showTestClients']) && $_GET['showTestClients'] == 1){
-                            echo '<th class="text-nowrap text-danger fw-bold text-start" scope="col">#</th>';
-                            echo '<th class="text-nowrap text-danger fw-bold" scope="col">Канал</th>';
-                            echo '<th class="text-nowrap text-danger fw-bold" scope="col">Баланс</th>';
-                            echo '<th class="text-nowrap text-danger fw-bold" scope="col">Выведено</th>';
-                            echo '<th class="text-nowrap text-danger fw-bold" scope="col">Ожидает вывода</th>';
+                            echo '<th class="text-nowrap text-start text-danger fw-bold" scope="col">#</th>';
+                            echo '<th class="text-nowrap text-center text-md-start text-danger fw-bold" scope="col">Канал</th>';
+                            echo '<th class="text-nowrap text-center text-md-start text-danger fw-bold" scope="col">Баланс</th>';
+                            echo '<th class="text-nowrap text-center text-md-start text-danger fw-bold" scope="col">Выведено</th>';
+                            echo '<th class="text-nowrap text-center text-md-start text-danger fw-bold" scope="col">Ожидает вывода</th>';
                         }
                         else{
-                            echo '<th class="text-nowrap" scope="col">#</th>';
-                            echo '<th class="text-nowrap" scope="col">Канал</th>';
-                            echo '<th class="text-nowrap" scope="col">Баланс</th>';
-                            echo '<th class="text-nowrap" scope="col">Выведено</th>';
-                            echo '<th class="text-nowrap" scope="col">Ожидает вывода</th>';
+                            echo '<th class="text-nowrap text-start" scope="col">#</th>';
+                            echo '<th class="text-nowrap text-center text-md-start" scope="col">Канал</th>';
+                            echo '<th class="text-nowrap text-center text-md-start" scope="col">Баланс</th>';
+                            echo '<th class="text-nowrap text-center text-md-start" scope="col">Выведено</th>';
+                            echo '<th class="text-nowrap text-center text-md-start" scope="col">Ожидает вывода</th>';
                         }
                     ?>
                 </tr>
@@ -75,22 +75,22 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                     if(isset($admin) && $admin && isset($_GET['showTestClients']) && $_GET['showTestClients'] == 1){
                         for($i = 0; $i < $countArr; $i++){
                             echo '<tr>';
-                            echo '<th scope="row">' . $i+1 . '</th>';
-                            echo '<td class="text-nowrap text-center">' . $clients[$i]['shop'] . '</td>';
-                            echo '<td class="text-nowrap text-center">' . $clients[$i]['test_balance'] . ' ₽</td>';
-                            echo '<td class="text-nowrap text-center">' . $clients[$i]['test_total_withdrawal'] . ' ₽</td>';
-                            echo '<td class="text-nowrap text-center">' . $clients[$i]['test_blocked_balance'] . ' ₽</td>';
+                            echo '<th class="text-nowrap text-start" scope="row">' . $i+1 . '</th>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['shop'] . '</td>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['test_balance'] . ' ₽</td>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['test_total_withdrawal'] . ' ₽</td>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['test_blocked_balance'] . ' ₽</td>';
                             echo '</tr>';
                         }
                     }
                     else{
                         for($i = 0; $i < $countArr; $i++){
-                            echo '<tr class="text-center">';
-                            echo '<th scope="row">' . $i+1 . '</th>';
-                            echo '<td class="text-nowrap">' . $clients[$i]['shop'] . '</td>';
-                            echo '<td class="text-nowrap">' . $clients[$i]['balance'] . ' ₽</td>';
-                            echo '<td class="text-nowrap">' . $clients[$i]['total_withdrawal'] . ' ₽</td>';
-                            echo '<td class="text-nowrap">' . $clients[$i]['blocked_balance'] . ' ₽</td>';
+                            echo '<tr>';
+                            echo '<th class="text-nowrap text-start" scope="row">' . $i+1 . '</th>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['shop'] . '</td>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['balance'] . ' ₽</td>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['total_withdrawal'] . ' ₽</td>';
+                            echo '<td class="text-nowrap text-center text-md-start">' . $clients[$i]['blocked_balance'] . ' ₽</td>';
                             echo '</tr>';
                         }
                     }
@@ -157,12 +157,12 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         }
                     ?>
                 </caption>
-                <tr class="text-center text-md-start">
-                    <th class="text-nowrap" scope="col">#</th>
-                    <th class="text-nowrap" scope="col">Канал</th>
-                    <th class="text-nowrap" scope="col">Сумма</th>
-                    <th class="text-nowrap" scope="col">Статус</th>
-                    <th class="text-nowrap" scope="col">Дата создания заявки</th>
+                <tr>
+                    <th class="text-nowrap text-start" scope="col">#</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Канал</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Сумма</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Статус</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Дата создания заявки</th>
                 </tr>
             </thead>
             <tbody>
@@ -170,18 +170,18 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
             if(!empty($withdrawals)){
                 $countArr = count($withdrawals);
                 for($i = 0; $i < $countArr; $i++){
-                    echo '<tr class="text-center text-md-start">';
-                    echo '<th scope="row">' . $i+1 . '</th>';
-                    echo '<td class="text-nowrap">' . $withdrawals[$i]['shop'] . '</td>';
-                    echo '<td class="text-nowrap">' . $withdrawals[$i]['count'] . ' ₽</td>';
+                    echo '<tr>';
+                    echo '<th class="text-nowrap text-start" scope="row">' . $i+1 . '</th>';
+                    echo '<td class="text-nowrap text-center text-md-start">' . $withdrawals[$i]['shop'] . '</td>';
+                    echo '<td class="text-nowrap text-center text-md-start">' . $withdrawals[$i]['count'] . ' ₽</td>';
                     if($withdrawals[$i]['status'] == 0){
-                        echo '<td class="text-nowrap">' . 'Ожидает подтверждения с почты' . '</td>';
+                        echo '<td class="text-nowrap text-center text-md-start">' . 'Ожидает подтверждения с почты' . '</td>';
                     }
                     elseif($withdrawals[$i]['status'] == 1){
-                        echo '<td class="text-nowrap">' . 'Ожидает вывода денежных средств' . '</td>';
+                        echo '<td class="text-nowrap text-center text-md-start">' . 'Ожидает вывода денежных средств' . '</td>';
                     }
                     elseif($withdrawals[$i]['status'] == 2){
-                        echo '<td class="text-nowrap">' . 'Заявка отклонена';
+                        echo '<td class="text-nowrap text-center text-md-start">' . 'Заявка отклонена';
                         if($allWithdrawals){
                             if(!empty($withdrawals[$i]['comment'])){
                                 echo '<button type="button" class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#Modal' . $i . '">Показать <i class="fas fa-eye"></i></button>           
@@ -203,10 +203,10 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         echo '</td>';
                     }
                     elseif($withdrawals[$i]['status'] == 3){
-                        echo '<td class="text-nowrap">' . 'Выплачено' . '</td>';       
+                        echo '<td class="text-nowrap text-center text-md-start">' . 'Выплачено' . '</td>';       
                     }
                     elseif($withdrawals[$i]['status'] == 4){
-                        echo '<td class="text-nowrap">' . 'Отменено пользователем' . '</td>';
+                        echo '<td class="text-nowrap text-center text-md-start">' . 'Отменено пользователем' . '</td>';
                     }
                     echo '<td>' . (new DateTime($withdrawals[$i]['created_time'], new DateTimeZone('Europe/Moscow')))->format('d.m.Y H:i:s') . '</td>';
                     echo '</tr>';
@@ -267,12 +267,12 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         }
                     ?>
                 </caption>
-                <tr class="text-center text-md-start">
-                    <th class="text-nowrap" scope="col">#</th>
-                    <th class="text-nowrap" scope="col">Канал</th>
-                    <th class="text-nowrap" scope="col">Сумма</th>
-                    <th class="text-nowrap" scope="col">Способ оплаты</th>
-                    <th class="text-nowrap" scope="col">Дата платежа</th>
+                <tr>
+                    <th class="text-nowrap text-start" scope="col">#</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Канал</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Сумма</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Способ оплаты</th>
+                    <th class="text-nowrap text-center text-md-start" scope="col">Дата платежа</th>
                 </tr>
             </thead>
             <tbody>
@@ -280,11 +280,11 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
             if(!empty($accruals)){
                 $countArr = count($accruals);
                 for($i = 0; $i < $countArr; $i++){
-                    echo '<tr class="text-center text-md-start">';
-                    echo '<th scope="row">' . $i+1 . '</th>';
-                    echo '<td class="text-nowrap">' . $accruals[$i]['shop'] . '</td>';
-                    echo '<td class="text-nowrap">' . $accruals[$i]['count'] . ' ₽</td>';
-                    echo '<td class="text-nowrap">' . $accruals[$i]['method'] . '</td>';
+                    echo '<tr>';
+                    echo '<th class="text-nowrap text-start" scope="row">' . $i+1 . '</th>';
+                    echo '<td class="text-nowrap text-center text-md-start">' . $accruals[$i]['shop'] . '</td>';
+                    echo '<td class="text-nowrap text-center text-md-start">' . $accruals[$i]['count'] . ' ₽</td>';
+                    echo '<td class="text-nowrap text-center text-md-start">' . $accruals[$i]['method'] . '</td>';
                     echo '<td>' . (new DateTime($accruals[$i]['created_time'], new DateTimeZone('Europe/Moscow')))->format('d.m.Y H:i:s') . '</td>';
                     echo '</tr>';
                 }
