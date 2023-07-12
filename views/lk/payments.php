@@ -2,7 +2,7 @@
 /** @var yii\web\View $this */
 /** @var app\models\Orders|array $model */
 
-$this->title = 'Payments';
+$this->title = 'Платежи';
 
 ?>
 

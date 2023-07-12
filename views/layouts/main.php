@@ -63,12 +63,12 @@ $name = Yii::$app->name;
         ?>
     </header>
 
-    <main id="main" class="flex-shrink-0" role="main" style="margin: 56px 4px 0 4px;">
+    <main id="main" class="flex-shrink-0" role="main" style="margin-top: 56px">
             <?= Alert::widget(); ?>
             <?= $content; ?>
     </main>
 
-    <footer id="footer" class="mt-auto py-3 bg-light">
+    <footer id="footer" class="mt-auto py-3 bg-light border-top">
         <div class="container">
             <div class="row text-dark">
                 <div class="col-12 text-dark text-center">&copy; <?= date('Y') . ' Copyright: ' . $name ?></div>

@@ -2,24 +2,16 @@
 /** @var yii\web\View $this */
 /** @var app\models\Clients|array $model */
 
-$this->title = 'Channels';
+$this->title = 'Каналы';
 
 ?>
 
 <style>
-    h1{
-        padding-bottom: 3px;
-    }
     .lk-channels{
         font-family: sans-serif;
         font-weight: 500;
     }
     @media(max-width: 767px){
-        #channelsHeader{
-            border-top-left-radius: 0!important;
-            border-left: 0!important;
-            padding-left: 0!important;
-        }
         #channelsInfo{
             border-bottom-left-radius: 0!important;
             border-left: 0!important;
@@ -33,10 +25,6 @@ $this->title = 'Channels';
         }
     }
     @media(max-width: 414px){
-        #channelsHeader{
-            border: none!important;
-            padding: 0!important;
-        }
         #channelsInfo{
             border: 0!important;
             border-radius: 0!important;
@@ -49,53 +37,143 @@ $this->title = 'Channels';
 
 </style>
 
-<h1 class="border-bottom border-dark mt-0 mb-4">Ваши каналы:</h1>
+<h1 class="border-bottom border-dark mt-0 mb-4" style="padding-bottom: 3px;">Ваши каналы:</h1>
 
 <div class="lk-channels">
     <?php
-        if(isset($model[0]['shop'])){
+        if(!empty($model)){
             $countOfArr = count($model);
             for($i = 0; $i < $countOfArr; $i++){
-                echo '<span id="channelsHeader" class="fs-3 border border-2 border-info border-bottom-0 mb-0 rounded-top p-2">Канал: ' . $model[$i]['shop'] . '</span>';
                 if(isset($model[$i]['bot_token'])){
-                    echo '<div id="channelsInfo" class="border border-2 border-primary rounded p-2" style="border-top-left-radius: 0!important; margin-top: 2px;">';
-                    echo '<span class="fw-bold border-bottom border-info fs-4">Платежные системы: </span><br>';
+                    echo '<div id="channelsInfo" class="table-responsive">';
+                    echo '<table class="table caption-top table-borderless col-12">';
+                    echo '<caption class="fs-3 text-dark border border-2 border-info border-bottom-0 mb-0 rounded-top" style="border-bottom: 2px solid #0d6efd!important;">Канал: ' . $model[$i]['shop'] . '</caption>';
+                    echo '<thead>';
+                    echo '<tr class="text-nowrap fs-4 fw-bold text-center border-bottom">';
+                    echo '<th class="border-end" colspan="2" style="border-left: 2px solid #0d6efd!important;">Платежные системы:</th>';
+                    echo '<th class="border-end" colspan="2">Статистика канала:</th>';
+                    echo '<th class="border-end" colspan="2">Статистика чата:</th>';
+                    echo '<th colspan="2" style="border-right: 2px solid #0d6efd!important;">Статистика приватного чата:</th>';
+                    echo '</tr>';
+                    echo '</thead>';
+                    echo '<tbody>';
                     if(!isset($model[$i]['robokassa'])){
-                        echo '<span class="fs-5">RoboKassa: </span><a class="btn btn-sm btn-primary mb-1" style="width: 120px">Подключить</a><span class="row"></span>';
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd;">';
+                        echo '<td>RoboKassa:</td>';
+                        echo '<td class="border-end"><a class="btn btn-sm btn-primary" style="width: 140px;">Подключить</a></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';
                     }
                     else{
-                        echo '<span class="fs-5 mb-1">Robokassa:<span class="text-success"> подключена <i class="fas fa-check"></i></span></span><span class="row"></span>';
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd;">';
+                        echo '<td>RoboKassa:</td>';
+                        echo '<td class="text-success border-end">подключена <i class="fas fa-check"></i></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';
                     }
                     if(!isset($model[$i]['paykassa'])){
-                        echo '<span class="fs-5" style="margin-right: 14px;">PayKassa: </span><a class="btn btn-sm btn-primary mb-1" style="width: 120px">Подключить</a><span class="row"></span>';                       
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd;">';
+                        echo '<td>PayKassa:</td>';
+                        echo '<td class="border-end"><a class="btn btn-sm btn-primary" style="width: 140px;">Подключить</a></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';                   
                     }
                     else{
-                        echo '<span class="fs-5">PayKassa:<span class="text-success"><span style="margin-right: 10px;"></span> подключена <i class="fas fa-check"></i></span></span><span class="row"></span>';
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd;">';
+                        echo '<td>PayKassa:</td>';
+                        echo '<td class="text-success border-end">подключена <i class="fas fa-check"></i></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';
                     }
                     if(!isset($model[$i]['freekassa'])){
-                        echo '<span class="fs-5" style="margin-right: 8px;">FreeKassa: </span><a class="btn btn-sm btn-primary mb-1" style="width: 120px">Подключить</a><span class="row"></span>';                        
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd;">';
+                        echo '<td>FreeKassa:</td>';
+                        echo '<td class="border-end"><a class="btn btn-sm btn-primary" style="width: 140px;">Подключить</a></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';
                     }
                     else{
-                        echo '<span class="fs-5">FreeKassa:<span class="text-success"><span style="margin-right: 3px;"></span> подключена <i class="fas fa-check"></i></span></span><span class="row"></span>';
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd;">';
+                        echo '<td>FreeKassa:</td>';
+                        echo '<td class="text-success border-end">подключена <i class="fas fa-check"></i></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';
                     }
                     if(!isset($model[$i]['paypall'])){
-                        echo '<span class="fs-5" style="margin-right: 37px;">PayPall: </span><a class="btn btn-sm btn-primary mb-1" style="width: 120px">Подключить</a><span class="row"></span>';                        
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd; border-bottom: 2px solid #0d6efd;">';
+                        echo '<td>PayPall:</td>';
+                        echo '<td class="border-end"><a class="btn btn-sm btn-primary" style="width: 140px;">Подключить</a></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';                   
                     }
                     else{
-                        echo '<span class="fs-5">PayPall:<span class="text-success"><span style="margin-right: 32px;"></span> подключена <i class="fas fa-check"></i></span></span>';
+                        echo '<tr class="text-nowrap fs-5 mb-1 mx-0" style="border-left: 2px solid #0d6efd; border-bottom: 2px solid #0d6efd;">';
+                        echo '<td>PayPall:</td>';
+                        echo '<td class="text-success border-end">подключена <i class="fas fa-check"></i></td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td class="border-end">Значение</td>';
+                        echo '<td>Показатель</td>';
+                        echo '<td style="border-right: 2px solid #0d6efd!important;">Значение</td>';
+                        echo '</tr>';
                     }
-                    echo '</div>';
                 }
                 else{
-                    echo '<br><a href="/lk/options" id="addBotBtn" class="btn btn-primary col-12 col-md-8 col-lg-4 mb-2 rounded" style="border-top-left-radius: 0!important;">Подключить Бота</a>';
+                    echo '<div class="col-12 col-md-8 col-lg-4 my-0 pt-1 fs-3 text-dark border border-2 border-info border-bottom-0 rounded-top ">Канал: ' . $model[$i]['shop'] . '</div>';
+                    echo '<a href="/lk/options" id="addBotBtn" class="btn btn-primary col-12 col-md-8 col-lg-4 mb-4" style="border-top-left-radius: 0!important; border-top-right-radius: 0!important">Подключить Бота</a>';
                 }
-                
                 $balance = $model[$i]['balance'] - $model[$i]['blocked_balance'];
                 if($balance >= $model[$i]['min_count_withdrawal']){
-                    echo '<div class="py-2 mb-4 px-md-2 border-bottom border-dark"><span class="fw-bold">Баланс: ' . $balance . ' ₽</span>' . ' <a href="/lk/finance" class="btn btn-sm btn-warning" target="_self">Подробнее <i class="fas fa-external-link-alt"></i></a></div>';
+                    echo '<tr class="bg-light border border-2 border-info border-top-0">';
+                    echo '<td colspan=8 class="fs-5 text-dark">Баланс: ' . $balance . ' ₽ <a href="/lk/finance" class="btn btn-sm btn-warning" target="_self">Подробнее <i class="fas fa-external-link-alt"></i></a></td>';
+                    echo '</tr>';
+                    echo '</tbody>';
+                    echo '</table>';
+                    echo '</div>';
                 }
                 elseif($balance < $model[$i]['min_count_withdrawal'] && isset($model[$i]['bot_token'])){
-                    echo '<div class="py-2 mb-4 px-md-2 border-bottom border-dark"><span class="fw-bold">Баланс: ' . $balance . ' ₽</span></div>';
+                    echo '<tr class="bg-light border border-2 border-info border-top-0">';
+                    echo '<td colspan=8 class="fs-5 text-dark">Баланс: ' . $balance . ' ₽</td>';
+                    echo '</tr>';
+                    echo '</tbody>';
+                    echo '</table>';
+                    echo '</div>';
                 }
             }
         }

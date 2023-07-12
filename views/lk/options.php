@@ -1,15 +1,13 @@
 <?php
 /** @var yii\web\View $this */
 
-$this->title = 'Options';
+$this->title = 'Настройки';
 ?>
 <h1>Options</h1>
-<p>Здесь будет отображаться настройки пользователя</p>
-
 
 <script>
-let link = document.getElementById('sideBarOptionsLink');
-let button = document.getElementById('sideBarOptionsBtn');
+let link = document.getElementById('sideBarOptionLink');
+let button = document.getElementById('sideBarOptionBtn');
 link.href = '#';
 button.disabled = true;
 </script>

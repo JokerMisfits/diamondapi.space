@@ -5,7 +5,7 @@ use yii\web\ForbiddenHttpException;
 
 /** @var yii\web\View $this */
 
-$this->title = 'Verify ' . $target;
+$this->title = 'Подтверждение ' . $target;
 ?>
 
 <div class="lk-verify">

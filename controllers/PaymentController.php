@@ -1,8 +1,6 @@
 <?php
 
-//todo Сделать вывод ошибок для telegram в шаблоне telegram
 //Todo написать JS закрытия окна если доступен webapp
-//Todo PAYKASSA need to TEST on hosting
 //TODO НАПИСАТЬ ВАЛИДАЦИЮ CRC freekassa|success
 //TODO НАПИСАТЬ PAYPALL|SUCCESS
 //TODO ПРОПИСАТЬ TRY CATCH ДЛЯ SUCCESS RESULT

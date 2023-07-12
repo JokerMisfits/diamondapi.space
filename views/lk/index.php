@@ -4,7 +4,7 @@ use yii\helpers\Html;
 
 /** @var yii\web\View $this */
 
-$this->title = 'Profile';
+$this->title = 'Главная';
 
 ?>
 
@@ -17,7 +17,7 @@ $this->title = 'Profile';
 
 <div class="lk-index">
 
-    <h1 class="text-center border-bottom pt-2 pb-2 pt-md-0 pb-md-1 mb-0">Добро пожаловать <?= Yii::$app->user->identity->username ?></h1>
+    <h1 class="text-center pt-2 pb-2 pt-md-0 pb-md-1 mb-0 border-bottom border-dark" style="margin-top: -1px;">Добро пожаловать <?= Yii::$app->user->identity->username ?></h1>
 
     <?php
         if(!isset(Yii::$app->user->identity->tg_member_id)){

@@ -1,7 +1,7 @@
 <?php
 /** @var yii\web\View $this */
 
-$this->title = 'Subscriptions';
+$this->title = 'Подписки';
 ?>
 <h1>subscriptions</h1>
 <p>Здесь будет отображаться информация о подписках пользователя</p>
