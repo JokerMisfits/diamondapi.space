@@ -45,7 +45,7 @@ $config = [
                 'class' => 'Swift_SmtpTransport',
                 'host' => 'smtp.mail.ru', // Укажите адрес SMTP-сервера
                 'port' => '465', // Укажите порт SMTP-сервера
-                'encryption' => 'ssl', // Укажите метод шифрования, если необходимо
+                'encryption' => 'SSL', // Укажите метод шифрования, если необходимо
                 'username' => $_SERVER['EMAIL_ADMIN_LOGIN'], // Укажите имя пользователя для авторизации на SMTP-сервере
                 'password' => $_SERVER['EMAIL_ADMIN_PASSWORD'] // Укажите пароль для авторизации на SMTP-сервере
             ],

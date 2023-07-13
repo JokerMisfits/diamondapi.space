@@ -20,6 +20,7 @@ use yii\web\IdentityInterface;
  * @property string $last_activity Дата последней активности
  * @property string $registration_date Дата регистрации
  * @property int|null $tg_member_id ID tg_member
+ * @property VerifyEmail[] $verifyEmails
  * 
  * @property TgMembers $tgMember
  */
@@ -98,6 +99,15 @@ class Users extends ActiveRecord implements IdentityInterface{
    public function getTgMember(){ 
        return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
    }
+
+   /**
+    * Gets query for [[VerifyEmails]].
+    *
+    * @return ActiveQuery|VerifyEmailQuery
+    */
+    public function getVerifyEmails(){
+        return $this->hasMany(VerifyEmail::class, ['user_id' => 'id']);
+    }
 
     /**
      * {@inheritdoc}

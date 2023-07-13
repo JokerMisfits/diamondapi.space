@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 
 /** @var yii\web\View $this */
+/** @var string $email */
 
 $this->title = 'Главная';
 
@@ -31,7 +32,7 @@ $this->title = 'Главная';
             echo Html::endForm();
             echo '</div>';
         }
-        elseif(!isset(Yii::$app->user->identity->email)){
+        elseif(!isset(Yii::$app->user->identity->email) && !isset($email)){
             echo '<div class="text-dark text-center my-2 p-2 bg-light rounded col-12 col-lg-8 offset-lg-2 border">';
             echo '<legend>Для получения доступа к выводу ДС</legend>' . '<br>' . 'Необходимо привязать email к вашему аккаунту.';
             echo Html::beginForm(['/lk/verify'], 'post');
@@ -40,6 +41,9 @@ $this->title = 'Главная';
             echo Html::submitButton('Приступить <i class="far fa-envelope"></i>', ['class' => 'btn btn-primary col-12 col-md-8 col-lg-6 mt-2 mb-2']);
             echo Html::endForm();
             echo '</div>';
+        }
+        elseif(!isset(Yii::$app->user->identity->email) && isset($email)){
+            echo 'Отправить письмо повторно или изменить почтовый адрес';
         }
         else{
             echo '<div class="text-danger text-center my-2 p-2 bg-dark col-12" style="min-height: 200px">';

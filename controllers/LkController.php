@@ -4,11 +4,11 @@ namespace app\controllers;
 
 use Yii;
 use yii\db\Query;
-use app\models\users;
+use app\models\Users;
 use app\models\Clients;
 use app\models\TgMembers;
+use app\models\VerifyEmail;
 use app\models\Withdrawals;
-use yii\symfonymailer\Mailer;
 use yii\filters\AccessControl;
 use yii\web\ForbiddenHttpException;
 
@@ -104,9 +104,20 @@ class LkController extends AppController{
     }
 
     public function actionIndex(){
-        return $this->render('index', [
-            'csrf' => Yii::$app->session->get('csrf')
-        ]);
+        $model = new Users();
+        $model->id = Yii::$app->user->identity->id;
+        $verify = $model->getVerifyEmails()->one();
+        if(!isset(Yii::$app->user->identity->email) && isset($verify->email)){
+            return $this->render('index', [
+                'csrf' => Yii::$app->session->get('csrf'),
+                'email' => $verify->email
+            ]);
+        }
+        else{
+            return $this->render('index', [
+                'csrf' => Yii::$app->session->get('csrf')
+            ]);
+        }
     }
 
     public function actionChannels(){
@@ -321,29 +332,14 @@ class LkController extends AppController{
 
     public function actionConfirmation(){
         $params = Yii::$app->request->post();
-        if($params['target'] == 'telegram'){
-            try{
-                $result = file_get_contents('https://api.telegram.org/bot' . $_SERVER['TG_VERIFY'] . '/getChat?chat_id=' . $params['tg_user_id']);
-            }
-            catch(\Exception|\Throwable $e){
-                if($e->getCode() == 2){
-                    Yii::$app->getSession()->setFlash('error', 'Пользователь не найден!');
-                    return $this->render('verify', [
-                        'target' => 'telegram',
-                        'token' => md5(uniqid(rand(), true)),
-                        'csrf' => Yii::$app->session->get('csrf')
-                    ]);
+        if(isset($params['target'])){
+            if($params['target'] == 'telegram'){
+                try{
+                    $result = file_get_contents('https://api.telegram.org/bot' . $_SERVER['TG_VERIFY'] . '/getChat?chat_id=' . $params['tg_user_id']);
                 }
-                else{
-                    throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                }
-            }
-            $result = json_decode($result);
-            if(isset($result->ok) && $result->ok == true){
-                $result = $result->result;
-                if(isset($result->bio)){
-                    if(stripos($result->bio, $params['token']) === false){
-                        Yii::$app->getSession()->setFlash('error', 'Пункт 3 не был выполнен.<br>Необходимо выполнить пункт <strong>3 и 4 повторно!</strong>');
+                catch(\Exception|\Throwable $e){
+                    if($e->getCode() == 2){
+                        Yii::$app->getSession()->setFlash('error', 'Пользователь не найден!');
                         return $this->render('verify', [
                             'target' => 'telegram',
                             'token' => md5(uniqid(rand(), true)),
@@ -351,80 +347,42 @@ class LkController extends AppController{
                         ]);
                     }
                     else{
-                        $model = new TgMembers;
-                        $id = $model->findOne(['tg_user_id' => $params['tg_user_id']]);
-                        if(isset($id)){
-                            $id = $id['id'];
-                            $model = new Users();
-                            $userId = $model->findOne(['tg_member_id' => $id]);
-                            if(isset($userId)){
-                                Yii::$app->getSession()->setFlash('error', 'Telegram уже привязан к другому аккаунту.');
-                                return $this->render('verify', [
-                                    'target' => 'telegram',
-                                    'token' => md5(uniqid(rand(), true)),
-                                    'csrf' => Yii::$app->session->get('csrf')
-                                ]);
-                            }
-                            else{
-                                $transaction = Yii::$app->db->beginTransaction();
-                                try{
-                                    $sql = "UPDATE users SET tg_member_id = :id WHERE id = :account_id;";
-                                    $result = Yii::$app->db->createCommand($sql)
-                                        ->bindValue(':id', $id)
-                                        ->bindValue(':account_id', Yii::$app->user->identity->id)
-                                        ->execute();
-                                    if($result !== false){
-                                        $authManager = Yii::$app->authManager;
-                                        $authManager->assign($authManager->getRole('tg-verify'), Yii::$app->user->identity->id);
-                                        $transaction->commit();
-                                        $model = new Users();
-                                        $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
-                                        Yii::$app->getSession()->setFlash('success', 'Telegram успешно подтвержден.');
-                                        return $this->render('index', [
-                                            'username' => $model->username,
-                                            'tg_member_id' => $model->tg_member_id,
-                                            'email' => $model->email,
-                                            'phone' => $model->phone,
-                                            'csrf' => Yii::$app->session->get('csrf')
-                                        ]);
-                                    }
-                                }
-                                catch(\Exception|\Throwable $e){
-                                    $transaction->rollBack();
-                                    Yii::error('LkController Telegram verify ошибка во время обновления users: ' . $e->getMessage(), 'lk');
-                                    Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
+                        throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+                    }
+                }
+                $result = json_decode($result);
+                if(isset($result->ok) && $result->ok == true){
+                    $result = $result->result;
+                    if(isset($result->bio)){
+                        if(stripos($result->bio, $params['token']) === false){
+                            Yii::$app->getSession()->setFlash('error', 'Пункт 3 не был выполнен.<br>Необходимо выполнить пункт <strong>3 и 4 повторно!</strong>');
+                            return $this->render('verify', [
+                                'target' => 'telegram',
+                                'token' => md5(uniqid(rand(), true)),
+                                'csrf' => Yii::$app->session->get('csrf')
+                            ]);
+                        }
+                        else{
+                            $model = new TgMembers;
+                            $id = $model->findOne(['tg_user_id' => $params['tg_user_id']]);
+                            if(isset($id)){
+                                $id = $id['id'];
+                                $model = new Users();
+                                $userId = $model->findOne(['tg_member_id' => $id]);
+                                if(isset($userId)){
+                                    Yii::$app->getSession()->setFlash('error', 'Telegram уже привязан к другому аккаунту.');
                                     return $this->render('verify', [
                                         'target' => 'telegram',
                                         'token' => md5(uniqid(rand(), true)),
                                         'csrf' => Yii::$app->session->get('csrf')
                                     ]);
                                 }
-                            }
-                        }
-                        else{
-                            $model->tg_user_id = $params['tg_user_id'];
-                            if(isset($result->username)){
-                                $model->tg_username = $result->username;
-                            }                            
-                            if(isset($result->first_name)){
-                                $model->tg_first_name = $result->first_name;
-                            }                            
-                            if(isset($result->last_name)){
-                                $model->tg_last_name = $result->last_name;
-                            }                            
-                            if(isset($result->bio)){
-                                $model->tg_bio = $result->bio;
-                            }
-                            if(isset($result->type)){
-                                $model->tg_type = $result->type;
-                            }
-                            if($model->validate()){
-                                $transaction = Yii::$app->db->beginTransaction();
-                                try{
-                                    if($model->save()){
+                                else{
+                                    $transaction = Yii::$app->db->beginTransaction();
+                                    try{
                                         $sql = "UPDATE users SET tg_member_id = :id WHERE id = :account_id;";
                                         $result = Yii::$app->db->createCommand($sql)
-                                            ->bindValue(':id', $model->findOne(['tg_user_id' => $params['tg_user_id']])['id'])
+                                            ->bindValue(':id', $id)
                                             ->bindValue(':account_id', Yii::$app->user->identity->id)
                                             ->execute();
                                         if($result !== false){
@@ -442,34 +400,99 @@ class LkController extends AppController{
                                                 'csrf' => Yii::$app->session->get('csrf')
                                             ]);
                                         }
-                                        else{
-                                            $transaction->rollBack();
-                                            Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
-                                            return $this->render('verify', [
-                                                'target' => 'telegram',
-                                                'token' => md5(uniqid(rand(), true)),
-                                                'csrf' => Yii::$app->session->get('csrf')
-                                            ]);
-                                        }
+                                    }
+                                    catch(\Exception|\Throwable $e){
+                                        $transaction->rollBack();
+                                        Yii::error('LkController Telegram verify ошибка во время обновления users: ' . $e->getMessage(), 'lk');
+                                        Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
+                                        return $this->render('verify', [
+                                            'target' => 'telegram',
+                                            'token' => md5(uniqid(rand(), true)),
+                                            'csrf' => Yii::$app->session->get('csrf')
+                                        ]);
                                     }
                                 }
-                                catch(\Exception|\Throwable $e){
-                                    $transaction->rollBack();
-                                    Yii::error('LkController Telegram verify ошибка во время сохранения модели и обновления users: ' . $e->getMessage(), 'lk');
-                                    Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
-                                    return $this->render('verify', [
-                                        'target' => 'telegram',
-                                        'token' => md5(uniqid(rand(), true)),
-                                        'csrf' => Yii::$app->session->get('csrf')
-                                    ]);
+                            }
+                            else{
+                                $model->tg_user_id = $params['tg_user_id'];
+                                if(isset($result->username)){
+                                    $model->tg_username = $result->username;
+                                }                            
+                                if(isset($result->first_name)){
+                                    $model->tg_first_name = $result->first_name;
+                                }                            
+                                if(isset($result->last_name)){
+                                    $model->tg_last_name = $result->last_name;
+                                }                            
+                                if(isset($result->bio)){
+                                    $model->tg_bio = $result->bio;
+                                }
+                                if(isset($result->type)){
+                                    $model->tg_type = $result->type;
+                                }
+                                if($model->validate()){
+                                    $transaction = Yii::$app->db->beginTransaction();
+                                    try{
+                                        if($model->save()){
+                                            $sql = "UPDATE users SET tg_member_id = :id WHERE id = :account_id;";
+                                            $result = Yii::$app->db->createCommand($sql)
+                                                ->bindValue(':id', $model->findOne(['tg_user_id' => $params['tg_user_id']])['id'])
+                                                ->bindValue(':account_id', Yii::$app->user->identity->id)
+                                                ->execute();
+                                            if($result !== false){
+                                                $authManager = Yii::$app->authManager;
+                                                $authManager->assign($authManager->getRole('tg-verify'), Yii::$app->user->identity->id);
+                                                $transaction->commit();
+                                                $model = new Users();
+                                                $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
+                                                Yii::$app->getSession()->setFlash('success', 'Telegram успешно подтвержден.');
+                                                return $this->render('index', [
+                                                    'username' => $model->username,
+                                                    'tg_member_id' => $model->tg_member_id,
+                                                    'email' => $model->email,
+                                                    'phone' => $model->phone,
+                                                    'csrf' => Yii::$app->session->get('csrf')
+                                                ]);
+                                            }
+                                            else{
+                                                $transaction->rollBack();
+                                                Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
+                                                return $this->render('verify', [
+                                                    'target' => 'telegram',
+                                                    'token' => md5(uniqid(rand(), true)),
+                                                    'csrf' => Yii::$app->session->get('csrf')
+                                                ]);
+                                            }
+                                        }
+                                    }
+                                    catch(\Exception|\Throwable $e){
+                                        $transaction->rollBack();
+                                        Yii::error('LkController Telegram verify ошибка во время сохранения модели и обновления users: ' . $e->getMessage(), 'lk');
+                                        Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
+                                        return $this->render('verify', [
+                                            'target' => 'telegram',
+                                            'token' => md5(uniqid(rand(), true)),
+                                            'csrf' => Yii::$app->session->get('csrf')
+                                        ]);
+                                    }
                                 }
                             }
+                            
                         }
-                        
+                    }
+                    else{
+                        Yii::$app->getSession()->setFlash('error', 'Описание пользователя недоступно!');
+                        return $this->render('verify', [
+                            'target' => 'telegram',
+                            'token' => md5(uniqid(rand(), true)),
+                            'csrf' => Yii::$app->session->get('csrf')
+                        ]);
                     }
                 }
                 else{
-                    Yii::$app->getSession()->setFlash('error', 'Описание пользователя недоступно!');
+                    Yii::$app->getSession()->setFlash('error', 'Пользователь не найден!');
+                    $model = new Users();
+                    $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
                     return $this->render('verify', [
                         'target' => 'telegram',
                         'token' => md5(uniqid(rand(), true)),
@@ -477,37 +500,70 @@ class LkController extends AppController{
                     ]);
                 }
             }
-            else{
-                Yii::$app->getSession()->setFlash('error', 'Пользователь не найден!');
+            elseif($params['target'] == 'email' && isset($params['email']) && !isset(Yii::$app->user->identity->email)){
                 $model = new Users();
-                $model = $model->findOne(['id' => Yii::$app->user->identity->id]);
-                return $this->render('verify', [
-                    'target' => 'telegram',
-                    'token' => md5(uniqid(rand(), true)),
+                $model->id = Yii::$app->user->identity->id;
+                $verify = $model->getVerifyEmails()->one();
+                if(isset($verify->email)){
+                    throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+                }
+                else{
+                    $model = new VerifyEmail();
+                    $token = md5(uniqid(rand(), true));
+                    $model->email = trim($params['email']);
+                    $model->verify_code = $token;
+                    $model->user_id = Yii::$app->user->identity->id;
+                    Yii::$app->db->pdo->beginTransaction();
+                    if($model->validate()){
+                        if($model->save()){
+                            $query = new Query;
+                            $id = $query->select('id')
+                            ->from('verify_email')
+                            ->where(['user_id' => Yii::$app->user->identity->id])
+                            ->orderBy(['id' => SORT_DESC])
+                            ->limit(1)
+                            ->scalar();
+                            if(is_numeric($id)){
+                                $from = Yii::$app->params['senderEmail'];
+                                $to = $params['email'];
+                                $subject = 'Подтверждение почтового адреса для ' . Yii::$app->name;
+                                $message = 'Для подтверждения почтового адреса, перейдите по ссылке - '
+                                . 'https://' .  Yii::$app->name . '/mail/verify?user=' . Yii::$app->user->identity->id . '&id=' . $id . '&token=' . $token 
+                                . '&hash=' . md5($_SERVER['API_KEY_0'] . Yii::$app->user->identity->id . $id . $token . $_SERVER['API_KEY_1']);
+                                if(AppController::sendMail($to, $subject, $message, $from)){
+                                    Yii::$app->db->pdo->commit();
+                                    Yii::$app->getSession()->setFlash('success', 'Для подтверждения почтового адреса перейдите по ссылке из письма.');
+                                }
+                                else{
+                                    Yii::$app->db->pdo->rollBack();
+                                    Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
+                                }
+                            }
+                            else{
+                                Yii::$app->db->pdo->rollBack();
+                                Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
+                            }
+                        }
+                        else{
+                            Yii::$app->db->pdo->rollBack();
+                            Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
+                        }
+                    }
+                    else{
+                        Yii::$app->db->pdo->rollBack();
+                        Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
+                    }
+                }
+                return $this->render('index', [
                     'csrf' => Yii::$app->session->get('csrf')
                 ]);
             }
-        }
-        elseif($params['target'] == 'email'){//todo настроить smtp в web.php
-            $mailer = new Mailer();
-            $message = $mailer->compose();
-            $message->setFrom(Yii::$app->params['senderEmail']);
-            $message->setTo(Yii::$app->params['testEmail']);
-            $message->setSubject('Тестовое письмо Yii2');
-            $message->setTextBody('Текст сообщения');
-            $message->setHtmlBody('<b>Текст сообщения в формате HTML</b><br><div class="bg-dark text-danger" style="min-height: 200px">TEST TEST</div>');
-            if(!$mailer->send($message)){
-                Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
+            elseif($params['target'] == 'phone'){
+                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
             else{
-                Yii::$app->getSession()->setFlash('success', 'Для подтверждения почтового адреса перейдите по ссылке из письма.');
+                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
-            return $this->render('index', [
-                'csrf' => Yii::$app->session->get('csrf')
-            ]);
-        }
-        elseif($params['target'] == 'phone'){
-            throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
         }
         else{
             throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);

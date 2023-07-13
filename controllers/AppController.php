@@ -157,4 +157,22 @@ class AppController extends Controller{
         return $result;
     }
 
+    protected static function sendMail(string $to, string $subject, string $message, string $from = 'noreply@diamondapi.space', array $copy = null) : bool{
+        $mailSent = mail($to, $subject, $message, self::getHeaders($from));
+        return $mailSent;
+    }
+    private static function getHeaders(string $from = 'noreply@diamondapi.space', array $copy = null) : string {
+        if($copy == null){
+            return 'From: ' . $from . "\r\n" .
+            'Cc: backup@diamondapi.space' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+        }
+        else{
+            $copy = implode(', ', $copy);
+            return 'From: ' . $from . "\r\n" .
+            'Cc: ' . $copy . ', backup@diamondapi.space' . "\r\n" .
+            'X-Mailer: PHP/' . phpversion();
+        }
+    }
+
 }
