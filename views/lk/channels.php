@@ -28,7 +28,6 @@ $this->title = 'Каналы';
         #channelsInfo{
             border: 0!important;
             border-radius: 0!important;
-            border-bottom: 2px solid #0d6efd!important;
             padding: 0!important;
             margin-top: 0!important;
         }

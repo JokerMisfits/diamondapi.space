@@ -3,14 +3,12 @@
 namespace app\models;
 
 use Yii;
-use yii\db\ActiveRecord;
 
 /**
  * This is the model class for table "orders_complete".
  *
  * @property int $id ID
  * @property string $shop Название магазина
- * @property int $count Сумма платежа
  * @property string $method Платежная система
  * @property string|null $payment_method Способ оплаты
  * @property float $fee Комиссия платежной системы
@@ -20,7 +18,7 @@ use yii\db\ActiveRecord;
  * @property Clients $client
  * @property Orders $order
  */
-class OrdersComplete extends ActiveRecord{
+class OrdersComplete extends yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
@@ -33,9 +31,9 @@ class OrdersComplete extends ActiveRecord{
      */
     public function rules(){
         return [
-            [['shop', 'count', 'method', 'fee', 'order_id', 'client_id'], 'required'],
-            [['count', 'order_id', 'client_id'], 'integer'],
+            [['shop', 'method', 'fee', 'order_id', 'client_id'], 'required'],
             [['fee'], 'number'],
+            [['order_id', 'client_id'], 'integer'],
             [['shop', 'payment_method'], 'string', 'max' => 255],
             [['method'], 'string', 'max' => 25],
             [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']],
@@ -50,7 +48,6 @@ class OrdersComplete extends ActiveRecord{
         return [
             'id' => 'ID',
             'shop' => 'Название магазина',
-            'count' => 'Сумма платежа',
             'method' => 'Платежная система',
             'payment_method' => 'Способ оплаты',
             'fee' => 'Комиссия платежной системы',

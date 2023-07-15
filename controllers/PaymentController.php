@@ -524,36 +524,6 @@ class PaymentController extends AppController{
             throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
         }
     }
-    
-    // public function actionDisput() : void{
-    //     $params = Yii::$app->request->get();
-    //     $config = AppController::getConfig('club-dimitriev')['paypall'];;
-    //     $client = new Client();
-    //     $url = 'https://api-m.paypal.com/v1/oauth2/token';//For test https://api-m.sandbox.paypal.com/v1/oauth2/token
-    //     $headers = [
-    //         'Content-Type' => 'application/x-www-form-urlencoded',
-    //         'Authorization' => 'Basic ' . base64_encode($config['client_id'] . ':' . $config['secret']),
-    //     ];
-    //     $data = [
-    //         'grant_type' => 'client_credentials',
-    //     ];
-    //     $response = $client->createRequest()// Отправка POST-запроса на получение токена доступа
-    //     ->setMethod('POST')
-    //     ->setUrl($url)
-    //     ->setHeaders($headers)
-    //     ->setData($data)
-    //     ->send();
-    //     $accessToken = $response->data['access_token'];
-    //     $request = $client->createRequest()
-    //     ->setMethod('GET')
-    //     ->setUrl('https://api-m.paypal.com/v1/customer/disputes/')//For test https://api-m.sandbox.paypal.com/v2/checkout/orders/
-    //     ->addHeaders([
-    //         'Authorization' => 'Bearer ' . $accessToken,
-    //     ]);
-    //     $response = $request->send();
-    //     AppController::debug($response->getData(), 1);
-    // }
-
 
     public function actionSuccess() : void{//todo дописать для PayPall
         $params = Yii::$app->request->post();
@@ -746,7 +716,7 @@ class PaymentController extends AppController{
                     ->execute();
                     if($result !== false){
                         if(!$isTest){
-                            self::orderComplete($invId, $shop, $count, 'RoboKassa', $params['Fee'], $params['IncCurrLabel']);
+                            self::orderComplete($invId, $shop, 'RoboKassa', $params['Fee'], $params['IncCurrLabel']);
                         }
                         echo 'OK' . $invId . '\n';
                         AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
@@ -759,7 +729,7 @@ class PaymentController extends AppController{
             }
             elseif($result !== false && $result['status'] == 1 && $result['method'] == 'RoboKassa'){
                 if(!$isTest){
-                    self::orderComplete($invId, $shop, $count, 'RoboKassa', $params['Fee'], $params['IncCurrLabel']);
+                    self::orderComplete($invId, $shop, 'RoboKassa', $params['Fee'], $params['IncCurrLabel']);
                 }
                 echo 'OK' . $invId . '\n';
             }
@@ -795,7 +765,7 @@ class PaymentController extends AppController{
                     ->execute();
                     if($result !== false){
                         if(!$isTest){
-                            self::orderComplete($invId, $shop, $count, 'PayKassa', 0);
+                            self::orderComplete($invId, $shop, 'PayKassa', 0);
                         }
                         echo $invId . '|success';
                         AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
@@ -808,7 +778,7 @@ class PaymentController extends AppController{
             }
             elseif($result !== false && $result['status'] == 1 && $result['method'] == 'PayKassa'){
                 if(!$isTest){
-                    self::orderComplete($invId, $shop, $count, 'PayKassa', 0);
+                    self::orderComplete($invId, $shop, 'PayKassa', 0);
                 }
                 echo $invId . '|success';
             }
@@ -844,7 +814,7 @@ class PaymentController extends AppController{
                     ->execute();
                     if($result !== false){
                         if(!$isTest){
-                            self::orderComplete($invId, $shop, $count, 'FreeKassa', round(floatval($params['commission']), 2));
+                            self::orderComplete($invId, $shop, 'FreeKassa', $params['commission']);
                         }
                         echo 'YES';
                         AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
@@ -857,7 +827,7 @@ class PaymentController extends AppController{
             }
             elseif($result !== false && $result['status'] == 1 && $result['method'] == 'FreeKassa'){
                 if(!$isTest){
-                    self::orderComplete($invId, $shop, $count, 'FreeKassa', $params['commission']);
+                    self::orderComplete($invId, $shop, 'FreeKassa', $params['commission']);
                 }
                 echo 'YES';
             }
@@ -941,28 +911,27 @@ class PaymentController extends AppController{
         ];
     }
 
-    private static function orderComplete(int $invId, string $shop, int $count, string $method, float $fee, string|null $paymentMethod = null){
+    private static function orderComplete(int $invId, string $shop, string $method, float $fee, string|null $paymentMethod = null){
         $sql = "SELECT COUNT(*) FROM orders_complete WHERE order_id = :order_id";
         $result = Yii::$app->db->createCommand($sql)
         ->bindValue(':order_id', $invId)
         ->queryOne();
         if($result['COUNT(*)'] === 0){
-            $sql = "INSERT INTO orders_complete (shop, count, method, payment_method, fee, order_id) 
-            VALUES (:shop, :count, :method, :payment_method, :fee, :order_id)";
+            $sql = "INSERT INTO orders_complete (shop, method, payment_method, fee, order_id) 
+            VALUES (:shop, :method, :payment_method, :fee, :order_id)";
             $result = Yii::$app->db->createCommand($sql)
             ->bindValue(':shop', $shop)
-            ->bindValue(':count', $count)
             ->bindValue(':method', $method)
             ->bindValue(':payment_method', $paymentMethod)
             ->bindValue(':fee', round(floatval($fee), 2))
             ->bindValue(':order_id', $invId)
             ->execute();
             if($result === false){
-                Yii::error('Method ' . $method . '|orderComplete db, Ошибка записи| ' . ' Параметры: ' . json_encode([$invId, $shop, $count, $method, $fee, $paymentMethod], 1), 'test');
+                Yii::error('Method ' . $method . '|orderComplete db, Ошибка записи| ' . ' Параметры: ' . json_encode([$invId, $shop, $method, $fee, $paymentMethod], 1), 'test');
             }
         }
         else{
-            Yii::error('Method ' . $method . '|orderComplete db, повторное срабатывание| ' . ' Параметры: ' . json_encode([$invId, $shop, $count, $method, $fee, $paymentMethod], 1), 'test');
+            Yii::error('Method ' . $method . '|orderComplete db, повторное срабатывание| ' . ' Параметры: ' . json_encode([$invId, $shop, $method, $fee, $paymentMethod], 1), 'test');
         }
     }
 
