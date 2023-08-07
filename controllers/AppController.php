@@ -2,18 +2,17 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\base\Security;
-use yii\web\Controller;
-use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 
-class AppController extends Controller{
+class AppController extends \yii\web\Controller{
 
-    public function behaviors(){
+    /**
+     * {@inheritdoc}
+     * @return array
+     */
+    public function behaviors() : array{
         return [
             'access' => [
-                'class' => AccessControl::class,
+                'class' => \yii\filters\AccessControl::class,
                 'only' => ['logout'],
                 'rules' => [
                     [
@@ -24,33 +23,46 @@ class AppController extends Controller{
                 ]
             ],
             'verbs' => [
-                'class' => VerbFilter::class,
+                'class' => \yii\filters\VerbFilter::class,
                 'actions' => [
                     'logout' => ['post']
                 ]
             ]
         ];
     }
+    
+    /**
+     * {@inheritdoc}
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
+     */
+    public function beforeAction($action) : bool{
+        \Yii::$app->session->set('csrf', md5(uniqid(rand(), true)));
+        return parent::beforeAction($action);
+    }
 
-    protected static function debug($data, $mode = false){
+    /**
+     * {@inheritdoc}
+     * @return void
+     */
+    protected static function debug($data, $mode = false) : void{
         echo "<pre>";
         var_dump($data);
         echo "</pre>";
         if($mode){exit(0);}
     }
-    
-    public function beforeAction($action){
-        Yii::$app->session->set('csrf', md5(uniqid(rand(), true)));
-        return parent::beforeAction($action);
-    }
 
-    protected static function getConfig(string $shop, bool $checkEnable = false, $method = null) : array|false {
+    /**
+     * {@inheritdoc}
+     * @return array|false
+     */
+    protected static function getConfig(string $shop, bool $checkEnable = false, $method = null) : array|false{
         $sql = "SELECT bot_token, robokassa, paykassa, freekassa, paypall FROM clients WHERE shop = :shop ORDER BY id DESC limit 1";
-        $result = Yii::$app->db->createCommand($sql)
+        $result = \Yii::$app->db->createCommand($sql)
         ->bindValue(':shop', $shop)
         ->queryOne();
         if($result !== false){
-            $security = new Security;
+            $security = new \yii\base\Security;
             $key = $_SERVER['API_KEY_0'];
             $key1 = $_SERVER['API_KEY_1'];
             $return['bot_token'] = $security->decryptByPassword(base64_decode($result['bot_token']), $key);
@@ -129,20 +141,28 @@ class AppController extends Controller{
         }
     }
 
+    /**
+     * {@inheritdoc}
+     * @return string|false
+     */
     private static function getBotToken(string $shop) : string|false{
         $sql = "SELECT bot_token FROM clients WHERE shop = :shop ORDER BY id DESC limit 1";
-        $result = Yii::$app->db->createCommand($sql)
+        $result = \Yii::$app->db->createCommand($sql)
         ->bindValue(':shop', $shop)
         ->queryOne();
         if($result !== false){
-            $security = new Security;
+            $security = new \yii\base\Security;
             $key = $_SERVER['API_KEY_0'];
             return $security->decryptByPassword(base64_decode($result['bot_token']), $key);
         }
         return false;
     }
 
-    protected static function curlSendMessage(array $data, string $shop, string $method = '/sendMessage'){
+    /**
+     * {@inheritdoc}
+     * @return string|bool
+     */
+    protected static function curlSendMessage(array $data, string $shop, string $method = '/sendMessage') : string|bool{
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot' . self::getBotToken($shop) . $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
@@ -151,17 +171,26 @@ class AppController extends Controller{
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         $result = curl_exec($ch);
         if($result === false){
-            Yii::error('Method: ' . $method . ' ,shop: ' . $shop . ', Curl ошибка отправки сообщения : ' .  curl_error($ch), 'curl');
+            \Yii::error('Method: ' . $method . ' ,shop: ' . $shop . ', Curl ошибка отправки сообщения : ' .  curl_error($ch), 'curl');
         }
         curl_close($ch);
         return $result;
     }
 
+    /**
+     * {@inheritdoc}
+     * @return bool
+     */
     protected static function sendMail(string $to, string $subject, string $message, string $from = 'noreply@diamondapi.space', array $copy = null) : bool{
         $mailSent = mail($to, $subject, $message, self::getHeaders($from));
         return $mailSent;
     }
-    private static function getHeaders(string $from = 'noreply@diamondapi.space', array $copy = null) : string {
+
+    /**
+     * {@inheritdoc}
+     * @return string
+     */
+    private static function getHeaders(string $from = 'noreply@diamondapi.space', array $copy = null) : string{
         if($copy == null){
             return 'From: ' . $from . "\r\n" .
             'Cc: backup@diamondapi.space' . "\r\n" .

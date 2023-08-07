@@ -1,22 +1,13 @@
 <?php
-
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yii\widgets\ActiveForm;
-
 /** @var yii\web\View $this */
 /** @var app\models\Withdrawals $model */
 /** @var array $clients */
-/** @var ActiveForm $form */
-
+/** @var yii\widgets\ActiveForm $form */
 $this->title = 'Финансы';
-
 $allWithdrawals = false;
-
-if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
+if(array_key_exists('allWithdrawals', $_GET) && $_GET['allWithdrawals'] == 1){
     $allWithdrawals = true;
 }
-
 ?>
 
 <style>
@@ -42,10 +33,10 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                 <div class="col-12"><a href="/lk/finance" class="btn btn-sm btn-warning r-0">Сбросить фильтры <i class="fas fa-filter"></i></a>
                     <?php
                         if(isset($admin) && $admin && (!isset($_GET['showTestClients']) || $_GET['showTestClients'] == 0) ){
-                            echo ' <a href="' . Url::current(['showTestClients' => 1]) . '" class="btn btn-sm btn-danger r-0 text-dark">Показать тестовые <i class="fas fa-fighter-jet"></i></a></div>';
+                            echo ' <a href="' . yii\helpers\Url::current(['showTestClients' => 1]) . '" class="btn btn-sm btn-danger r-0 text-dark">Показать тестовые <i class="fas fa-fighter-jet"></i></a></div>';
                         }
                         elseif(isset($admin) && $admin && isset($_GET['showTestClients']) && $_GET['showTestClients'] == 1){
-                            echo ' <a href="' . Url::current(['showTestClients' => 0]) . '" class="btn btn-sm btn-danger r-0 text-dark">Вернуть обычные <i class="fas fa-fighter-jet"></i></a></div>';
+                            echo ' <a href="' . yii\helpers\Url::current(['showTestClients' => 0]) . '" class="btn btn-sm btn-danger r-0 text-dark">Вернуть обычные <i class="fas fa-fighter-jet"></i></a></div>';
                         }
                     ?>
                 </caption>
@@ -111,18 +102,18 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                             $endI = min($startI + 4, $countButtons);
                         }
                         if($currentPage > 1){
-                            echo '<li class="page-item"><a class="page-link" href="' . Url::current(['clientsPage' => $currentPage - 1]) . '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+                            echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['clientsPage' => $currentPage - 1]) . '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
                         }
                         for($i = 0; $i < $countButtons; $i++){
                             if($currentPage == $i + 1){
                                 echo '<li class="page-item active" aria-current="page"><span class="page-link">' . $i+1 .'</span></li>';
                             }
                             else{
-                                echo '<li class="page-item"><a class="page-link" href="' . Url::current(['clientsPage' => $i + 1]) . '">' . $i+1 . '</a></li>';
+                                echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['clientsPage' => $i + 1]) . '">' . $i+1 . '</a></li>';
                             }
                         }
                         if($currentPage < $countButtons){
-                            echo '<li class="page-item"><a class="page-link" href="' . Url::current(['clientsPage' => $currentPage + 1]) . '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
+                            echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['clientsPage' => $currentPage + 1]) . '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
                         }
                         echo '</ul></nav>';
                         echo '</td></tr>';
@@ -143,17 +134,17 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                     <?php
                         if($allWithdrawals){
                             echo 'Ваши заявки на вывод денежных средств';
-                            echo '<div class="col-12"><a href="' . Url::current(['allWithdrawals' => 0]) . '" class="btn btn-sm btn-warning r-0">Показать активные <i class="fas fa-eye"></i></a>';
+                            echo '<div class="col-12"><a href="' . yii\helpers\Url::current(['allWithdrawals' => 0]) . '" class="btn btn-sm btn-warning r-0">Показать активные <i class="fas fa-eye"></i></a>';
                         }
                         else{
                             echo 'Ваши активные заявки на вывод денежных средств ';
-                            echo '<div class="col-12"><a href="' . Url::current(['allWithdrawals' => 1]) . '" class="btn btn-sm btn-warning r-0">Показать все <i class="fas fa-eye"></i></a>';
+                            echo '<div class="col-12"><a href="' . yii\helpers\Url::current(['allWithdrawals' => 1]) . '" class="btn btn-sm btn-warning r-0">Показать все <i class="fas fa-eye"></i></a>';
                         }
                         if(isset($admin) && $admin && (!isset($_GET['showTestWithdrawals']) || $_GET['showTestWithdrawals'] == 0) ){
-                            echo ' <a href="' . Url::current(['showTestWithdrawals' => 1]) . '" class="btn btn-sm btn-danger r-0 text-dark">Показать тестовые <i class="fas fa-fighter-jet"></i></a></div>';
+                            echo ' <a href="' . yii\helpers\Url::current(['showTestWithdrawals' => 1]) . '" class="btn btn-sm btn-danger r-0 text-dark">Показать тестовые <i class="fas fa-fighter-jet"></i></a></div>';
                         }
                         elseif(isset($admin) && $admin && isset($_GET['showTestWithdrawals']) && $_GET['showTestWithdrawals'] == 1){
-                            echo ' <a href="' . Url::current(['showTestWithdrawals' => 0]) . '" class="btn btn-sm btn-danger r-0 text-dark">Вернуть обычные <i class="fas fa-fighter-jet"></i></a></div>';
+                            echo ' <a href="' . yii\helpers\Url::current(['showTestWithdrawals' => 0]) . '" class="btn btn-sm btn-danger r-0 text-dark">Вернуть обычные <i class="fas fa-fighter-jet"></i></a></div>';
                         }
                     ?>
                 </caption>
@@ -193,7 +184,7 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body text-dark">' .
-                                        Html::encode($withdrawals[$i]['comment'])
+                                        yii\helpers\Html::encode($withdrawals[$i]['comment'])
                                         . '</div>
                                         </div>
                                     </div>
@@ -228,18 +219,18 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         $endI = min($startI + 4, $countButtons);
                     }
                     if($currentPage > 1){
-                        echo '<li class="page-item"><a class="page-link" href="' . Url::current(['withdrawalsPage' => $currentPage - 1]) . '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+                        echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['withdrawalsPage' => $currentPage - 1]) . '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
                     }
                     for($startI = 0; $i < $endI; $i++){
                         if($currentPage == $i + 1){
                             echo '<li class="page-item active" aria-current="page"><span class="page-link">' . $i+1 .'</span></li>';
                         }
                         else{
-                            echo '<li class="page-item"><a class="page-link" href="' . Url::current(['withdrawalsPage' => $i + 1]) . '">' . $i+1 . '</a></li>';
+                            echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['withdrawalsPage' => $i + 1]) . '">' . $i+1 . '</a></li>';
                         }
                     }
                     if($currentPage < $countButtons){
-                        echo '<li class="page-item"><a class="page-link" href="' . Url::current(['withdrawalsPage' => $currentPage + 1]) . '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
+                        echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['withdrawalsPage' => $currentPage + 1]) . '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
                     }
                     echo '</ul></nav>';
                     echo '</td></tr>';
@@ -260,10 +251,10 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                     <?php
                         echo 'Ваши начисления ' . $accrualsCount . ' шт.';
                         if(isset($admin) && $admin && (!isset($_GET['showTestAccruals']) || $_GET['showTestAccruals'] == 0) ){
-                            echo '<div class="col-12"><a href="' . Url::current(['showTestAccruals' => 1]) . '" class="btn btn-sm btn-danger r-0 text-dark">Показать тестовые <i class="fas fa-fighter-jet"></i></a></div>';
+                            echo '<div class="col-12"><a href="' . yii\helpers\Url::current(['showTestAccruals' => 1]) . '" class="btn btn-sm btn-danger r-0 text-dark">Показать тестовые <i class="fas fa-fighter-jet"></i></a></div>';
                         }
                         elseif(isset($admin) && $admin && isset($_GET['showTestAccruals']) && $_GET['showTestAccruals'] == 1){
-                            echo '<div class="col-12"><a href="' . Url::current(['showTestAccruals' => 0]) . '" class="btn btn-sm btn-danger r-0 text-dark">Вернуть обычные <i class="fas fa-fighter-jet"></i></a></div>';
+                            echo '<div class="col-12"><a href="' . yii\helpers\Url::current(['showTestAccruals' => 0]) . '" class="btn btn-sm btn-danger r-0 text-dark">Вернуть обычные <i class="fas fa-fighter-jet"></i></a></div>';
                         }
                     ?>
                 </caption>
@@ -316,18 +307,18 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         $endI = min($startI + 4, $countButtons);
                     }
                     if($currentPage > 1){
-                        echo '<li class="page-item"><a class="page-link" href="' . Url::current(['accrualsPage' => $currentPage - 1]) . '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
+                        echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['accrualsPage' => $currentPage - 1]) . '" aria-label="<"><span aria-hidden="true">&laquo;</span></a></li>';
                     }
                     for($i = $startI; $i < $endI; $i++){
                         if($currentPage == $i + 1){
                             echo '<li class="page-item active" aria-current="page"><span class="page-link">' . $i+1 .'</span></li>';
                         }
                         else{
-                            echo '<li class="page-item"><a class="page-link" href="' . Url::current(['accrualsPage' => $i + 1]) . '">' . $i+1 . '</a></li>';
+                            echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['accrualsPage' => $i + 1]) . '">' . $i+1 . '</a></li>';
                         }
                     }
                     if($currentPage < $countButtons){
-                        echo '<li class="page-item"><a class="page-link" href="' . Url::current(['accrualsPage' => $currentPage + 1]) . '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
+                        echo '<li class="page-item"><a class="page-link" href="' . yii\helpers\Url::current(['accrualsPage' => $currentPage + 1]) . '" aria-label=">"><span aria-hidden="true">&raquo;</span></a></li>';
                     }
                     echo '</ul></nav>';
                     echo '</td></tr>';
@@ -361,7 +352,7 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                     }
                 }
                 if(!empty($shop)){
-                    $form = ActiveForm::begin([
+                    $form = yii\widgets\ActiveForm::begin([
                         'id' => 'withdrawals-form',
                         'method' => 'post',
                         'options' => [
@@ -387,9 +378,9 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
                         'pattern' => '[0-9]{16}',
                         'placeholder' => 'Введите номер банковской карты',
                     ]);
-                    echo Html::hiddenInput('csrf', $csrf);
-                    echo Html::submitButton('Отправить', ['class' => 'btn btn-dark']);
-                    ActiveForm::end();
+                    echo yii\helpers\Html::hiddenInput('csrf', $csrf);
+                    echo yii\helpers\Html::submitButton('Отправить', ['class' => 'btn btn-dark']);
+                    yii\widgets\ActiveForm::end();
                 }
                 echo '</div>';
             }
@@ -397,18 +388,18 @@ if(isset($_GET['allWithdrawals']) && $_GET['allWithdrawals'] == 1){
         else{
             echo '<div class="text-dark text-center my-4 p-2 bg-light rounded col-12 col-lg-8 offset-lg-2 border">';
             echo '<legend>Для получения доступа к выводу ДС</legend>' . '<br>' . 'Необходимо привязать email к вашему аккаунту.';
-            echo Html::beginForm(['/lk/verify'], 'post');
-            echo Html::hiddenInput('target', 'email');
-            echo Html::hiddenInput('csrf', $csrf);
-            echo Html::submitButton('Приступить <i class="far fa-envelope"></i>', ['class' => 'btn btn-primary col-12 col-md-8 col-lg-6 mt-2 mb-2']);
-            echo Html::endForm();
+            echo yii\helpers\Html::beginForm(['/lk/verify'], 'post');
+            echo yii\helpers\Html::hiddenInput('target', 'email');
+            echo yii\helpers\Html::hiddenInput('csrf', $csrf);
+            echo yii\helpers\Html::submitButton('Приступить <i class="far fa-envelope"></i>', ['class' => 'btn btn-primary col-12 col-md-8 col-lg-6 mt-2 mb-2']);
+            echo yii\helpers\Html::endForm();
             echo '</div>';
         }
     ?>
 
 <script>
-let link = document.getElementById('sideBarFinLink');
-let button = document.getElementById('sideBarFinBtn');
-link.href = '#';
-button.disabled = true;
+    let link = document.getElementById('sideBarFinLink');
+    let button = document.getElementById('sideBarFinBtn');
+    link.href = '#';
+    button.disabled = true;
 </script>

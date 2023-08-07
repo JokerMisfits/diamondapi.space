@@ -2,22 +2,22 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\web\Response;
 use app\models\Users;
-use yii\widgets\ActiveForm;
-use yii\web\ForbiddenHttpException;
 
 class SiteController extends AppController{
 
-    public function beforeAction($action){
-
+    /**
+     * {@inheritdoc}
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
+     */
+    public function beforeAction($action) : bool{
         if($action->id == 'about'){//todo заглушка потом удалить
-            if(Yii::$app->authManager->checkAccess(Yii::$app->user->identity->id, 'admin')){
+            if(\Yii::$app->authManager->checkAccess(\Yii::$app->user->identity->id, 'admin')){
                 return parent::beforeAction($action);
             }
             else{
-                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+                throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
         return parent::beforeAction($action);
@@ -25,8 +25,9 @@ class SiteController extends AppController{
 
     /**
      * {@inheritdoc}
+     * @return array
      */
-    public function actions(){
+    public function actions() : array{
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction'
@@ -42,23 +43,24 @@ class SiteController extends AppController{
      * Displays homepage.
      *
      * @return string
+     * @throws \yii\web\ForbiddenHttpException
      */
-    public function actionIndex(){
-        throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
+    public function actionIndex() : string{
+        throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
         //return $this->render('index');
     }
 
     /**
      * Login action.
      *
-     * @return Response|string
+     * @return string|\yii\web\Response
      */
-    public function actionLogin(){
-        if(!Yii::$app->user->isGuest){
+    public function actionLogin() : string|\yii\web\Response{
+        if(!\Yii::$app->user->isGuest){
             return $this->goHome();
         }
         $model = new Users(['scenario' => 'login']);
-        if($model->load(Yii::$app->request->post())){
+        if($model->load(\Yii::$app->request->post())){
             if($model->validate()){
                 if($model->login()){
                     return $this->goBack();
@@ -66,30 +68,30 @@ class SiteController extends AppController{
                 else{
                     $model->password = '';
                     return $this->render('login', [
-                        'model' => $model,
+                        'model' => $model
                     ]);
                 }
             }
             else{
                 $model->password = '';
                 return $this->render('login', [
-                    'model' => $model,
+                    'model' => $model
                 ]);
             }
         }
 
         return $this->render('login', [
-            'model' => $model,
+            'model' => $model
         ]);
     }
 
     /**
      * Logout action.
      *
-     * @return Response
+     * @return \yii\web\Response
      */
-    public function actionLogout(){
-        Yii::$app->user->logout();
+    public function actionLogout() : \yii\web\Response{
+        \Yii::$app->user->logout();
         return $this->goHome();
     }
 
@@ -98,73 +100,68 @@ class SiteController extends AppController{
      *
      * @return string
      */
-    public function actionAbout(){
+    public function actionAbout() : string{
         return $this->render('about');
     }    
 
     /**
      * Displays signup page.
      *
-     * @return Response|string
+     * @return string|\yii\web\Response
      */
-    public function actionSignup(){
-        if(!Yii::$app->user->isGuest){
+    public function actionSignup() : string|\yii\web\Response{
+        if(!\Yii::$app->user->isGuest){
             return $this->goHome();
         }
         $model = new Users(['scenario' => 'signup']);
-        if(Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())){
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            return ActiveForm::validate($model);
+        if(\Yii::$app->request->isAjax && $model->load(\Yii::$app->request->post())){
+            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
+            return \yii\widgets\ActiveForm::validate($model);
         }
-        if($model->load(Yii::$app->request->post())){
-            if(isset(Yii::$app->request->post('Users')['password_repeat']) && Yii::$app->request->post('Users')['password_repeat'] === $model->password){
-                $model->auth_key = Yii::$app->security->generateRandomString(64);
+        if($model->load(\Yii::$app->request->post())){
+            if(isset(\Yii::$app->request->post('Users')['password_repeat']) && \Yii::$app->request->post('Users')['password_repeat'] === $model->password){
+                $model->auth_key = \Yii::$app->security->generateRandomString(64);
                 if($model->validate()){
-                    $model->password =  Yii::$app->security->generatePasswordHash($model->password);
-                    $authManager = Yii::$app->authManager;
+                    $model->password =  \Yii::$app->security->generatePasswordHash($model->password);
+                    $authManager = \Yii::$app->authManager;
                     if($model->save()){
                         $authManager->assign($authManager->getRole('user'), $model->id);
                         $login = new Users();
                         $login->username = $model->username;
                         $login->rememberMe = true;
                         return $this->render('login', [
-                            'model' => $login,
+                            'model' => $login
                         ]);
                     }
                     else{
-                        if(YII_ENV_DEV){
-                            AppController::debug($model->getErrors(), 1);
-                        }
-                        else{
-                            Yii::$app->session->setFlash('error', 'Произошла ошибка при регистрации');
-                        }                    
+                        \Yii::$app->session->setFlash('error', 'Произошла ошибка при регистрации');                 
                         $model->password = '';
                         $model->password_repeat = '';
                         return $this->render('signup', [
-                            'model' => $model,
+                            'model' => $model
                         ]);
                     }
                 }
                 else{
                     $model = new Users(['scenario' => 'signup']);
                     return $this->render('signup', [
-                        'model' => $model,
+                        'model' => $model
                     ]);
                 }
             }
             else{
-                Yii::$app->session->setFlash('error', 'Пароли должны совпадать');
+                \Yii::$app->session->setFlash('error', 'Пароли должны совпадать');
                 $model->password = '';
                 $model->password_repeat = '';
                 $model->auth_key = '';
                 return $this->render('signup', [
-                    'model' => $model,
+                    'model' => $model
                 ]);
             }
         }
         
         return $this->render('signup', [
-            'model' => $model,
+            'model' => $model
         ]);
     }
 }

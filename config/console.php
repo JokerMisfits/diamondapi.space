@@ -3,11 +3,6 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
-if(!isset($_SERVER['DB_DSN'])){
-    $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__FILE__) . '/../');
-    $dotenv->load();
-}
-
 $config = [
     'id' => 'basic-console',
     'basePath' => dirname(__DIR__),

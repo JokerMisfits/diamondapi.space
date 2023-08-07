@@ -3,21 +3,14 @@
 /** @var yii\web\View $this */
 /** @var string $content */
 
-use yii\web\View;
-use app\widgets\Alert;
-use yii\bootstrap5\Nav;
-use yii\bootstrap5\Html;
-use app\assets\AppAsset;
-use yii\bootstrap5\NavBar;
-
-AppAsset::register($this);
-$this->registerCssFile('@web/css/site.css', ['position' => View::POS_HEAD]);
-$this->registerCssFile('@web/css/lk.css', ['position' => View::POS_HEAD]);
+app\assets\AppAsset::register($this);
+$this->registerCssFile('@web/css/site.css', ['position' => $this::POS_HEAD]);
+$this->registerCssFile('@web/css/lk.css', ['position' => $this::POS_HEAD]);
 $this->registerCssFile('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css', [
     'crossorigin' => 'anonymous',
-    'position' => View::POS_HEAD,
+    'position' => $this::POS_HEAD,
 ]);
-$this->registerJsFile('@web/js/lk.js', ['position' => View::POS_HEAD]);
+$this->registerJsFile('@web/js/lk.js', ['position' => $this::POS_HEAD]);
 $this->registerCsrfMetaTags();
 $this->registerMetaTag(['charset' => Yii::$app->charset], 'charset');
 $this->registerMetaTag(['name' => 'viewport', 'content' => 'width=device-width, initial-scale=1, shrink-to-fit=no']);
@@ -30,7 +23,7 @@ $name = Yii::$app->name;
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language; ?>" class="h-100">
     <head>
-        <title><?= Html::encode($this->title); ?></title>
+        <title><?= yii\bootstrap5\Html::encode($this->title); ?></title>
         <?php $this->head() ?>
     </head>
     <body class="d-flex flex-column h-100">
@@ -47,19 +40,19 @@ $name = Yii::$app->name;
 
     <header id="header">
         <?php
-            NavBar::begin([
+            yii\bootstrap5\NavBar::begin([
                 'brandLabel' => '<span style="padding-left: 1.5rem;">' . $name . '</span>',
                 'brandUrl' => Yii::$app->homeUrl,
                 'options' => ['class' => 'navbar-expand-md navbar-dark fixed-top bg-dark row']
             ]);
-            echo Nav::widget([
+            echo yii\bootstrap5\Nav::widget([
                 'options' => ['class' => 'navbar-nav col-md-6 m-0 p-0 text-center'],
                 'items' => [
                     ['label' => 'Личный кабинет', 'url' => ['/lk']]
                 ]
             ]);
             if(isset(Yii::$app->user->identity->tg_member_id)){
-                echo Nav::widget([
+                echo yii\bootstrap5\Nav::widget([
                     'options' => ['class' => 'navbar-nav d-md-none m-0 p-0 text-center'],
                     'items' => [
                         ['label' => 'Главная', 'url' => ['/lk/index'], 'class' => ['d-block', 'd-md-none']],
@@ -71,23 +64,23 @@ $name = Yii::$app->name;
                     ]
                 ]);
             }
-            echo Nav::widget([
+            echo yii\bootstrap5\Nav::widget([
                 'options' => ['class' => 'navbar-nav d-flex justify-content-md-end col-md-6 text-center'],
                 'items' => [
                     Yii::$app->user->isGuest
                         ? ['label' => 'Войти', 'url' => ['/login']]
                         : '<li class="nav-item">'
-                        . Html::beginForm(['/logout'])
-                        . Html::submitButton((strlen(Yii::$app->user->identity->username) > 5) 
+                        . yii\bootstrap5\Html::beginForm(['/logout'])
+                        . yii\bootstrap5\Html::submitButton((strlen(Yii::$app->user->identity->username) > 5) 
                         ? 'Выйти<span class="d-none d-lg-inline">(' . Yii::$app->user->identity->username . ')</span>'
                         : 'Выйти(' . Yii::$app->user->identity->username . ')',
                             ['class' => 'nav-link btn btn-link logout text-center']
                         )
-                        . Html::endForm()
+                        . yii\bootstrap5\Html::endForm()
                         . '</li>'
                 ]
             ]);
-            NavBar::end();
+            yii\bootstrap5\NavBar::end();
         ?>
     </header>
 
@@ -111,7 +104,7 @@ $name = Yii::$app->name;
             }
         ?>
             <div id="contentInnerDiv" class="px-0 px-md-1" style="min-height: calc(100vh - 113px); margin-top: 56px;">
-                <?= Alert::widget(); ?>
+                <?= app\widgets\Alert::widget(); ?>
                 <?= $content; ?>
             </div>
             

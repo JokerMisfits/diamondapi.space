@@ -1,9 +1,7 @@
 <?php
 /** @var yii\web\View $this */
 /** @var app\models\Orders|array $model */
-
 $this->title = 'Платежи';
-
 ?>
 
 <style>
@@ -50,8 +48,8 @@ $this->title = 'Платежи';
 </div>
 
 <script>
-let link = document.getElementById('sideBarPayLink');
-let button = document.getElementById('sideBarPayBtn');
-link.href = '#';
-button.disabled = true;
+    let link = document.getElementById('sideBarPayLink');
+    let button = document.getElementById('sideBarPayBtn');
+    link.href = '#';
+    button.disabled = true;
 </script>

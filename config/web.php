@@ -3,11 +3,6 @@
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
-if(!isset($_SERVER['DB_DSN'])){
-    $dotenv = \Dotenv\Dotenv::createImmutable(dirname(__FILE__) . '/../');
-    $dotenv->load();
-}
-
 $config = [
     'id' => 'basic',
     'name' => 'diamondapi.space',
@@ -37,19 +32,19 @@ $config = [
             'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true
         ],
-        'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
-            'viewPath' => '@app/mail',
-            'useFileTransport' => false,
-            'transport' => [
-                'class' => 'Swift_SmtpTransport',
-                'host' => 'smtp.mail.ru', // Укажите адрес SMTP-сервера
-                'port' => '465', // Укажите порт SMTP-сервера
-                'encryption' => 'SSL', // Укажите метод шифрования, если необходимо
-                'username' => $_SERVER['EMAIL_ADMIN_LOGIN'], // Укажите имя пользователя для авторизации на SMTP-сервере
-                'password' => $_SERVER['EMAIL_ADMIN_PASSWORD'] // Укажите пароль для авторизации на SMTP-сервере
-            ],
-        ],
+        // 'mailer' => [
+        //     'class' => \yii\symfonymailer\Mailer::class,
+        //     'viewPath' => '@app/mail',
+        //     'useFileTransport' => false,
+        //     'transport' => [
+        //         'class' => 'Swift_SmtpTransport',
+        //         'host' => 'smtp.mail.ru', // Укажите адрес SMTP-сервера
+        //         'port' => '465', // Укажите порт SMTP-сервера
+        //         'encryption' => 'SSL', // Укажите метод шифрования, если необходимо
+        //         'username' => $_SERVER['EMAIL_ADMIN_LOGIN'],
+        //         'password' => $_SERVER['EMAIL_ADMIN_PASSWORD']
+        //     ],
+        // ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [

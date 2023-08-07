@@ -1,9 +1,7 @@
 <?php
 /** @var yii\web\View $this */
 /** @var app\models\Clients|array $model */
-
 $this->title = 'Каналы';
-
 ?>
 
 <style>

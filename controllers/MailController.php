@@ -2,39 +2,31 @@
 
 namespace app\controllers;
 
-use Yii;
-use yii\web\Response;
-use yii\web\ForbiddenHttpException;
+class MailController extends AppController{
 
-class SiteController extends AppController{
-
-    public function beforeAction($action){
+    /**
+     * {@inheritdoc}
+     * @return bool
+     * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
+     */
+    public function beforeAction($action) : bool{
         if($action->id == 'verify'){
-            $params = Yii::$app->request->get();
-            if(isset($params['user']) && isset($params['id']) && isset($params['token']) && isset($params['hash'])){
+            $params = \Yii::$app->request->get();
+            if(array_key_exists('user', $params) && array_key_exists('id', $params) && array_key_exists('token', $params) && array_key_exists('hash', $params)){
                 if(md5($_SERVER['API_KEY_0'] . $params['user'] . $params['id'] . $params['token'] . $_SERVER['API_KEY_1']) == $params['hash']){
                     return parent::beforeAction($action);
                 }
-                else{
-                    throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                }
-            }
-            else{
-                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
-        else{
-            throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
-        }
+        throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
     }
 
     /**
-     * Displays homepage.
      *
-     * @return string|Response
+     * @return \yii\web\Response
      */
-    public function actionVerify(){
-        Yii::$app->getSession()->setFlash('success', 'Почтовый адрес подтвержден.');
+    public function actionVerify() : \yii\web\Response{
+        \Yii::$app->getSession()->addFlash('success', 'Почтовый адрес подтвержден.');
         return $this->redirect(['lk/index']);
     }
 

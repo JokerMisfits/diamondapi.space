@@ -1,10 +1,6 @@
 <?php
-use yii\helpers\Url;
-use yii\widgets\ActiveForm;
-
 /** @var yii\web\View $this */
 /** @var Paykassa\PaykassaSCI $pk */
-
 $this->context->layout = 'telegram';
 $this->title = 'Страница оплаты ' . $params['shop'];
 if(isset($params['pk'])){
@@ -15,7 +11,7 @@ if(isset($params['pk'])){
 <div class="payment-index">
 <?php
     if(isset($config['robokassa'])){
-        echo '<a id="roboCardHref" href="' . Url::to(['/payment/route', 'method' => 'RoboKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']),
+        echo '<a id="roboCardHref" href="' . yii\helpers\Url::to(['/payment/route', 'method' => 'RoboKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']),
         'userId' => $params['userId'], 'days' => $params['days'], 'hash' => $params['hash']]) . '" target="_self">';
         echo '<button id="roboCardBtn" class="btn col-12" style="min-width: 180px; height: 64px; font-weight: 500;">';
         echo '<img src="' . Yii::getAlias('@web/images/card.svg') . '" alt="Банковская карта"> <span>Банковская карта</span><br>';
@@ -24,7 +20,7 @@ if(isset($params['pk'])){
         echo '</a>';
     }
     if(isset($config['paypall'])){
-        echo '<a id="payPallHref" href="' . Url::to(['/payment/route', 'method' => 'PayPall', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']),
+        echo '<a id="payPallHref" href="' . yii\helpers\Url::to(['/payment/route', 'method' => 'PayPall', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']),
         'userId' => $params['userId'], 'days' => $params['days'], 'hash' => $params['hash']]) . '" target="_self">';
         echo '<button class="btn col-12" style="min-width: 180px; height: 64px; font-weight: 500;">';
         echo '<span>Иностранные платежи (PayPall)</span>';
@@ -33,7 +29,7 @@ if(isset($params['pk'])){
     }
     if(isset($config['freekassa'])){
         echo '<br>';
-        echo '<a id="freeHref" href="' . Url::to(['/payment/route', 'method' => 'FreeKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']),
+        echo '<a id="freeHref" href="' . yii\helpers\Url::to(['/payment/route', 'method' => 'FreeKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']),
         'userId' => $params['userId'], 'days' => $params['days'], 'hash' => $params['hash']]) . '" target="_self">';
         echo '<button class="btn col-12" style="min-width: 180px; height: 64px; font-weight: 500;">';
         echo '<span>Другие способы оплаты<br>
@@ -42,7 +38,7 @@ if(isset($params['pk'])){
         echo '</a>';
     }
     if(isset($pk)){//toDO need to test on host
-        $form = ActiveForm::begin([
+        $form = yii\widgets\ActiveForm::begin([
             'id' => 'payCryptoHref',
             'action' => ['payment/route',  'method' => 'PayKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']), 'userId' => $params['userId'], 'days' => $params['days'], 'hash' => $params['hash']],
             'method' => 'post', // Метод HTTP-запроса
@@ -58,7 +54,7 @@ if(isset($params['pk'])){
         };
         echo '</select>';
         echo '<button id="payCryptoBtn" type="submit" class="btn col-12 mt-1" style="font-weight: 500;">Оплатить</button>';
-        ActiveForm::end();
+        yii\widgets\ActiveForm::end();
     }
     
     // if(isset($pk)){
