@@ -12,14 +12,6 @@ class SiteController extends AppController{
      * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
      */
     public function beforeAction($action) : bool{
-        if($action->id == 'about'){//todo заглушка потом удалить
-            if(\Yii::$app->authManager->checkAccess(\Yii::$app->user->identity->id, 'admin')){
-                return parent::beforeAction($action);
-            }
-            else{
-                throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-            }
-        }
         return parent::beforeAction($action);
     }
 
@@ -114,18 +106,13 @@ class SiteController extends AppController{
             return $this->goHome();
         }
         $model = new Users(['scenario' => 'signup']);
-        if(\Yii::$app->request->isAjax && $model->load(\Yii::$app->request->post())){
-            \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-            return \yii\widgets\ActiveForm::validate($model);
-        }
         if($model->load(\Yii::$app->request->post())){
             if(isset(\Yii::$app->request->post('Users')['password_repeat']) && \Yii::$app->request->post('Users')['password_repeat'] === $model->password){
                 $model->auth_key = \Yii::$app->security->generateRandomString(64);
                 if($model->validate()){
                     $model->password =  \Yii::$app->security->generatePasswordHash($model->password);
-                    $authManager = \Yii::$app->authManager;
                     if($model->save()){
-                        $authManager->assign($authManager->getRole('user'), $model->id);
+                        \Yii::$app->authManager->assign(\Yii::$app->authManager->getRole('user'), $model->id);
                         $login = new Users();
                         $login->username = $model->username;
                         $login->rememberMe = true;
@@ -134,7 +121,7 @@ class SiteController extends AppController{
                         ]);
                     }
                     else{
-                        \Yii::$app->session->setFlash('error', 'Произошла ошибка при регистрации');                 
+                        \Yii::$app->session->addFlash('error', 'Произошла ошибка при регистрации');                 
                         $model->password = '';
                         $model->password_repeat = '';
                         return $this->render('signup', [
@@ -150,7 +137,7 @@ class SiteController extends AppController{
                 }
             }
             else{
-                \Yii::$app->session->setFlash('error', 'Пароли должны совпадать');
+                \Yii::$app->session->addFlash('error', 'Пароли должны совпадать');
                 $model->password = '';
                 $model->password_repeat = '';
                 $model->auth_key = '';

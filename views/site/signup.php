@@ -12,19 +12,13 @@ $this->title = 'Регистрация';
             'method' => 'post',
             'options' => [
                 'autocomplete' => 'off'
-            ],
-            'enableClientValidation' => true, // Включение клиентской валидации формы
-            'enableAjaxValidation' => true, // Включение AJAX-валидации формы
-            'validateOnBlur' => true, // Валидация поля при потере фокуса
-            'validateOnChange' => false, // Валидация поля при изменении его значения
-            'validateOnType' => false, // Валидация поля во время его набора текста
-            'validateOnSubmit' => true // Валидация формы при отправке
+            ]
         ]);
         echo '<legend>Регистрация</legend>';
         echo '<hr class="mt-0 mb-4">';
         echo $form->field($model, 'username')->textInput(['minlength' => 5, 'maxlength' => 32, 'placeholder' => 'Введите ваш логин', 'class' => 'form-control']);
-        echo $form->field($model, 'password')->passwordInput(['enableAjaxValidation' => false, 'minlength' => 6, 'maxlength' => 64, 'placeholder' => 'Введите ваш пароль', 'class' => 'form-control']);
-        echo $form->field($model, 'password_repeat')->passwordInput(['enableAjaxValidation' => false, 'minlength' => 6, 'maxlength' => 64, 'placeholder' => 'Введите ваш пароль повторно', 'class' => 'form-control']);
+        echo $form->field($model, 'password')->passwordInput(['minlength' => 6, 'maxlength' => 64, 'placeholder' => 'Введите ваш пароль', 'class' => 'form-control']);
+        echo $form->field($model, 'password_repeat')->passwordInput(['minlength' => 6, 'maxlength' => 64, 'placeholder' => 'Введите ваш пароль повторно', 'class' => 'form-control']);
         echo yii\helpers\Html::submitButton('Зарегистрироваться', ['class' => 'btn btn-dark col-12 mt-0 mb-1']);
         yii\widgets\ActiveForm::end();
     ?>

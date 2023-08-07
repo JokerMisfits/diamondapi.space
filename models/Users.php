@@ -27,7 +27,7 @@ use yii\web\IdentityInterface;
 class Users extends ActiveRecord implements IdentityInterface{
     public string $password_repeat = '';
     public bool $rememberMe = true;
-    private static false|object $_user = false;
+    private static null|object $_user = null;
 
     /**
      * {@inheritdoc}
@@ -180,7 +180,7 @@ class Users extends ActiveRecord implements IdentityInterface{
     public function validateModelPassword(string $attribute){
         if(!$this->hasErrors()){
             self::getUser();
-            if(!self::$_user || !self::validatePassword($this->password)){
+            if(self::$_user === null || !self::validatePassword($this->password)){
                 $this->addError($attribute, 'Неправильное имя пользователя или пароль.');
             }
             else{
@@ -228,11 +228,8 @@ class Users extends ActiveRecord implements IdentityInterface{
      *
      */
     private function getUser() : void{
-        if(self::$_user === false){
+        if(self::$_user === null){
             self::$_user = self::findByUsername($this->username);
-            if(self::$_user === null){
-                self::$_user = false;
-            }
         }
     }
 }
