@@ -2,6 +2,6 @@
     "php.version": "8.2.7",
     "php.stubs": [
         "*",
-        "bc"
-    ]
+        "bc",
+    ],
 }

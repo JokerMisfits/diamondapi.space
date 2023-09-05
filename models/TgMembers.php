@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-
 /**
  * This is the model class for table "tg_members".
  *
@@ -21,7 +18,7 @@ use yii\db\ActiveRecord;
  * @property Users[] $users 
  * @property Withdrawals[] $withdrawals 
  */
-class TgMembers extends ActiveRecord{
+class TgMembers extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
@@ -57,7 +54,7 @@ class TgMembers extends ActiveRecord{
    /** 
     * Gets query for [[Clients]]. 
     * 
-    * @return ActiveQuery|ClientsQuery 
+    * @return \yii\db\ActiveQuery|ClientsQuery 
     */ 
     public function getClients(){ 
         return $this->hasMany(Clients::class, ['tg_member_id' => 'id']); 
@@ -66,7 +63,7 @@ class TgMembers extends ActiveRecord{
     /** 
      * Gets query for [[Orders]]. 
      * 
-     * @return ActiveQuery|OrdersQuery 
+     * @return \yii\db\ActiveQuery|OrdersQuery 
      */ 
     public function getOrders(){ 
         return $this->hasMany(Orders::class, ['tg_member_id' => 'id']); 
@@ -75,7 +72,7 @@ class TgMembers extends ActiveRecord{
     /** 
      * Gets query for [[Users]]. 
      * 
-     * @return ActiveQuery|UsersQuery 
+     * @return \yii\db\ActiveQuery|UsersQuery 
      */ 
     public function getUsers(){ 
         return $this->hasMany(Users::class, ['tg_member_id' => 'id']); 
@@ -84,7 +81,7 @@ class TgMembers extends ActiveRecord{
     /** 
      * Gets query for [[Withdrawals]]. 
      * 
-     * @return ActiveQuery|WithdrawalsQuery 
+     * @return \yii\db\ActiveQuery|WithdrawalsQuery 
      */ 
     public function getWithdrawals(){ 
         return $this->hasMany(Withdrawals::class, ['tg_member_id' => 'id']); 

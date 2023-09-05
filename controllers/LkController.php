@@ -5,7 +5,6 @@ namespace app\controllers;
 use app\models\Users;
 use app\models\Clients;
 use app\models\TgMembers;
-use app\models\VerifyEmail;
 use app\models\Withdrawals;
 
 class LkController extends AppController{
@@ -23,7 +22,7 @@ class LkController extends AppController{
                 'rules' => [
                     [
                         'allow' => true,
-                        'roles' => ['admin']//todo открыть после, заменить на user
+                        'roles' => ['admin']
                     ]
                 ]
             ],
@@ -113,20 +112,10 @@ class LkController extends AppController{
      * @return string
      */
     public function actionIndex() : string{
-        $model = new Users();
-        $model->id = \Yii::$app->user->identity->id;
-        $verify = $model->getVerifyEmails()->one();
-        if(!isset(\Yii::$app->user->identity->email) && isset($verify->email)){
-            return $this->render('index', [
-                'csrf' => \Yii::$app->session->get('csrf'),
-                'email' => $verify->email
-            ]);
-        }
-        else{
-            return $this->render('index', [
-                'csrf' => \Yii::$app->session->get('csrf')
-            ]);
-        }
+        return $this->render('index', [
+            'csrf' => \Yii::$app->session->get('csrf'),
+            'email' => \Yii::$app->user->identity->email
+        ]);
     }
 
     /**
@@ -439,7 +428,7 @@ class LkController extends AppController{
                                     }
                                     catch(\Exception|\Throwable $e){
                                         $transaction->rollBack();
-                                        \Yii::error('LkController Telegram verify ошибка во время обновления users: ' . $e->getMessage(), 'lk');
+                                        \Yii::error('LkController Telegram verify ошибка во время обновления users: ' . $e->getMessage());
                                         \Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
                                         return $this->render('verify', [
                                             'target' => 'telegram',
@@ -503,7 +492,7 @@ class LkController extends AppController{
                                     }
                                     catch(\Exception|\Throwable $e){
                                         $transaction->rollBack();
-                                        \Yii::error('LkController Telegram verify ошибка во время сохранения модели и обновления users: ' . $e->getMessage(), 'lk');
+                                        \Yii::error('LkController Telegram verify ошибка во время сохранения модели и обновления users: ' . $e->getMessage());
                                         \Yii::$app->getSession()->setFlash('error', 'Не удалось привязать telegram к вашему аккаунту.');
                                         return $this->render('verify', [
                                             'target' => 'telegram',
@@ -536,50 +525,28 @@ class LkController extends AppController{
                 }
             }
             elseif($params['target'] == 'email' && isset($params['email']) && !isset(\Yii::$app->user->identity->email)){
-                $model = new Users();
-                $model->id = \Yii::$app->user->identity->id;
-                $verify = $model->getVerifyEmails()->one();
-                if(isset($verify->email)){
+                if(isset(\Yii::$app->user->identity->email)){
                     throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
                 }
                 else{
-                    $model = new VerifyEmail();
                     $token = md5(uniqid(rand(), true));
-                    $model->email = trim($params['email']);
-                    $model->verify_code = $token;
-                    $model->user_id = \Yii::$app->user->identity->id;
-                    $transaction = VerifyEmail::getDb()->beginTransaction();
-                    if($model->validate()){
-                        if($model->save()){
-                            $query = new \yii\db\Query();
-                            $id = $query->select('id')
-                            ->from('verify_email')
-                            ->where(['user_id' => \Yii::$app->user->identity->id])
-                            ->orderBy(['id' => SORT_DESC])
-                            ->limit(1)
-                            ->scalar();
-                            $from = \Yii::$app->params['senderEmail'];
-                            $to = $params['email'];
-                            $subject = 'Подтверждение почтового адреса для ' . \Yii::$app->name;
-                            $message = 'Для подтверждения почтового адреса, перейдите по ссылке - '
-                            . 'https://' .  \Yii::$app->name . '/mail/verify?user=' . \Yii::$app->user->identity->id . '&id=' . $id . '&token=' . $token 
-                            . '&hash=' . md5($_SERVER['API_KEY_0'] . \Yii::$app->user->identity->id . $id . $token . $_SERVER['API_KEY_1']);
-                            if(AppController::sendMail($to, $subject, $message, $from)){
-                                $transaction->commit();
-                                \Yii::$app->getSession()->setFlash('success', 'Для подтверждения почтового адреса перейдите по ссылке из письма.');
-                            }
-                            else{
-                                $transaction->rollBack();
-                                \Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
-                            }
-                        }
-                        else{
-                            $transaction->rollBack();
-                            \Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
-                        }
+                    $cache = \Yii::$app->cache->get('emailVerify' . \Yii::$app->user->identity->id);
+                    if($cache === false){
+                        \Yii::$app->cache->set('emailVerify' . \Yii::$app->user->identity->id, $token, 36000);
                     }
                     else{
-                        $transaction->rollBack();
+                        throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
+                    }
+                    $from = \Yii::$app->params['senderEmail'];
+                    $to = $params['email'];
+                    $subject = 'Подтверждение почтового адреса для ' . \Yii::$app->name;
+                    $message = 'Для подтверждения почтового адреса, перейдите по ссылке - '
+                    . 'https://' .  \Yii::$app->name . '/mail/verify?user=' . \Yii::$app->user->identity->id . '&token=' . $token 
+                    . '&hash=' . md5($_SERVER['API_KEY_0'] . \Yii::$app->user->identity->id . $token . $_SERVER['API_KEY_1']);
+                    if(AppController::sendMail($to, $subject, $message, $from)){
+                        \Yii::$app->getSession()->setFlash('success', 'Для подтверждения почтового адреса перейдите по ссылке из письма.');
+                    }
+                    else{
                         \Yii::$app->getSession()->setFlash('error', 'Не удалось отправить письмо с проверочным кодом.');
                     }
                 }

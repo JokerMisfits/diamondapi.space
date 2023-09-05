@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[TgChats]].
  *
  * @see TgChats
  */
-class TgChatsQuery extends ActiveQuery{
+class TgChatsQuery extends \yii\db\ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

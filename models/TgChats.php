@@ -2,10 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-
 /**
  * This is the model class for table "tg_chats".
  *
@@ -22,7 +18,7 @@ use yii\db\ActiveRecord;
  * @property Clients $clients
  * @property Clients $clients0
  */
-class TgChats extends ActiveRecord{
+class TgChats extends \yii\db\ActiveRecord{
     
     /**
      * {@inheritdoc}
@@ -66,7 +62,7 @@ class TgChats extends ActiveRecord{
     /**
      * Gets query for [[Client]].
      *
-     * @return ActiveQuery|ClientsQuery
+     * @return \yii\db\ActiveQuery|ClientsQuery
      */
     public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
@@ -75,7 +71,7 @@ class TgChats extends ActiveRecord{
     /**
      * Gets query for [[Clients]].
      *
-     * @return ActiveQuery|ClientsQuery
+     * @return \yii\db\ActiveQuery|ClientsQuery
      */
     public function getClients(){
         return $this->hasOne(Clients::class, ['tg_chat_id' => 'id']);
@@ -84,7 +80,7 @@ class TgChats extends ActiveRecord{
     /**
      * Gets query for [[Clients0]].
      *
-     * @return ActiveQuery|ClientsQuery
+     * @return \yii\db\ActiveQuery|ClientsQuery
      */
     public function getClients0(){
         return $this->hasOne(Clients::class, ['tg_private_chat_id' => 'id']);

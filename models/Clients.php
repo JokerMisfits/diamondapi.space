@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-
 /**
  * This is the model class for table "clients".
  *
@@ -47,7 +44,7 @@ use yii\db\ActiveRecord;
  * @property TgChats $tgPrivateChat 
  * @property Withdrawals[] $withdrawals
  */
-class Clients extends ActiveRecord{
+class Clients extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
@@ -112,7 +109,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[BotConfigs]].
      *
-     * @return ActiveQuery|BotConfigsQuery
+     * @return \yii\db\ActiveQuery|BotConfigsQuery
      */
     public function getBotConfigs(){
         return $this->hasMany(BotConfigs::class, ['client_id' => 'id']);
@@ -121,7 +118,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[BotGifts]].
      *
-     * @return ActiveQuery|BotGiftsQuery
+     * @return \yii\db\ActiveQuery|BotGiftsQuery
      */
     public function getBotGifts(){
         return $this->hasMany(BotGifts::class, ['client_id' => 'id']);
@@ -130,7 +127,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[BotMembers]].
      *
-     * @return ActiveQuery|BotMembersQuery
+     * @return \yii\db\ActiveQuery|BotMembersQuery
      */
     public function getBotMembers(){
         return $this->hasMany(BotMembers::class, ['client_id' => 'id']);
@@ -139,7 +136,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[BotTexts]].
      *
-     * @return ActiveQuery|BotTextsQuery
+     * @return \yii\db\ActiveQuery|BotTextsQuery
      */
     public function getBotTexts(){
         return $this->hasMany(BotTexts::class, ['client_id' => 'id']);
@@ -148,7 +145,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[BotTickets]].
      *
-     * @return ActiveQuery|BotTicketsQuery
+     * @return \yii\db\ActiveQuery|BotTicketsQuery
      */
     public function getBotTickets(){
         return $this->hasMany(BotTickets::class, ['client_id' => 'id']);
@@ -157,7 +154,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[Orders]].
      *
-     * @return ActiveQuery|OrdersQuery
+     * @return \yii\db\ActiveQuery|OrdersQuery
      */
     public function getOrders(){
         return $this->hasMany(Orders::class, ['client_id' => 'id']);
@@ -166,7 +163,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[OrdersCompletes]].
      *
-     * @return ActiveQuery|OrdersCompleteQuery
+     * @return \yii\db\ActiveQuery|OrdersCompleteQuery
      */
     public function getOrdersCompletes(){
         return $this->hasMany(OrdersComplete::class, ['client_id' => 'id']);
@@ -182,7 +179,7 @@ class Clients extends ActiveRecord{
    /**
     * Gets query for [[TgChats]].
     *
-    * @return ActiveQuery|TgChatsQuery
+    * @return \yii\db\ActiveQuery|TgChatsQuery
     */
    public function getTgChats(){
        return $this->hasMany(TgChats::class, ['client_id' => 'id']);
@@ -190,7 +187,7 @@ class Clients extends ActiveRecord{
    /**
     * Gets query for [[TgMember]].
     *
-    * @return ActiveQuery|TgMembersQuery
+    * @return \yii\db\ActiveQuery|TgMembersQuery
     */
    public function getTgMember(){
        return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']);
@@ -198,7 +195,7 @@ class Clients extends ActiveRecord{
    /**
     * Gets query for [[TgPrivateChat]].
     *
-    * @return ActiveQuery|TgChatsQuery
+    * @return \yii\db\ActiveQuery|TgChatsQuery
     */
    public function getTgPrivateChat(){
        return $this->hasOne(TgChats::class, ['id' => 'tg_private_chat_id']);
@@ -207,7 +204,7 @@ class Clients extends ActiveRecord{
     /**
      * Gets query for [[Withdrawals]].
      *
-     * @return ActiveQuery|WithdrawalsQuery
+     * @return \yii\db\ActiveQuery|WithdrawalsQuery
      */
     public function getWithdrawals(){
         return $this->hasMany(Withdrawals::class, ['client_id' => 'id']);

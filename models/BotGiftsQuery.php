@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[BotGifts]].
  *
  * @see BotGifts
  */
-class BotGiftsQuery extends ActiveQuery{
+class BotGiftsQuery extends \yii\db\ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

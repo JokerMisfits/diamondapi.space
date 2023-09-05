@@ -2,11 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-use yii\web\IdentityInterface;
-
 /**
  * This is the model class for table "users".
  *
@@ -20,11 +15,10 @@ use yii\web\IdentityInterface;
  * @property string $last_activity Дата последней активности
  * @property string $registration_date Дата регистрации
  * @property int|null $tg_member_id ID tg_member
- * @property VerifyEmail[] $verifyEmails
  * 
  * @property TgMembers $tgMember
  */
-class Users extends ActiveRecord implements IdentityInterface{
+class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
     public string $password_repeat = '';
     public bool $rememberMe = true;
     private static null|object $_user = null;
@@ -94,20 +88,11 @@ class Users extends ActiveRecord implements IdentityInterface{
    /** 
     * Gets query for [[TgMember]]. 
     * 
-    * @return ActiveQuery|TgMembersQuery
+    * @return \yii\db\ActiveQuery|TgMembersQuery
     */ 
    public function getTgMember(){ 
        return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
    }
-
-   /**
-    * Gets query for [[VerifyEmails]].
-    *
-    * @return ActiveQuery|VerifyEmailQuery
-    */
-    public function getVerifyEmails(){
-        return $this->hasMany(VerifyEmail::class, ['user_id' => 'id']);
-    }
 
     /**
      * {@inheritdoc}
@@ -121,7 +106,7 @@ class Users extends ActiveRecord implements IdentityInterface{
      * {@inheritdoc}
      */
 
-    public static function findIdentity($id) : IdentityInterface|null{
+    public static function findIdentity($id) : \yii\web\IdentityInterface|null{
         return static::findOne($id);
     }
 
@@ -202,11 +187,11 @@ class Users extends ActiveRecord implements IdentityInterface{
      * @return bool if password provided is valid for current user
      */
     private function validatePassword($password) : bool{
-        return Yii::$app->security->validatePassword($password, self::$_user->password);
+        return \Yii::$app->security->validatePassword($password, self::$_user->password);
     }
 
     private static function generateAuthKey() : void{
-        self::$_user->updateAttributes(['auth_key' => Yii::$app->security->generateRandomString(64)]);
+        self::$_user->updateAttributes(['auth_key' => \Yii::$app->security->generateRandomString(64)]);
     }
 
     /**
@@ -217,7 +202,7 @@ class Users extends ActiveRecord implements IdentityInterface{
         if($this->validate()){
             self::getUser();
             if(self::$_user !== null){
-                return Yii::$app->user->login(self::$_user, $this->rememberMe ? 3600*24*30 : 0);
+                return \Yii::$app->user->login(self::$_user, $this->rememberMe ? 3600*24*30 : 0);
             }
         }
         return false;

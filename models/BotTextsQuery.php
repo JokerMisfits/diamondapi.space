@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[BotTexts]].
  *
  * @see BotTexts
  */
-class BotTextsQuery extends ActiveQuery{
+class BotTextsQuery extends \yii\db\ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

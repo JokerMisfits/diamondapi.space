@@ -25,7 +25,7 @@ class AppController extends \yii\web\Controller{
             'verbs' => [
                 'class' => \yii\filters\VerbFilter::class,
                 'actions' => [
-                    'logout' => ['post']
+                    'logout' => ['POST']
                 ]
             ]
         ];
@@ -171,7 +171,7 @@ class AppController extends \yii\web\Controller{
         curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/json'));
         $result = curl_exec($ch);
         if($result === false){
-            \Yii::error('Method: ' . $method . ' ,shop: ' . $shop . ', Curl ошибка отправки сообщения : ' .  curl_error($ch), 'curl');
+            \Yii::error('Method: ' . $method . ' ,shop: ' . $shop . ', Curl ошибка отправки сообщения : ' .  curl_error($ch));
         }
         curl_close($ch);
         return $result;

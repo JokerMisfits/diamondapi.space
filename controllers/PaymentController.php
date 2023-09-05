@@ -120,7 +120,7 @@ class PaymentController extends AppController{
                     ':is_test' => $isTest,
                     ':web_app' => $params['webApp'],
                     ':currency' => 'RUB',
-                    ':count_in_currency' => $count,
+                    ':count_in_currency' => $count
                 ];
                 try{
                     $result = \Yii::$app->db->createCommand($sql, $qParams)->execute();
@@ -150,16 +150,16 @@ class PaymentController extends AppController{
                             exit(0);
                         }
                         else{
-                            \Yii::error('Method robo db SELECT, не получилось извлечь ID: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                            \Yii::error('Method robo db SELECT, не получилось извлечь ID: ' . \Yii::$app->db->getSchema()->errorInfo());
                         }
                     }
                     else{
-                        \Yii::error('Method robo db, не получилось записать: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                        \Yii::error('Method robo db, не получилось записать: ' . \Yii::$app->db->getSchema()->errorInfo());
                     }
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
                 catch(\Exception|\Throwable $e){
-                    \Yii::error('Ошибка в PaymentController Route RoboKassa: ' . $e->getMessage(), 'payment');
+                    \Yii::error('Ошибка в PaymentController Route RoboKassa: ' . $e->getMessage());
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
             }
@@ -177,7 +177,7 @@ class PaymentController extends AppController{
                 try{
                     $result = \Paykassa\PaykassaCurrency::getCurrencyPairs([$pairs]);
                     if($result['error']){
-                        \Yii::error('Method pay не получилось получить курс валютной пары: ' . json_encode($result['message']), 'payment');
+                        \Yii::error('Method pay не получилось получить курс валютной пары: ' . json_encode($result['message']));
                         throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                     }
                     else{
@@ -194,7 +194,7 @@ class PaymentController extends AppController{
                             ':is_test' => $isTest,
                             ':web_app' => $params['webApp'],
                             ':currency' => strtoupper($currency),
-                            ':count_in_currency' => $count,
+                            ':count_in_currency' => $count
                         ];
                         $result = \Yii::$app->db->createCommand($sql, $qParams)->execute();
                         if($result !== false){
@@ -212,28 +212,28 @@ class PaymentController extends AppController{
                                     $system,
                                     $currency,
                                     $invId,
-                                    $params['shop'] . ' ' . $name . ' ' .$params['hash'],
+                                    $params['shop'] . ' ' . $name . ' ' . $params['hash'],
                                 );
                                 if($result['error']){
-                                    \Yii::error('Method pay не получилось создать заказ в PayKassa: ' . json_encode($result['message']), 'payment');
+                                    \Yii::error('Method pay не получилось создать заказ в PayKassa: ' . json_encode($result['message']));
                                 }
                                 else{
-                                    \Yii::$app->getResponse()->redirect($result["data"]["url"])->send();
+                                    \Yii::$app->getResponse()->redirect($result['data']['url'])->send();
                                     exit(0);                  
                                 }
                             }
                             else{
-                                \Yii::error('Method pay db SELECT, не получилось извлечь ID: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                                \Yii::error('Method pay db SELECT, не получилось извлечь ID: ' . \Yii::$app->db->getSchema()->errorInfo());
                             }
                         }
                         else{
-                            \Yii::error('Method pay db, не получилось записать: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                            \Yii::error('Method pay db, не получилось записать: ' . \Yii::$app->db->getSchema()->errorInfo());
                         }
                     }
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
                 catch(\Exception|\Throwable $e){
-                    \Yii::error('Ошибка в PaymentController Route PayKassa: ' . $e->getMessage(), 'payment');
+                    \Yii::error('Ошибка в PaymentController Route PayKassa: ' . $e->getMessage());
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
             }
@@ -257,7 +257,7 @@ class PaymentController extends AppController{
                     ':is_test' => $isTest,
                     ':web_app' => $params['webApp'],
                     ':currency' => 'RUB',
-                    ':count_in_currency' => $count,
+                    ':count_in_currency' => $count
                 ];
                 try{
                     $result = \Yii::$app->db->createCommand($sql, $qParams)->execute();
@@ -277,16 +277,16 @@ class PaymentController extends AppController{
                             exit(0);
                         }
                         else{
-                            \Yii::error('Method free db SELECT, не получилось извлечь ID: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                            \Yii::error('Method free db SELECT, не получилось извлечь ID: ' . \Yii::$app->db->getSchema()->errorInfo());
                         }
                     }
                     else{
-                        \Yii::error('Method free db, не получилось записать: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                        \Yii::error('Method free db, не получилось записать: ' . \Yii::$app->db->getSchema()->errorInfo());
                     }
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
                 catch(\Exception|\Throwable $e){
-                    \Yii::error('Ошибка в PaymentController Route FreeKassa: ' . $e->getMessage(), 'payment');
+                    \Yii::error('Ошибка в PaymentController Route FreeKassa: ' . $e->getMessage());
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
             }
@@ -347,28 +347,28 @@ class PaymentController extends AppController{
                                     'Authorization' => 'Bearer ' . $accessToken
                                 ];
                                 $data = [
-                                    "intent" => "CAPTURE",// Формируем данные для запроса
+                                    "intent" => 'CAPTURE',
                                     "purchase_units" => [
                                         [
-                                            "reference_id" => $invId,//ID платежа УНИКАЛЬНЫЙ
+                                            "reference_id" => $invId,
                                             "amount" => [
-                                                "currency_code" => "RUB",//Валюта платежа
-                                                "value" => $count// $count Сумма платежа
+                                                "currency_code" => 'RUB',
+                                                "value" => $count
                                             ]
                                         ]
                                     ],
                                     "payment_source" => [
                                         "paypal" => [
                                             "experience_context" => [
-                                                "payment_method_preference" => "IMMEDIATE_PAYMENT_REQUIRED",
-                                                "payment_method_selected" => "PAYPAL", //PAYPAL
-                                                "brand_name" => $params['shop'], //Название магазина
-                                                "locale" => "en-US",//ru-Ru
-                                                "landing_page" => "LOGIN",
-                                                "shipping_preference" => "NO_SHIPPING",//без доставки
-                                                "user_action" => "PAY_NOW",//оплата сразу
-                                                "return_url" => "https://diamondapi.space/success.php",//Страница успешной оплаты
-                                                "cancel_url" => "https://diamondapi.space/fail.php"//Страница fail
+                                                "payment_method_preference" => 'IMMEDIATE_PAYMENT_REQUIRED',
+                                                "payment_method_selected" => 'PAYPAL',
+                                                "brand_name" => $params['shop'],
+                                                "locale" => 'en-US',//ru-Ru
+                                                "landing_page" => 'LOGIN',
+                                                "shipping_preference" => 'NO_SHIPPING',
+                                                "user_action" => 'PAY_NOW',
+                                                "return_url" => \Yii::$app->params['host'] . 'success.php',
+                                                "cancel_url" => \Yii::$app->params['host'] . '/fail.php'
                                             ]
                                         ]
                                     ]
@@ -408,11 +408,11 @@ class PaymentController extends AppController{
                             }
                         }
                         else{
-                            \Yii::error('Method paypal db, не получилось записать INSERT: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                            \Yii::error('Method paypal db, не получилось записать INSERT: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                         }
                     }
                     catch(\Exception|\Throwable $e){
-                        \Yii::error('Ошибка в PaymentController paypal: ' . $e->getMessage() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                        \Yii::error('Ошибка в PaymentController paypal: ' . $e->getMessage() . PHP_EOL . ' Параметры: ' . json_encode($params));
                         throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                     }
                 }
@@ -497,11 +497,9 @@ class PaymentController extends AppController{
                                                 ->send();
                                                 if($response->isOk){
                                                     echo $id . '|success';//Todo если тг отправить ответ answer web app query
-                                                    AppController::debug($response->getData(), 1);
                                                     exit(0);
                                                 }
                                                 else{//Todo ЕСТЬ ТАКАЯ МЫСЛЬ, ЧТО ЕСЛИ ДОЛГО НЕ ПОДТВЕРЖДАТЬ, PAYPAL ШЛЕТ НАС
-                                                    AppController::debug($response->getData(), 1);
                                                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);//Todo rollback + message
                                                 }
                                             }
@@ -538,7 +536,7 @@ class PaymentController extends AppController{
                 }
             }
             catch(\Exception|\Throwable $e){
-                \Yii::error('Ошибка в PaymentController Confirmation: ' . $e->getMessage(), 'payment');
+                \Yii::error('Ошибка в PaymentController Confirmation: ' . $e->getMessage());
                 throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
@@ -571,7 +569,7 @@ class PaymentController extends AppController{
                     $crc= md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][0]);
                 }
                 if($params['SignatureValue'] != $crc){//Валидация crc
-                    \Yii::error('Method RoboKassa|Success crc: ' . json_encode($params), 'payment');
+                    \Yii::error('Method RoboKassa|Success crc: ' . json_encode($params));
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
                 if($result['status'] == 1){//Todo написать JS закрытия окна если доступен webapp
@@ -593,7 +591,7 @@ class PaymentController extends AppController{
                     }
                     else{
                         echo $invId . '|Fail';
-                        \Yii::error('Method RoboKassa|Success db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                        \Yii::error('Method RoboKassa|Success db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                         $data = [
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
@@ -604,7 +602,7 @@ class PaymentController extends AppController{
                 }
             }
             else{
-                \Yii::error('Method RoboKassa|Success db, не получилось извлечь заказ: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                \Yii::error('Method RoboKassa|Success db, не получилось извлечь заказ: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                 throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
@@ -621,7 +619,7 @@ class PaymentController extends AppController{
                 $config = AppController::getConfig($shop, false, 'paykassa')['paykassa'];
                 $crc = array($params['amount'], $config['merchant_id'], $params['order_id'], $params['status'], $config['merchant_password']);
                 if(md5(implode(':', $crc) != $params['sign'])){
-                    \Yii::error('Method PayKassa|Success crc: ' . json_encode($params), 'payment');
+                    \Yii::error('Method PayKassa|Success crc: ' . json_encode($params));
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
                 if($result['status'] == 1){//Todo написать JS закрытия окна если доступен webapp
@@ -643,7 +641,7 @@ class PaymentController extends AppController{
                     }
                     else{
                         echo $invId . '|Fail';
-                        \Yii::error('Method PayKassa|Success db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                        \Yii::error('Method PayKassa|Success db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                         $data = [
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
@@ -654,7 +652,7 @@ class PaymentController extends AppController{
                 }
             }
             else{
-                \Yii::error('Method PayKassa|Success db, не получилось извлечь заказ: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                \Yii::error('Method PayKassa|Success db, не получилось извлечь заказ: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                 throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
@@ -688,7 +686,7 @@ class PaymentController extends AppController{
                     }
                     else{
                         echo $invId . '|Fail';
-                        \Yii::error('Method FreeKassa|Success db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                        \Yii::error('Method FreeKassa|Success db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                         $data = [
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
@@ -699,7 +697,7 @@ class PaymentController extends AppController{
                 }
             }
             else{
-                \Yii::error('Method FreeKassa|Success db, не получилось извлечь заказ: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                \Yii::error('Method FreeKassa|Success db, не получилось извлечь заказ: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                 throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
@@ -737,7 +735,7 @@ class PaymentController extends AppController{
                 }
                 if($params['crc'] != $crc){//Валидация crc
                     echo 'OK' . $invId . '\n';
-                    \Yii::error('Method RoboKassa|Result crc: ' . json_encode($params), 'payment');
+                    \Yii::error('Method RoboKassa|Result crc: ' . json_encode($params));
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
                 else{
@@ -753,7 +751,7 @@ class PaymentController extends AppController{
                         AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
                     }
                     else{
-                        \Yii::error('Method RoboKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                        \Yii::error('Method RoboKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                     }
                 }
                 exit(0);
@@ -785,7 +783,7 @@ class PaymentController extends AppController{
                 $result = $paykassa->checkOrderIpn($params['private_hash']);
                 if($result['error']){
                     echo $invId . '|success';
-                    \Yii::error('Method PayKassa|Result crc: ' . json_encode($result['message']), 'payment');
+                    \Yii::error('Method PayKassa|Result crc: ' . json_encode($result['message']));
                     exit(0);
                 }
                 else{
@@ -801,7 +799,7 @@ class PaymentController extends AppController{
                         AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
                     }
                     else{
-                        \Yii::error('Method PayKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                        \Yii::error('Method PayKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                     }
                 }
                 exit(0);
@@ -833,7 +831,7 @@ class PaymentController extends AppController{
                 $days = $result['access_days'];
                 if($params['SIGN'] != md5($params['MERCHANT_ID'] . ':' . $params['AMOUNT'] . ':' . AppController::getConfig($shop, false, 'freekassa')['freekassa']['secret'][1] . ':' . $params['MERCHANT_ORDER_ID'])){//CRC
                     echo 'OK' . $invId . '\n';
-                    \Yii::error('Method FreeKassa|Result crc: ' . json_encode($params), 'payment');
+                    \Yii::error('Method FreeKassa|Result crc: ' . json_encode($params));
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                 }
                 else{
@@ -849,7 +847,7 @@ class PaymentController extends AppController{
                         AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
                     }
                     else{
-                        \Yii::error('Method FreeKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params), 'payment');
+                        \Yii::error('Method FreeKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                     }
                     exit(0);
                 }
@@ -896,7 +894,7 @@ class PaymentController extends AppController{
                 AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
             }
             else{
-                \Yii::error('Method robo|Fail db SELECT, не получилось извлечь shop, web_app_query_id: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                \Yii::error('Method robo|Fail db SELECT, не получилось извлечь shop, web_app_query_id: ' . \Yii::$app->db->getSchema()->errorInfo());
             }
             exit(0);
         }
@@ -916,12 +914,12 @@ class PaymentController extends AppController{
                 AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
             }
             else{
-                \Yii::error('Method pay|Fail db SELECT, не получилось извлечь shop, web_app_query_id: ' . \Yii::$app->db->getSchema()->errorInfo(), 'payment');
+                \Yii::error('Method pay|Fail db SELECT, не получилось извлечь shop, web_app_query_id: ' . \Yii::$app->db->getSchema()->errorInfo());
             }
             exit(0);
         }
         else{
-            \Yii::debug('Отладка Payment|Fail POST: ' . json_encode($_POST) . ' GET: ' . json_encode($_GET), 'payment');
+            \Yii::error('Отладка Payment|Fail POST: ' . json_encode($_POST) . ' GET: ' . json_encode($_GET));
             echo 'Fail';
             exit(0);
         }
@@ -940,12 +938,12 @@ class PaymentController extends AppController{
                     [  
                         [
                             'text' => 'Нажмите, чтобы активировать услугу',
-                            'callback_data' => 'Success' . $days,
-                        ],
+                            'callback_data' => 'Success' . $days
+                        ]
                     ]
                 ],
-                'resize_keyboard' => true,
-            ],
+                'resize_keyboard' => true
+            ]
         ];
     }
 
@@ -969,11 +967,11 @@ class PaymentController extends AppController{
             ->bindValue(':order_id', $invId)
             ->execute();
             if($result === false){
-                \Yii::error('Method ' . $method . '|orderComplete db, Ошибка записи| ' . ' Параметры: ' . json_encode([$invId, $shop, $method, $fee, $paymentMethod], 1), 'test');
+                \Yii::error('Method ' . $method . '|orderComplete db, Ошибка записи| ' . ' Параметры: ' . json_encode([$invId, $shop, $method, $fee, $paymentMethod], 1));
             }
         }
         else{
-            \Yii::error('Method ' . $method . '|orderComplete db, повторное срабатывание| ' . ' Параметры: ' . json_encode([$invId, $shop, $method, $fee, $paymentMethod], 1), 'test');
+            \Yii::error('Method ' . $method . '|orderComplete db, повторное срабатывание| ' . ' Параметры: ' . json_encode([$invId, $shop, $method, $fee, $paymentMethod], 1));
         }
     }
 

@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-
 /**
  * This is the model class for table "orders".
  *
@@ -31,7 +28,7 @@ use yii\db\ActiveRecord;
  * @property OrdersComplete[] $ordersCompletes
  * @property TgMembers $tgMember 
  */
-class Orders extends ActiveRecord{
+class Orders extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
@@ -86,7 +83,7 @@ class Orders extends ActiveRecord{
     /**
      * Gets query for [[Client]].
      *
-     * @return ActiveQuery|ClientsQuery
+     * @return \yii\db\ActiveQuery|ClientsQuery
      */
     public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
@@ -95,7 +92,7 @@ class Orders extends ActiveRecord{
     /**
      * Gets query for [[OrdersCompletes]].
      *
-     * @return ActiveQuery|OrdersCompleteQuery
+     * @return \yii\db\ActiveQuery|OrdersCompleteQuery
      */
     public function getOrdersCompletes(){
         return $this->hasMany(OrdersComplete::class, ['order_id' => 'id']);
@@ -104,7 +101,7 @@ class Orders extends ActiveRecord{
    /** 
     * Gets query for [[TgMember]]. 
     * 
-    * @return ActiveQuery|TgMembersQuery 
+    * @return \yii\db\ActiveQuery|TgMembersQuery 
     */ 
    public function getTgMember(){ 
        return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 

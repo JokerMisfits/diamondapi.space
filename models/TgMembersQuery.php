@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[TgMembers]].
  *
  * @see TgMembers
  */
-class TgMembersQuery extends ActiveQuery{
+class TgMembersQuery extends \yii\db\ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

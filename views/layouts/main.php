@@ -12,7 +12,7 @@ $this->registerMetaTag(['name' => 'keywords', 'content' => $this->params['meta_k
 $this->registerLinkTag(['rel' => 'icon', 'type' => 'image/png', 'href' => Yii::getAlias('@web/images/favicon.png')]);
 $name = Yii::$app->name;
 ?>
-<?php $this->beginPage() ?>
+<?php $this->beginPage(); ?>
 <!DOCTYPE html>
 <html lang="<?= Yii::$app->language; ?>" class="h-100">
     <head>
@@ -56,15 +56,15 @@ $name = Yii::$app->name;
         ?>
     </header>
 
-    <main id="main" class="flex-shrink-0" role="main" style="margin-top: 56px">
+    <main id="main" class="flex-shrink-0 col-12" role="main" style="margin-top: 56px;">
             <?= app\widgets\Alert::widget(); ?>
             <?= $content; ?>
     </main>
 
-    <footer id="footer" class="mt-auto py-3 bg-light border-top">
+    <footer id="footer" class="mt-auto py-3 bg-dark border-top border-dark">
         <div class="container">
             <div class="row text-dark">
-                <div class="col-12 text-dark text-center">&copy; <?= date('Y') . ' Copyright: ' . $name; ?></div>
+                <div class="col-12 text-light text-center">&copy; <?= date('Y') . ' Copyright: ' . $name; ?></div>
             </div>
         </div>
     </footer>

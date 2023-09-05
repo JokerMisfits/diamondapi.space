@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[Orders]].
  *
  * @see Orders
  */
-class OrdersQuery extends ActiveQuery{
+class OrdersQuery extends \yii\db\ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[BotTickets]].
  *
  * @see BotTickets
  */
-class BotTicketsQuery extends ActiveQuery{
+class BotTicketsQuery extends \yii\db\ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

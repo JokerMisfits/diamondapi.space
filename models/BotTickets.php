@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-
 /**
  * This is the model class for table "bot_tickets".
  *
@@ -18,7 +15,7 @@ use yii\db\ActiveRecord;
  *
  * @property Clients $client
  */
-class BotTickets extends ActiveRecord{
+class BotTickets extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
@@ -35,7 +32,7 @@ class BotTickets extends ActiveRecord{
             [['tg_user_id', 'member_id', 'client_id'], 'integer'],
             [['tickets'], 'string'],
             [['shop', 'tag'], 'string', 'max' => 255],
-            [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']],
+            [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']]
         ];
     }
 
@@ -50,14 +47,14 @@ class BotTickets extends ActiveRecord{
             'tag' => '//tg_username',
             'tickets' => '//ПОДУМАТЬ как не удалять',
             'member_id' => '//CДЕЛАТЬ ОТДЕЛЬНУЮ ТАБЛИЦУ С МЕМБАРАМИ И СВЯЗАТЬ',
-            'client_id' => 'ID клиента',
+            'client_id' => 'ID клиента'
         ];
     }
 
     /**
      * Gets query for [[Client]].
      *
-     * @return ActiveQuery|ClientsQuery
+     * @return \yii\db\ActiveQuery|ClientsQuery
      */
     public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);

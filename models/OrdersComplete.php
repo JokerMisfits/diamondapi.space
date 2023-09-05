@@ -2,8 +2,6 @@
 
 namespace app\models;
 
-use Yii;
-
 /**
  * This is the model class for table "orders_complete".
  *
@@ -18,7 +16,7 @@ use Yii;
  * @property Clients $client
  * @property Orders $order
  */
-class OrdersComplete extends yii\db\ActiveRecord{
+class OrdersComplete extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
@@ -37,7 +35,7 @@ class OrdersComplete extends yii\db\ActiveRecord{
             [['shop', 'payment_method'], 'string', 'max' => 255],
             [['method'], 'string', 'max' => 25],
             [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']],
-            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::class, 'targetAttribute' => ['order_id' => 'id']],
+            [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::class, 'targetAttribute' => ['order_id' => 'id']]
         ];
     }
 

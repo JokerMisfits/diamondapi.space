@@ -2,9 +2,6 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
-
 /**
  * This is the model class for table "bot_configs".
  *
@@ -26,7 +23,7 @@ use yii\db\ActiveRecord;
  *
  * @property Clients $client
  */
-class BotConfigs extends ActiveRecord{
+class BotConfigs extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
      */
@@ -45,7 +42,7 @@ class BotConfigs extends ActiveRecord{
             [['lastChange'], 'safe'],
             [['shop', 'chatLink', 'chatId', 'privateChatLink', 'privateChatId', 'baseRole'], 'string', 'max' => 255],
             [['shop'], 'unique'],
-            [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']],
+            [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']]
         ];
     }
 
@@ -68,14 +65,14 @@ class BotConfigs extends ActiveRecord{
             'baseRole' => '//ИЗМЕНИТЬ НАЗВАНИЕ НА defaultRoleName',
             'options' => 'Json строка опций',
             'lastChange' => 'Последнее изминение',
-            'client_id' => 'ID клиента',
+            'client_id' => 'ID клиента'
         ];
     }
 
     /**
      * Gets query for [[Client]].
      *
-     * @return ActiveQuery|ClientsQuery
+     * @return\yii\db\ActiveQuery|ClientsQuery
      */
     public function getClient(){
         return $this->hasOne(Clients::class, ['id' => 'client_id']);

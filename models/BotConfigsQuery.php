@@ -2,17 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
 /**
  * This is the ActiveQuery class for [[BotConfigs]].
  *
  * @see BotConfigs
  */
-class BotConfigsQuery extends ActiveQuery{
-    /*public function active()
-    {
-        return $this->andWhere('[[status]]=1');
-    }*/
+class BotConfigsQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}

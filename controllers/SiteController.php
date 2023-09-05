@@ -1,5 +1,4 @@
 <?php
-
 namespace app\controllers;
 
 use app\models\Users;
@@ -24,10 +23,6 @@ class SiteController extends AppController{
             'error' => [
                 'class' => 'yii\web\ErrorAction'
             ],
-            'captcha' => [
-                'class' => 'yii\captcha\CaptchaAction',
-                'fixedVerifyCode' => null
-            ]
         ];
     }
 
@@ -38,8 +33,10 @@ class SiteController extends AppController{
      * @throws \yii\web\ForbiddenHttpException
      */
     public function actionIndex() : string{
+        if(\Yii::$app->user->can('admin')){//ЗАГЛУШКА
+            return $this->render('index');
+        }
         throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
-        //return $this->render('index');
     }
 
     /**
@@ -85,16 +82,7 @@ class SiteController extends AppController{
     public function actionLogout() : \yii\web\Response{
         \Yii::$app->user->logout();
         return $this->goHome();
-    }
-
-    /**
-     * Displays about page.
-     *
-     * @return string
-     */
-    public function actionAbout() : string{
-        return $this->render('about');
-    }    
+    }  
 
     /**
      * Displays signup page.
@@ -102,6 +90,9 @@ class SiteController extends AppController{
      * @return string|\yii\web\Response
      */
     public function actionSignup() : string|\yii\web\Response{
+        if(!\Yii::$app->user->can('admin')){//ЗАГЛУШКА
+            return $this->render('index');
+        }
         if(!\Yii::$app->user->isGuest){
             return $this->goHome();
         }

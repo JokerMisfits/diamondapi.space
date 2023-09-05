@@ -2,14 +2,12 @@
 
 namespace app\models;
 
-use yii\db\ActiveQuery;
-
 /**
  * This is the ActiveQuery class for [[BotMembers]].
  *
  * @see BotMembers
  */
-class BotMembersQuery extends ActiveQuery{
+class BotMembersQuery extends \yii\db\ActiveQuery{
     /*public function active()
     {
         return $this->andWhere('[[status]]=1');

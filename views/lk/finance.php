@@ -87,7 +87,7 @@ if(array_key_exists('allWithdrawals', $_GET) && $_GET['allWithdrawals'] == 1){
                     }
                     if($clientsCount > 5){
                         echo '<tr><td colspan=5>';
-                        $countButtons = ceil($clientsCount / 5);
+                        $countButtons = $clientsCount / 5;
                         echo '<nav aria-label="..."><ul class="pagination justify-content-center mb-0">';
                         if(!isset($_GET['clientsPage'])){
                             $currentPage = 1;
@@ -204,7 +204,7 @@ if(array_key_exists('allWithdrawals', $_GET) && $_GET['allWithdrawals'] == 1){
                 }
                 if($withdrawalsCount > 25){
                     echo '<tr><td class="text-nowrap" colspan=5>';
-                    $countButtons = ceil($withdrawalsCount / 25);
+                    $countButtons = $withdrawalsCount / 25;
                     echo '<nav aria-label="..."><ul class="pagination justify-content-center mb-0">';
                     if(!isset($_GET['withdrawalsPage'])){
                         $currentPage = 1;
@@ -281,18 +281,6 @@ if(array_key_exists('allWithdrawals', $_GET) && $_GET['allWithdrawals'] == 1){
                 }
                 if($accrualsCount > 25){
                     echo '<tr><td class="text-nowrap" colspan=5>';
-                    if($countArr > 25){
-                        $countButtons = ceil($accrualsCount / $countArr);
-                        $_GET['accrualsFirstPageCount'] = $countArr;
-                    }
-                    else{
-                        if(isset($_GET['accrualsFirstPageCount']) && $_GET['accrualsFirstPageCount'] > 25){
-                            $countButtons = ceil($accrualsCount / $_GET['accrualsFirstPageCount']);
-                        }
-                        else{
-                            $countButtons = ceil($accrualsCount / 25);
-                        }
-                    }
                     echo '<nav aria-label="..."><ul class="pagination justify-content-center mb-0">';
                     if(!isset($_GET['accrualsPage'])){
                         $currentPage = 1;
@@ -301,8 +289,9 @@ if(array_key_exists('allWithdrawals', $_GET) && $_GET['allWithdrawals'] == 1){
                         $currentPage = $_GET['accrualsPage'];
                     }
                     $startI = 0;
+                    $countButtons = $accrualsCount / 25;
                     $endI = $countButtons;
-                    if($countButtons > 10){
+                    if($endI > 10){
                         $startI = max($currentPage - 2, 1);
                         $endI = min($startI + 4, $countButtons);
                     }
