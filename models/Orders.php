@@ -31,15 +31,19 @@ namespace app\models;
 class Orders extends \yii\db\ActiveRecord{
     /**
      * {@inheritdoc}
+     * 
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'orders';
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['tg_user_id', 'count', 'method', 'shop', 'access_days', 'client_id'], 'required'],
             [['tg_user_id', 'status', 'count', 'access_days', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
@@ -56,8 +60,10 @@ class Orders extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'tg_user_id' => 'ID пользователя в telegram',

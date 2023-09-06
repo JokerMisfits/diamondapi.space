@@ -37,16 +37,16 @@ if(isset($params['pk'])){
         echo '</button>';
         echo '</a>';
     }
-    if(isset($pk)){//toDO need to test on host
+    if(isset($pk)){
         $form = yii\widgets\ActiveForm::begin([
             'id' => 'payCryptoHref',
             'action' => ['payment/route',  'method' => 'PayKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']), 'userId' => $params['userId'], 'days' => $params['days'], 'hash' => $params['hash']],
-            'method' => 'post', // Метод HTTP-запроса
+            'method' => 'post',
         ]);
         echo '<label style="font-size: 18px;font-weight: bold;">Оплата криптовалютой</label><br>';
         echo '<select class="form-select" name="pscur">';
-        foreach ($pk->getPaymentSystems("crypto") as $item) {
-            foreach ($item["currency_list"] as $currency) {
+        foreach($pk->getPaymentSystems("crypto") as $item){
+            foreach($item["currency_list"] as $currency) {
                 echo '<option value="' . sprintf("%s_%s", mb_strtolower($item["system"]), mb_strtolower($currency)) . '">';
                 echo sprintf("%s %s", $item["display_name"], $currency);
                 echo '</option>';
@@ -56,38 +56,21 @@ if(isset($params['pk'])){
         echo '<button id="payCryptoBtn" type="submit" class="btn col-12 mt-1" style="font-weight: 500;">Оплатить</button>';
         yii\widgets\ActiveForm::end();
     }
-    
-    // if(isset($pk)){
-    //     echo '<form id="payCryptoHref" method="POST" action="' . Url::to(['/payment/route', 'method' => 'PayKassa', 'csrf' => $csrf, 'shop' => $params['shop'], 'count' => $params['count'], 'name' => urldecode($params['name']),
-    //     'userId' => $params['userId'], 'days' => $params['days'], 'hash' => $params['hash']]) . '" style="margin-top: 10px;" target="_self">';
-    //     echo '<label style="font-size: 18px;font-weight: bold;">Оплата криптовалютой</label><br>';
-    //     echo '<select class="form-select" name="pscur">';
-    //     foreach ($pk->getPaymentSystems("crypto") as $item) {
-    //         foreach ($item["currency_list"] as $currency) {
-    //             echo '<option value="' . htmlspecialchars(sprintf("%s_%s", mb_strtolower($item["system"]), mb_strtolower($currency)), ENT_QUOTES, "UTF-8") . '">';
-    //             echo htmlspecialchars(sprintf("%s %s", $item["display_name"], $currency), ENT_QUOTES, "UTF-8");
-    //             echo '</option>';
-    //         }
-    //     };
-    //     echo '</select>';
-    //     echo '<button id="payCryptoBtn" type="submit" class="btn col-12 mt-1" style="font-weight: 500;">Оплатить</button>';
-    //     echo '</form>';
-    // }
 ?>
         <div style="margin-top: 10px;">
             <span style="font-size: 18px; font-weight: 600">Детализация платежа</span>
             <hr style="margin-top: 0;">
             <div class="col-12 text-start detail-inner" style="margin: -10px 5px 5px 5px">
                 <span style="font-size: 16px; font-weight: 500;">Магазин:</span><br>
-                <span style="font-size: 16px; font-weight: 400;"><?= $params['shop'] ?></span><br>
+                <span style="font-size: 16px; font-weight: 400;"><?= $params['shop']; ?></span><br>
                 <span style="font-size: 16px; font-weight: 500;">Состав заказа:</span><br>
-                <span style="font-size: 16px; font-weight: 400;"><?= $params['name'] ?></span><br>
+                <span style="font-size: 16px; font-weight: 400;"><?= $params['name']; ?></span><br>
                 <span style="font-size: 14px; font-weight: 400;">Цена позиции: </span>
-                <span style="font-weight: 450;"><?= $params['count'] . ',00 ₽' ?></span><br>
+                <span style="font-weight: 450;"><?= $params['count'] . ',00 ₽'; ?></span><br>
                 <span style="font-size: 14px; font-weight: 400;">Количество: </span>
                 <span style="font-weight: 450;">x1</span>
                 <hr style="margin-right: 10px;" class="mb-0">
-                <span style="font-size: 16px; font-weight: 400;">К оплате: <?= $params['count'] . ',00 ₽' ?></span><br>
+                <span style="font-size: 16px; font-weight: 400;">К оплате: <?= $params['count'] . ',00 ₽'; ?></span><br>
             </div>
         </div>
     </div>

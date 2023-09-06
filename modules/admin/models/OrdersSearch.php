@@ -2,17 +2,17 @@
 
 namespace app\modules\admin\models;
 
-use app\models\Orders;
-use yii\data\ActiveDataProvider;
-
 /**
  * OrdersSearch represents the model behind the search form of `app\models\Orders`.
  */
-class OrdersSearch extends Orders{
+class OrdersSearch extends \app\models\Orders{
+    
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['id', 'tg_user_id', 'status', 'count', 'access_days', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
             [['method', 'shop', 'position_name', 'created_time', 'resulted_time', 'web_app_query_id', 'currency', 'paypal_order_id'], 'safe'],
@@ -22,9 +22,10 @@ class OrdersSearch extends Orders{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function scenarios(){
-        // bypass scenarios() implementation in the parent class
+    public function scenarios() : array{
         return parent::scenarios();
     }
 
@@ -33,17 +34,15 @@ class OrdersSearch extends Orders{
      *
      * @param array $params
      *
-     * @return ActiveDataProvider
+     * @return \yii\data\ActiveDataProvider
      */
-    public function search($params){
-        $query = Orders::find();
+    public function search($params) : \yii\data\ActiveDataProvider{
+        $query = \app\models\Orders::find();
 
-        // add conditions that should always apply here
-
-        $dataProvider = new ActiveDataProvider([
+        $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'sort' => [ 
-                'attributes' => [], // Отключение сортировки 
+                'attributes' => [],// Отключение сортировки 
             ], 
             'pagination' => [ 
                 'pageSize' => 25, 
@@ -53,20 +52,15 @@ class OrdersSearch extends Orders{
         $this->load($params);
 
         if(!$this->validate()){
-            // uncomment the following line if you do not want to return any records when validation fails
-            // $query->where('0=1');
             return $dataProvider;
         }
 
-        // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
             'tg_user_id' => $this->tg_user_id,
             'status' => $this->status,
             'count' => $this->count,
             'access_days' => $this->access_days,
-            'created_time' => $this->created_time,
-            'resulted_time' => $this->resulted_time,
             'is_test' => $this->is_test,
             'count_in_currency' => $this->count_in_currency,
             'commission' => $this->commission,
@@ -80,6 +74,13 @@ class OrdersSearch extends Orders{
             ->andFilterWhere(['like', 'web_app_query_id', $this->web_app_query_id])
             ->andFilterWhere(['like', 'currency', $this->currency])
             ->andFilterWhere(['like', 'paypal_order_id', $this->paypal_order_id]);
+
+        if(isset($this->created_time)){
+            $query->andFilterWhere(['like', 'created_time', \Yii::$app->formatter->asDatetime(new \DateTime($this->created_time), 'php:Y-m-d')]); 
+        }
+        if(isset($this->resulted_time)){
+            $query->andFilterWhere(['like', 'resulted_time', \Yii::$app->formatter->asDatetime(new \DateTime($this->resulted_time), 'php:Y-m-d')]); 
+        }
 
         return $dataProvider;
     }

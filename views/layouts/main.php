@@ -56,9 +56,9 @@ $name = Yii::$app->name;
         ?>
     </header>
 
-    <main id="main" class="flex-shrink-0 col-12" role="main" style="margin-top: 56px;">
-            <?= app\widgets\Alert::widget(); ?>
-            <?= $content; ?>
+    <main id="main" class="flex-shrink-0" role="main" style="margin-top: 56px;">
+        <?= app\widgets\Alert::widget(); ?>
+        <?= $content; ?>
     </main>
 
     <footer id="footer" class="mt-auto py-3 bg-dark border-top border-dark">

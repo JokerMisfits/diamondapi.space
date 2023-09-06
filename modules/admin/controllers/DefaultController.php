@@ -2,36 +2,22 @@
 
 namespace app\modules\admin\controllers;
 
-use Throwable;
-use Yii;
-use yii\db\Query;
-use yii\web\ForbiddenHttpException;
-
 /**
  * Default controller for the `admin` module
  */
 class DefaultController extends AppAdminController{
 
     public function beforeAction($action){
-        if($action->id == 'test'){
-            if(YII_ENV_DEV){
-                return parent::beforeAction($action);
-            }
-            else{
-                throw new ForbiddenHttpException('You are not allowed to perform this action.', 403);
-            }
-        }
-        else{
-            return parent::beforeAction($action);
-        }
+        return parent::beforeAction($action);
     }
 
     /**
      * Renders the index view for the module
-     * @return string
+     * @return string|\yii\web\response
      */
-    public function actionIndex(){
-        return $this->render('index');
+    public function actionIndex() : string|\yii\web\response{
+        return $this->redirect('/admin/order');
+        //return $this->render('index');
     }
 
     public function actionTest(){

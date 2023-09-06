@@ -22,7 +22,8 @@
         "paykassa-dev/paykassa": "^1.0",
         "yiisoft/yii2-httpclient": "^2.0",
         "react/event-loop": "^0.4.3",
-        "react/http": "^0.4.0"
+        "react/http": "^0.4.0",
+        "yiisoft/yii2-jui": "^2.0"
     },
     "require-dev": {
         "yiisoft/yii2": "*",

@@ -162,7 +162,7 @@ class AppController extends \yii\web\Controller{
      * {@inheritdoc}
      * @return string|bool
      */
-    protected static function curlSendMessage(array $data, string $shop, string $method = '/sendMessage') : string|bool{
+    protected static function curlSendData(array $data, string $shop, string $method = '/sendMessage') : string|bool{
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, 'https://api.telegram.org/bot' . self::getBotToken($shop) . $method);
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));

@@ -1,69 +1,82 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\DetailView;
+use app\models\Clients;
+use app\models\TgMembers;
 
 /** @var yii\web\View $this */
 /** @var app\models\Orders $model */
 
 $this->title = 'Платеж №' . $model->id;
-
-$this->params['breadcrumbs'][] = ['label' => 'Админ', 'url' => ['/admin/order']];
-$this->params['breadcrumbs'][] = ['label' => 'Оплаты', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Админка', 'url' => ['/admin']];
+$this->params['breadcrumbs'][] = ['label' => 'Платежи', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 yii\web\YiiAsset::register($this);
 
 ?>
-<div class="orders-view">
-    <h1><?= Html::encode($this->title) ?></h1>
-    <p>
-        <?php // echo Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
-        <?php // echo 
-            // Html::a('Удалить', ['delete', 'id' => $model->id], [
-            //     'class' => 'btn btn-danger',
-            //     'data' => [
-            //         'confirm' => 'Are you sure you want to delete this item?',
-            //         'method' => 'post',
-            //     ],
-            // ])
-        ?>
-    </p>
-    <?= DetailView::widget([
+<div class="orders-view table-responsive border rounded">
+
+    <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
+
+    <?= yii\widgets\DetailView::widget([
         'model' => $model,
         'attributes' => [
-            //'id',
             [
                 'attribute' => 'is_test',
-                'visible' => $model->is_test == true,
+                'visible' => $model->is_test,
                 'value' => '<span class="text-danger fw-bold">ТЕСТОВЫЙ ПЛАТЕЖ</span>',
                 'format' => 'raw'
             ],
-            'tg_user_id',
             [
-                'attribute' => 'status',
-                'value' => function ($model) {
-                    return $model->status == 1 ? '<span class="text-success fw-bold">Оплачено</span>' : '<span class="text-danger fw-bold">Не оплачено</span>';
-                },
-                'format' => 'raw',
+                'attribute' => 'client_id',
+                'label' => 'Назначение платежа(Клиент)',
+                'value' => function($model){
+                    return Clients::findOne($model->client_id)->shop;
+                }
+            ],
+            [
+                'attribute' => 'tg_member_id',
+                'label' => 'Отправитель платежа(Плательщик)',
+                'value' => function($model){
+                    $name = TgMembers::findOne(['tg_user_id' => $model->tg_user_id])->tg_username;
+                    return isset($name) ? $name : $model->tg_user_id;
+                }
             ],
             'count',
             'method',
-            'shop',
             'position_name',
             'access_days',
-            'created_time',
-            'resulted_time',
-            //'web_app_query_id',
+            [
+                'attribute' => 'count',
+                'label' => 'Сумма в рублях',
+                'value' => $model->count . ' RUB'
+            ],
             'currency',
-            'count_in_currency',
-            //'commission',
+            [
+                'attribute' => 'count_in_currency',
+                'value' => $model->count_in_currency . ' ' . $model->currency
+            ],
+            [
+                'attribute' => 'commission',
+                'value' => $model->commission . ' ' . $model->currency
+            ],
             [
                 'attribute' => 'paypal_order_id',
-                'visible' => $model->method == 'PayPall'
+                'visible' => $model->method === 'PayPall'
             ],
-            //'client_id',
-            'paypal_order_id'
+            'created_time',
+            'resulted_time',
+            [
+                'attribute' => 'status',
+                'label' => 'Статус платежа:',
+                'value' => function($model){
+                    return $model->status === 1 ? '<span class="text-success fw-bolder">Оплачено</span>' : '<span class="text-danger fw-bolder">Не оплачено</span>';
+                },
+                'format' => 'raw',
+            ]
+        ],
+        'options' => [
+            'class' => 'table table-striped table-bordered detail-view bg-light text-nowrap'
         ]
-    ]) ?>
+    ]);
+    ?>
 
 </div>

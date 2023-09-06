@@ -1,8 +1,4 @@
 <?php
-
-use yii\helpers\Html;
-use yii\widgets\ActiveForm;
-
 /** @var yii\web\View $this */
 /** @var app\models\Orders $model */
 /** @var yii\widgets\ActiveForm $form */
@@ -10,7 +6,7 @@ use yii\widgets\ActiveForm;
 
 <div class="orders-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+    <?php $form = yii\widgets\ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'tg_user_id')->textInput(['maxlength' => true]); ?>
 
@@ -45,9 +41,9 @@ use yii\widgets\ActiveForm;
     <?= $form->field($model, 'client_id')->textInput(); ?>
 
     <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']); ?>
+        <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>
     </div>
 
-    <?php ActiveForm::end(); ?>
+    <?php yii\widgets\ActiveForm::end(); ?>
 
 </div>

@@ -1,31 +1,28 @@
 <?php
-use yii\helpers\Url;
-use yii\helpers\Html;
-use yii\widgets\Pjax;
-use app\models\Orders;
-use yii\grid\GridView;
 use app\models\Clients;
-use yii\grid\ActionColumn;
-use yii\helpers\ArrayHelper;
-use yii\bootstrap5\LinkPager;
 
 /** @var yii\web\View $this */
 /** @var app\modules\admin\models\OrdersSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = 'Оплаты';
+$this->title = 'Платежи';
+$this->params['breadcrumbs'][] = ['label' => 'Админка', 'url' => ['/admin']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="orders-index">
-    <p>
-        <?php // echo Html::a('Создать заказ', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
 
-    <?php Pjax::begin(); ?>
-    
-    <?= $this->render('_search', ['model' => $searchModel]); ?>
+    <div class="mx-1 mx-md-2">
+        <p>
+            <button id="order-search-button" class="btn btn-primary mt-1" onclick="showSearch()">Показать расширенный поиск</button>
+            <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/admin/order?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
+        </p>
+    </div>
 
-    <?= GridView::widget([
+    <?php yii\widgets\Pjax::begin(); ?>
+
+    <?php echo '<div id="order-search" style="display: none;">' . $this->render('_search', ['model' => $searchModel]) . '</div>'; ?>
+
+    <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'layout' => "{summary}\n{items}",
@@ -44,26 +41,18 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'shop',
                 'label' => 'Клиент',
-                'filter' => Html::activeDropDownList($searchModel, 'client_id', ArrayHelper::map(Clients::find()->all(), 'id', 'shop'), ['class' => 'form-control', 'prompt' => 'Все'])
+                'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'client_id', yii\helpers\ArrayHelper::map(Clients::find()->all(), 'id', 'shop'), ['class' => 'form-control', 'prompt' => 'Все'])
             ],
-            // [
-            //     'attribute' => 'currency',
-            //     'label' => 'Валюта',
-            //     'filter' => ''
-            // ],
             [
                 'attribute' => 'method',
                 'label' => 'Метод оплаты',
-                'filter' => Html::activeDropDownList($searchModel, 'method', ['RoboKassa' => 'RoboKassa', 'PayKassa' => 'PayKassa', 'FreeKassa' => 'FreeKassa', 'PayPal' => 'PayPal'],
+                'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'method', ['RoboKassa' => 'RoboKassa', 'PayKassa' => 'PayKassa', 'FreeKassa' => 'FreeKassa', 'PayPal' => 'PayPal'],
                 ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все'])
             ],
-            
-            //'position_name',
-            //'access_days',
             [
                 'attribute' => 'status',
                 'label' => 'Статус платежа',
-                'value' => function ($model) {
+                'value' => function($model){
                     return $model->status == 1 ? '<span class="text-success fw-bold">Оплачено</span>' : '<span class="text-danger fw-bold">Не оплачено</span>';
                 },
                 'filter' => ['1' => 'Оплачено', '0' => 'Не оплачено'],
@@ -78,32 +67,60 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'created_time',
-                'label' => 'Дата создания',
-                'value' => function ($model) {
-                    $dateTime = new DateTime($model->created_time, new DateTimeZone('Europe/Moscow'));
-                    return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
+                'label' => 'Дата платежа',
+                'value' => function($model){
+                    if(isset($model->created_time)){
+                        $dateTime = new DateTime($model->created_time, null);
+                        return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
+                    }
+                    return $model->created_time;
                 },
-                'filter' => ''
-            ],
-            //'resulted_time',
-            //'is_test',
-            //'web_app_query_id',
-            
-            //'count_in_currency',
-            //'commission',
-            //'paypal_order_id',
-            //'client_id',
-            [
-                'class' => ActionColumn::class,
-                'urlCreator' => function ($action, Orders $model, $key, $index, $column) {
-                    return Url::toRoute([$action, 'id' => $model->id]);
-                 }
-            ],
+                'filter' => yii\jui\DatePicker::widget([
+                    'model' => $searchModel,
+                    'attribute' => 'created_time',
+                    'dateFormat' => 'php:d.m.Y',
+                    'options' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'placeholder' => 'Все', 'readonly' => true, 'style' => 'cursor: pointer;']
+                ])
+            ]
         ],
-    ]); ?>
+        'rowOptions' => function($model){
+            return [
+                'data-href' => \yii\helpers\Url::to(['order/view', 'id' => $model->id]),
+                'onclick' => 'window.location.href = "' . \yii\helpers\Url::to(['order/view', 'id' => $model->id]) . '"'
+            ];
+        },
+    ]);
+    ?>
 
-    <?= '<div class="col-12 col-sm-10 col-md-8 col-lg-4 offset-0 offset-sm-1 offset-md-2 offset-lg-4">' . LinkPager::widget(['pagination' => $dataProvider->pagination,]) . '</div>' ?>
+    <?php
+    echo yii\bootstrap5\LinkPager::widget([
+            'pagination' => $dataProvider->pagination,
+            'options' => [
+                'class' => 'pagination d-flex justify-content-center',
+            ],
+            'linkOptions' => [
+                'class' => 'page-link page-item',
+            ],
+            'disableCurrentPageButton' => true,
+            'maxButtonCount' => 10
+        ]);
+        ?>
 
-    <?php Pjax::end(); ?>
+    <?php yii\widgets\Pjax::end(); ?>
 
 </div>
+
+<script>
+    function showSearch(){
+        let form = document.getElementById('order-search');
+        let button = document.getElementById('order-search-button');
+        if(form.style.display === 'none'){
+            form.style.display = 'block';
+            button.innerText = 'Скрыть расширенный поиск';
+        }
+        else{
+            form.style.display = 'none';
+            button.innerText = 'Показать расширенный поиск';
+        }
+    }
+</script>

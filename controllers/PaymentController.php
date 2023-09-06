@@ -587,7 +587,7 @@ class PaymentController extends AppController{
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"success","input_message_content":{"message_text":"Success' . $accessDays . '"}}',
                         ];
-                        AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                        AppController::curlSendData($data, $shop, '/answerWebAppQuery');
                     }
                     else{
                         echo $invId . '|Fail';
@@ -596,7 +596,7 @@ class PaymentController extends AppController{
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
                         ];
-                        AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                        AppController::curlSendData($data, $shop, '/answerWebAppQuery');
                     }
                     exit(0);
                 }
@@ -637,7 +637,7 @@ class PaymentController extends AppController{
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"success","input_message_content":{"message_text":"Success' . $accessDays . '"}}',
                         ];
-                        AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                        AppController::curlSendData($data, $shop, '/answerWebAppQuery');
                     }
                     else{
                         echo $invId . '|Fail';
@@ -646,7 +646,7 @@ class PaymentController extends AppController{
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
                         ];
-                        AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                        AppController::curlSendData($data, $shop, '/answerWebAppQuery');
                     }
                     exit(0);
                 }
@@ -682,7 +682,7 @@ class PaymentController extends AppController{
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"success","input_message_content":{"message_text":"Success' . $accessDays . '"}}',
                         ];
-                        AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                        AppController::curlSendData($data, $shop, '/answerWebAppQuery');
                     }
                     else{
                         echo $invId . '|Fail';
@@ -691,7 +691,7 @@ class PaymentController extends AppController{
                             'web_app_query_id' => $webAppQueryId,
                             'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
                         ];
-                        AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                        AppController::curlSendData($data, $shop, '/answerWebAppQuery');
                     }
                     exit(0);
                 }
@@ -748,7 +748,7 @@ class PaymentController extends AppController{
                             self::orderComplete($invId, $shop, 'RoboKassa', $params['Fee'], $params['IncCurrLabel']);
                         }
                         echo 'OK' . $invId . '\n';
-                        AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
+                        AppController::curlSendData(self::getResultButton($userId, $days), $shop);
                     }
                     else{
                         \Yii::error('Method RoboKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
@@ -796,7 +796,7 @@ class PaymentController extends AppController{
                             self::orderComplete($invId, $shop, 'PayKassa', 0);
                         }
                         echo $invId . '|success';
-                        AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
+                        AppController::curlSendData(self::getResultButton($userId, $days), $shop);
                     }
                     else{
                         \Yii::error('Method PayKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
@@ -844,7 +844,7 @@ class PaymentController extends AppController{
                             self::orderComplete($invId, $shop, 'FreeKassa', $params['commission']);
                         }
                         echo 'YES';
-                        AppController::curlSendMessage(self::getResultButton($userId, $days), $shop);
+                        AppController::curlSendData(self::getResultButton($userId, $days), $shop);
                     }
                     else{
                         \Yii::error('Method FreeKassa|Result db, не получилось изменить статус заказа: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
@@ -891,7 +891,7 @@ class PaymentController extends AppController{
                     'web_app_query_id' => $result['web_app_query_id'],
                     'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
                 ];
-                AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                AppController::curlSendData($data, $shop, '/answerWebAppQuery');
             }
             else{
                 \Yii::error('Method robo|Fail db SELECT, не получилось извлечь shop, web_app_query_id: ' . \Yii::$app->db->getSchema()->errorInfo());
@@ -911,7 +911,7 @@ class PaymentController extends AppController{
                     'web_app_query_id' => $result['web_app_query_id'],
                     'result' => '{"type":"article","id":"1","title":"fail","input_message_content":{"message_text":"Fail"}}',
                 ];
-                AppController::curlSendMessage($data, $shop, '/answerWebAppQuery');
+                AppController::curlSendData($data, $shop, '/answerWebAppQuery');
             }
             else{
                 \Yii::error('Method pay|Fail db SELECT, не получилось извлечь shop, web_app_query_id: ' . \Yii::$app->db->getSchema()->errorInfo());

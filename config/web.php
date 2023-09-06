@@ -32,19 +32,6 @@ $config = [
             'identityClass' => 'app\models\Users',
             'enableAutoLogin' => true
         ],
-        // 'mailer' => [
-        //     'class' => \yii\symfonymailer\Mailer::class,
-        //     'viewPath' => '@app/mail',
-        //     'useFileTransport' => false,
-        //     'transport' => [
-        //         'class' => 'Swift_SmtpTransport',
-        //         'host' => 'smtp.mail.ru', // Укажите адрес SMTP-сервера
-        //         'port' => '465', // Укажите порт SMTP-сервера
-        //         'encryption' => 'SSL', // Укажите метод шифрования, если необходимо
-        //         'username' => $_SERVER['EMAIL_ADMIN_LOGIN'],
-        //         'password' => $_SERVER['EMAIL_ADMIN_PASSWORD']
-        //     ],
-        // ],
         'log' => [
             'traceLevel' => YII_DEBUG ? 3 : 0,
             'targets' => [
@@ -87,12 +74,10 @@ $config = [
 
 
 if(YII_ENV_DEV){
-    // configuration adjustments for 'dev' environment
     $config['bootstrap'][] = 'debug';
     $config['modules']['debug'] = [
-        'class' => 'yii\debug\Module'
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'class' => 'yii\debug\Module',
+        'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 
     $config['components']['errorHandler'] = [
@@ -101,9 +86,8 @@ if(YII_ENV_DEV){
 
     $config['bootstrap'][] = 'gii';
     $config['modules']['gii'] = [
-        'class' => 'yii\gii\Module'
-        // uncomment the following to add your IP if you are not connecting from localhost.
-        //'allowedIPs' => ['127.0.0.1', '::1'],
+        'class' => 'yii\gii\Module',
+        'allowedIPs' => ['127.0.0.1', '::1'],
     ];
 }
 

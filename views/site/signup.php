@@ -5,7 +5,7 @@
 $this->title = 'Регистрация';
 ?>
 
-<div class="site-signup col-12 col-md-6 offset-md-3 mt-2 p-2 rounded text-dark bg-light border">
+<div class="site-signup container col-12 col-md-6 offset-md-3 mt-2 p-2 rounded text-dark bg-light border">
     <?php 
         $form = yii\widgets\ActiveForm::begin([
             'action' => ['site/signup'],

@@ -328,9 +328,6 @@ class LkController extends AppController{
                     'csrf' => \Yii::$app->session->get('csrf')
                 ]);
             }
-            else{
-                throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
-            }
         }
         elseif($target == 'email'){
             if(\Yii::$app->user->identity->email === NULL){
@@ -339,16 +336,10 @@ class LkController extends AppController{
                     'csrf' => \Yii::$app->session->get('csrf')
                 ]);
             }
-            else{
-                throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
-            }
         }
         elseif($target == 'phone'){
-            throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
         }
-        else{
-            throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
-        }
+        throw new \yii\web\ForbiddenHttpException('Доступ запрещен.', 403);
     }
 
     /**
