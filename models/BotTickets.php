@@ -16,17 +16,22 @@ namespace app\models;
  * @property Clients $client
  */
 class BotTickets extends \yii\db\ActiveRecord{
+
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'bot_tickets';
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['shop', 'tg_user_id', 'client_id'], 'required'],
             [['tg_user_id', 'member_id', 'client_id'], 'integer'],
@@ -38,8 +43,10 @@ class BotTickets extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'shop' => 'Название магазина',
@@ -56,15 +63,16 @@ class BotTickets extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient(){
+    public function getClient() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return BotTicketsQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : BotTicketsQuery{
         return new BotTicketsQuery(get_called_class());
     }
 }

@@ -15,17 +15,19 @@ class TgChatsQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}
+     *
      * @return TgChats[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : TgChats|array{
         return parent::all($db);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return TgChats|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : TgChats|array|null{
         return parent::one($db);
     }
 }

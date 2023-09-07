@@ -17,7 +17,7 @@ class OrdersCompleteQuery extends \yii\db\ActiveQuery{
      * {@inheritdoc}
      * @return OrdersComplete[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : OrdersComplete|array{
         return parent::all($db);
     }
 
@@ -25,7 +25,7 @@ class OrdersCompleteQuery extends \yii\db\ActiveQuery{
      * {@inheritdoc}
      * @return OrdersComplete|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : OrdersComplete|array|null{
         return parent::one($db);
     }
 }

@@ -15,17 +15,19 @@ class WithdrawalsQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}
+     *
      * @return Withdrawals[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : Withdrawals|array{
         return parent::all($db);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return Withdrawals|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : Withdrawals|array|null{
         return parent::one($db);
     }
 }

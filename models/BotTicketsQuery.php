@@ -15,17 +15,19 @@ class BotTicketsQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}
+     *
      * @return BotTickets[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : BotTickets|array{
         return parent::all($db);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return BotTickets|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : BotTickets|array|null{
         return parent::one($db);
     }
 }

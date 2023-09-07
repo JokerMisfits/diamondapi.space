@@ -15,17 +15,19 @@ class UsersQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}
+     *
      * @return Users[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : Users|array{
         return parent::all($db);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return Users|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : Users|array|null{
         return parent::one($db);
     }
 }

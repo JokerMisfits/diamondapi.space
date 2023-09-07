@@ -34,6 +34,8 @@ $name = Yii::$app->name;
                 'items' => [
                     ['label' => 'Платежи', 'url' => ['/admin/order/index']],
                     ['label' => 'Клиенты', 'url' => ['/admin/client/index']],
+                    ['label' => 'Пользователи', 'url' => ['/admin/tg-member/index']],
+                    ['label' => 'Заявки', 'url' => ['/admin/withdrawal/index']],
                     ['label' => 'Contact', 'url' => ['/contact']],
                 ]
             ]);

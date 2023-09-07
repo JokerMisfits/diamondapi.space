@@ -22,15 +22,19 @@ class TgChats extends \yii\db\ActiveRecord{
     
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'tg_chats';
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['tg_chat_id', 'tg_chat_title', 'tg_chat_type', 'tg_chat_invite_link'], 'required'],
             [['tg_chat_description'], 'string'],
@@ -45,8 +49,10 @@ class TgChats extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'tg_chat_id' => 'ID чата в telegram',
@@ -64,7 +70,7 @@ class TgChats extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient(){
+    public function getClient() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
@@ -73,7 +79,7 @@ class TgChats extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClients(){
+    public function getClients() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['tg_chat_id' => 'id']);
     }
 
@@ -82,15 +88,16 @@ class TgChats extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClients0(){
+    public function getClients0() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['tg_private_chat_id' => 'id']);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return TgChatsQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : TgChatsQuery{
         return new TgChatsQuery(get_called_class());
     }
 }

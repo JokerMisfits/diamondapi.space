@@ -15,17 +15,19 @@ class BotTextsQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}
+     *
      * @return BotTexts[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : BotTexts|array{
         return parent::all($db);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return BotTexts|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : BotTexts|array|null{
         return parent::one($db);
     }
 }

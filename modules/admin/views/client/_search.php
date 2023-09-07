@@ -8,10 +8,10 @@
 
     <?php $form = yii\widgets\ActiveForm::begin([
         'action' => ['index'],
-        'method' => 'get',
+        'method' => 'GET',
         'options' => [
             'data-pjax' => 1
-        ],
+        ]
     ]);
     ?>
 

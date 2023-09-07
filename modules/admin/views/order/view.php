@@ -1,7 +1,4 @@
 <?php
-use app\models\Clients;
-use app\models\TgMembers;
-
 /** @var yii\web\View $this */
 /** @var app\models\Orders $model */
 
@@ -22,31 +19,38 @@ yii\web\YiiAsset::register($this);
             [
                 'attribute' => 'is_test',
                 'visible' => $model->is_test,
-                'value' => '<span class="text-danger fw-bold">ТЕСТОВЫЙ ПЛАТЕЖ</span>',
+                'value' => '<span class="fw-bold text-danger">ТЕСТОВЫЙ ПЛАТЕЖ</span>',
                 'format' => 'raw'
             ],
+            'id',
             [
                 'attribute' => 'client_id',
                 'label' => 'Назначение платежа(Клиент)',
-                'value' => function($model){
-                    return Clients::findOne($model->client_id)->shop;
-                }
+                'value' => \yii\helpers\Html::a($model->shop, \yii\helpers\Url::to(['/admin/client/view', 'id' => $model->client_id]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']),
+                'format' => 'raw'
             ],
             [
                 'attribute' => 'tg_member_id',
                 'label' => 'Отправитель платежа(Плательщик)',
-                'value' => function($model){
-                    $name = TgMembers::findOne(['tg_user_id' => $model->tg_user_id])->tg_username;
-                    return isset($name) ? $name : $model->tg_user_id;
-                }
+                'value' => function(app\models\Orders $model){
+                    $member = $model->getTgMember()->one();
+                    if($member->tg_username !== null && $member->tg_username !== ''){
+                        return \yii\helpers\Html::a($member->tg_username, \yii\helpers\Url::to(['/admin/tg-member/view', 'id' => $member->id]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']);
+                    }
+                    return \yii\helpers\Html::a($member->tg_user_id, \yii\helpers\Url::to(['/admin/tg-member/view', 'id' => $member->id]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']);
+                },
+                'format' => 'raw'
             ],
-            'count',
+            [
+                'attribute' => 'count',
+                'value' => $model->count . '<span class="fw-bold text-danger">(ПРОВЕРИТЬ КАК ВЕДЕТ СЕБЯ СИСТЕМА С ДРУГОЙ ВАЛЮТОЙ, ПРАВИЛЬНО ЛИ НАЧИСЛЯЕТСЯ БАЛАНС???)</span>',
+                'format' => 'raw'
+            ],
             'method',
             'position_name',
             'access_days',
             [
                 'attribute' => 'count',
-                'label' => 'Сумма в рублях',
                 'value' => $model->count . ' RUB'
             ],
             'currency',
@@ -67,7 +71,7 @@ yii\web\YiiAsset::register($this);
             [
                 'attribute' => 'status',
                 'label' => 'Статус платежа:',
-                'value' => function($model){
+                'value' => function(app\models\Orders $model){
                     return $model->status === 1 ? '<span class="text-success fw-bolder">Оплачено</span>' : '<span class="text-danger fw-bolder">Не оплачено</span>';
                 },
                 'format' => 'raw',

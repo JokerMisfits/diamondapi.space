@@ -25,8 +25,10 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
 
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'users';
     }
 
@@ -39,8 +41,10 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['username', 'password'], 'required'],
             [['password_repeat'], 'required', 'on' => 'signup'],
@@ -68,8 +72,10 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'username' => 'Имя пользователя',
@@ -90,12 +96,13 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
     * 
     * @return \yii\db\ActiveQuery|TgMembersQuery
     */ 
-   public function getTgMember(){ 
+   public function getTgMember() : \yii\db\ActiveQuery|TgMembersQuery{ 
        return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
    }
 
     /**
      * {@inheritdoc}
+     *
      * @return UsersQuery the active query used by this AR class.
      */
     public static function find() : UsersQuery{
@@ -104,16 +111,18 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
 
     /**
      * {@inheritdoc}
+     *
+     * @return \yii\web\IdentityInterface|null 
      */
-
     public static function findIdentity($id) : \yii\web\IdentityInterface|null{
         return static::findOne($id);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return false
      */
-
     public static function findIdentityByAccessToken($token, $type = null) : false{
         return false;
         //return static::findOne(['access_token' => $token]);
@@ -123,15 +132,17 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
      * Finds user by username
      *
      * @param string $username
+     *
      * @return static|null
      */
-
     private static function findByUsername($username) : static|null{
         return static::findOne(['username' => $username]);
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return int|string
      */
     public function getId() : int|string{
         return $this->id;
@@ -139,6 +150,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
 
     /**
      * {@inheritdoc}
+     *
+     * @return string|null
      */
     public function getAuthKey() : string|null{
         return $this->auth_key;
@@ -146,6 +159,8 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
 
     /**
      * {@inheritdoc}
+     *
+     * @return bool
      */
     public function validateAuthKey($auth_key) : bool{
         if($this->auth_key === $auth_key){
@@ -184,6 +199,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
      * Validates password
      *
      * @param string $password password to validate
+     *
      * @return bool if password provided is valid for current user
      */
     private function validatePassword($password) : bool{
@@ -198,7 +214,7 @@ class Users extends \yii\db\ActiveRecord implements \yii\web\IdentityInterface{
      * Logs in a user using the provided username and password.
      * @return bool whether the user is logged in successfully
      */
-    public function login(){
+    public function login() : bool{
         if($this->validate()){
             self::getUser();
             if(self::$_user !== null){

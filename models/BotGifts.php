@@ -16,17 +16,22 @@ namespace app\models;
  * @property Clients $client
  */
 class BotGifts extends \yii\db\ActiveRecord{
+
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'bot_gifts';
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['giftCode', 'shop', 'client_id'], 'required'],
             [['days', 'count', 'client_id'], 'integer'],
@@ -38,8 +43,10 @@ class BotGifts extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'giftCode' => 'Подарочный код',
@@ -56,15 +63,16 @@ class BotGifts extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient(){
+    public function getClient() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return BotGiftsQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : BotGiftsQuery{
         return new BotGiftsQuery(get_called_class());
     }
 }

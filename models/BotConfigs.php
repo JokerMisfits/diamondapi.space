@@ -24,17 +24,22 @@ namespace app\models;
  * @property Clients $client
  */
 class BotConfigs extends \yii\db\ActiveRecord{
+
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'bot_configs';
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['shop', 'owner', 'chatLink', 'chatId', 'baseRole', 'client_id'], 'required'],
             [['owner', 'client_id'], 'integer'],
@@ -48,8 +53,10 @@ class BotConfigs extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'shop' => 'Название магазина',
@@ -72,17 +79,18 @@ class BotConfigs extends \yii\db\ActiveRecord{
     /**
      * Gets query for [[Client]].
      *
-     * @return\yii\db\ActiveQuery|ClientsQuery
+     * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient(){
+    public function getClient() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return BotConfigsQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : BotConfigsQuery{
         return new BotConfigsQuery(get_called_class());
     }
 }

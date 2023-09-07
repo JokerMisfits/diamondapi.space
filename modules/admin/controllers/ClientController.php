@@ -3,9 +3,7 @@
 namespace app\modules\admin\controllers;
 
 use app\models\Clients;
-use app\models\Orders;
 use app\modules\admin\models\ClientsSearch;
-use app\modules\admin\models\OrdersSearch;
 
 /**
  * ClientController implements the CRUD actions for Clients model.
@@ -53,20 +51,6 @@ class ClientController extends AppAdminController{
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
     public function actionView($id) : string{
-        $sql = "SELECT COUNT(*) FROM `orders` WHERE `client_id` = :client_id AND `status` = 1 AND `is_test` = 0";
-        $ordersCount = \Yii::$app->db->createCommand($sql)
-            ->bindValue(':client_id', $id)
-            ->queryOne();
-
-        $sql = "SELECT SUM(`fee`) FROM `orders_complete` WHERE `client_id` = :client_id";
-        $commissionsCount = \Yii::$app->db->createCommand($sql)
-        ->bindValue(':client_id', $id)
-        ->queryOne();
-
-        if($commissionsCount['SUM(`fee`)'] === null){
-            $commissionsCount['SUM(`fee`)'] = 0;
-        }
-
         $model = $this->findModel($id);
         unset($model->bot_token);
 
@@ -90,9 +74,7 @@ class ClientController extends AppAdminController{
         }
 
         return $this->render('view', [
-            'model' => $model,
-            'ordersCount' => $ordersCount['COUNT(*)'],
-            'commissionsCount' => round($commissionsCount['SUM(`fee`)'], 2)
+            'model' => $model
         ]);
     }
 
@@ -102,20 +84,24 @@ class ClientController extends AppAdminController{
      * @return string|\yii\web\Response
      */
     public function actionCreate() : string|\yii\web\Response{
-        $model = new Clients();
 
-        if($this->request->isPost){
-            if ($model->load($this->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-        }
-        else{
-            $model->loadDefaultValues();
-        }
+        \Yii::$app->session->setFlash('warning', 'Добавление клиентов отключено.');
+        return $this->redirect('index');
 
-        return $this->render('create', [
-            'model' => $model
-        ]);
+        // $model = new Clients();
+
+        // if($this->request->isPost){
+        //     if($model->load($this->request->post()) && $model->save()){
+        //         return $this->redirect(['view', 'id' => $model->id]);
+        //     }
+        // }
+        // else{
+        //     $model->loadDefaultValues();
+        // }
+
+        // return $this->render('create', [
+        //     'model' => $model
+        // ]);
     }
 
     /**
@@ -126,15 +112,18 @@ class ClientController extends AppAdminController{
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
     public function actionUpdate($id) : string|\yii\web\Response{
-        $model = $this->findModel($id);
 
-        if ($this->request->isPost && $model->load($this->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
-        }
+        \Yii::$app->session->setFlash('warning', 'Изменение клиентов отключено.');
+        return $this->redirect(['view', 'id' => $id]);
 
-        return $this->render('update', [
-            'model' => $model
-        ]);
+        // $model = $this->findModel($id);
+        // if($this->request->isPost && $model->load($this->request->post()) && $model->save()){
+        //     return $this->redirect(['view', 'id' => $model->id]);
+        // }
+
+        // return $this->render('update', [
+        //     'model' => $model
+        // ]);
     }
 
     /**
@@ -145,9 +134,10 @@ class ClientController extends AppAdminController{
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
     public function actionDelete($id) : \yii\web\Response{
-        $this->findModel($id)->delete();
-
-        return $this->redirect(['index']);
+        \Yii::$app->session->setFlash('warning', 'Удаление клиентов отключено.');
+        return $this->redirect(['view', 'id' => $id]);
+        //$this->findModel($id)->delete();
+        //return $this->redirect(['index']);
     }
 
     /**

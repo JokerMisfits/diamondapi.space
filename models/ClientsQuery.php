@@ -15,17 +15,19 @@ class ClientsQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}
+     *
      * @return Clients[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : Clients|array{
         return parent::all($db);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return Clients|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : Clients|array|null{
         return parent::one($db);
     }
 }

@@ -1,7 +1,4 @@
 <?php
-use app\models\Clients;
-use app\models\TgMembers;
-
 /** @var yii\web\View $this */
 /** @var app\modules\admin\models\ClientsSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -14,7 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="mx-1 mx-md-2">
         <p>
-            <?= yii\helpers\Html::a('Добавить клиента', ['create'], ['class' => 'btn btn-success']); ?>
+            <?= yii\helpers\Html::a('Добавить клиента', ['create'], ['class' => 'btn btn-success mt-1']); ?>
             <button id="client-search-button" class="btn btn-primary mt-1" onclick="showSearch()">Показать расширенный поиск</button>
             <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/admin/client?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
         </p>
@@ -27,38 +24,64 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
+        'layout' => "{summary}\n{items}",
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            [
-                'attribute' => 'tg_member_id',
-                'label' => 'Владелец',
-                'value' => function($model){
-                    $name = TgMembers::findOne(['tg_user_id' => $model->tg_user_id])->tg_username;
-                    return isset($name) ? $name : $model->tg_user_id;
-                }
-            ],
             'shop',
             [
                 'attribute' => 'balance',
-                'label' => 'Баланс'
+                'label' => 'Баланс',
+                'value' => function(app\models\Clients $model){
+                    return $model->balance . ' RUB';
+                }
             ],
-            'profit',
-            'cost',
+            [
+                'attribute' => 'profit',
+                'value' => function(app\models\Clients $model){
+                    return $model->profit . ' RUB';
+                }
+            ],
+            [
+                'attribute' => 'blocked_balance',
+                'label' => 'Ожидает вывода',
+                'value' => function(app\models\Clients $model){
+                    return $model->blocked_balance . ' RUB';
+                }
+            ],
+            [
+                'attribute' => 'cost',
+                'value' => function(app\models\Clients $model){
+                    return $model->cost . ' RUB';
+                }
+            ],
             [
                 'class' => yii\grid\ActionColumn::class,
                 'template' => '{update}',
-                'urlCreator' => function($action, Clients $model){
+                'urlCreator' => function($action, app\models\Clients $model){
                     return yii\helpers\Url::toRoute([$action, 'id' => $model->id]);
                  }
             ],
         ],
-        'rowOptions' => function($model){
+        'rowOptions' => function(app\models\Clients $model){
             return [
                 'data-href' => \yii\helpers\Url::to(['client/view', 'id' => $model->id]),
                 'onclick' => 'window.location.href = "' . \yii\helpers\Url::to(['client/view', 'id' => $model->id]) . '"'
             ];
         },
     ]);
+    ?>
+
+    <?= yii\bootstrap5\LinkPager::widget([
+            'pagination' => $dataProvider->pagination,
+            'options' => [
+                'class' => 'pagination d-flex justify-content-center',
+            ],
+            'linkOptions' => [
+                'class' => 'page-link page-item',
+            ],
+            'disableCurrentPageButton' => true,
+            'maxButtonCount' => 10
+        ]);
     ?>
 
     <?php yii\widgets\Pjax::end(); ?>

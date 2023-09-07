@@ -1,6 +1,4 @@
 <?php
-use app\models\Clients;
-
 /** @var yii\web\View $this */
 /** @var app\modules\admin\models\OrdersSearch $searchModel */
 /** @var yii\data\ActiveDataProvider $dataProvider */
@@ -35,40 +33,41 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'tg_user_id',
-                'label' => 'ID пользователя telegram',
-                'filter' => ''
+                'label' => 'ID пользователя telegram'
             ],
             [
                 'attribute' => 'shop',
                 'label' => 'Клиент',
-                'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'client_id', yii\helpers\ArrayHelper::map(Clients::find()->all(), 'id', 'shop'), ['class' => 'form-control', 'prompt' => 'Все'])
+                'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'client_id', yii\helpers\ArrayHelper::map(app\models\Clients::find()->all(), 'id', 'shop'),
+                ['class' => 'form-control', 'prompt' => 'Все', 'style' => 'cursor: pointer;'])
             ],
             [
                 'attribute' => 'method',
                 'label' => 'Метод оплаты',
                 'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'method', ['RoboKassa' => 'RoboKassa', 'PayKassa' => 'PayKassa', 'FreeKassa' => 'FreeKassa', 'PayPal' => 'PayPal'],
-                ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все'])
+                ['class' => 'form-control', 'prompt' => 'Все', 'style' => 'cursor: pointer;'])
             ],
             [
                 'attribute' => 'status',
                 'label' => 'Статус платежа',
-                'value' => function($model){
-                    return $model->status == 1 ? '<span class="text-success fw-bold">Оплачено</span>' : '<span class="text-danger fw-bold">Не оплачено</span>';
+                'value' => function(app\models\Orders $model){
+                    return $model->status == 1 ? '<span class="fw-bold text-success">Оплачено</span>' : '<span class="fw-bold text-danger">Не оплачено</span>';
                 },
-                'filter' => ['1' => 'Оплачено', '0' => 'Не оплачено'],
-                'filterInputOptions' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'prompt' => 'Все'],
+                'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'status', [1 => 'Оплачено', 0 => 'Не оплачено'],
+                ['class' => 'form-control', 'prompt' => 'Все', 'style' => 'cursor: pointer;']),
                 'format' => 'raw',
-                'contentOptions' => ['style' => 'text-align: center;']
+                'contentOptions' => ['class' => 'text-center']
             ],
             [
                 'attribute' => 'count',
-                'label' => 'Сумма в рублях',
-                'filter' => ''
+                'value' => function(app\models\Orders $model){
+                    return $model->count . ' RUB';
+                }
             ],
             [
                 'attribute' => 'created_time',
                 'label' => 'Дата платежа',
-                'value' => function($model){
+                'value' => function(app\models\Orders $model){
                     if(isset($model->created_time)){
                         $dateTime = new DateTime($model->created_time, null);
                         return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
@@ -79,11 +78,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $searchModel,
                     'attribute' => 'created_time',
                     'dateFormat' => 'php:d.m.Y',
-                    'options' => ['class' => 'form-control selectpicker', 'data-style' => 'btn-primary', 'placeholder' => 'Все', 'readonly' => true, 'style' => 'cursor: pointer;']
+                    'options' => ['class' => 'form-control', 'placeholder' => 'Все', 'readonly' => true, 'style' => 'cursor: pointer;']
                 ])
             ]
         ],
-        'rowOptions' => function($model){
+        'rowOptions' => function(app\models\Orders $model){
             return [
                 'data-href' => \yii\helpers\Url::to(['order/view', 'id' => $model->id]),
                 'onclick' => 'window.location.href = "' . \yii\helpers\Url::to(['order/view', 'id' => $model->id]) . '"'
@@ -92,8 +91,7 @@ $this->params['breadcrumbs'][] = $this->title;
     ]);
     ?>
 
-    <?php
-    echo yii\bootstrap5\LinkPager::widget([
+    <?= yii\bootstrap5\LinkPager::widget([
             'pagination' => $dataProvider->pagination,
             'options' => [
                 'class' => 'pagination d-flex justify-content-center',
@@ -104,7 +102,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'disableCurrentPageButton' => true,
             'maxButtonCount' => 10
         ]);
-        ?>
+    ?>
 
     <?php yii\widgets\Pjax::end(); ?>
 

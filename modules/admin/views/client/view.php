@@ -1,9 +1,8 @@
 <?php
-use app\models\TgMembers;
-
 /** @var yii\web\View $this */
 /** @var app\models\Clients $model */
 /** @var int $ordersCount */
+/** @var int $ordersCountComplete */
 /** @var int $commissionsCount */
 
 $this->title = $model->shop;
@@ -12,7 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Клиенты', 'url' => ['index'
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="clients-view table-responsive border rounded">
+<div class="clients-view table-responsive border rounded ">
 
     <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 
@@ -38,10 +37,14 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'tg_member_id',
                 'label' => 'Владелец',
-                'value' => function($model){
-                    $name = TgMembers::findOne(['tg_user_id' => $model->tg_user_id])->tg_username;
-                    return isset($name) ? $name : $model->tg_user_id;
-                }
+                'value' => function(app\models\Clients $model){
+                    $member = $model->getTgMember()->one();
+                    if($member->tg_username !== null || $member->tg_username !== ''){
+                        return \yii\helpers\Html::a($member->tg_username, \yii\helpers\Url::to(['/admin/tg-member/view', 'id' => $member->id]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']);
+                    }
+                    return $member->id;
+                },
+                'format' => 'raw'
             ],
             'shop',
             [
@@ -54,11 +57,12 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'min_count_withdrawal',
+                'label' => 'Минимальная сумма вывода ДС',
                 'value' => $model->min_count_withdrawal . ' RUB'
             ],
             [
                 'attribute' => 'last_change',
-                'value' => function($model){
+                'value' => function(app\models\Clients $model){
                     $dateTime = new DateTime($model->last_change, null);
                     return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
                 }
@@ -77,25 +81,25 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'robokassa',
                 'label' => 'RoboKassa',
-                'value' => $model->robokassa ? '<span class="text-success">Подключена</span>' : '<span class="text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->robokassa ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
                 'format' => 'raw'
             ],
             [
                 'attribute' => 'paykassa',
                 'label' => 'PayKassa',
-                'value' => $model->paykassa ? '<span class="text-success">Подключена</span>' : '<span class="text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->paykassa ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
                 'format' => 'raw'
             ],
             [
                 'attribute' => 'freekassa',
                 'label' => 'FreeKassa',
-                'value' => $model->freekassa ? '<span class="text-success">Подключена</span>' : '<span class="text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->freekassa ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
                 'format' => 'raw'
             ],
             [
                 'attribute' => 'paypall',
                 'label' => 'PayPall',
-                'value' => $model->paypall ? '<span class="text-success">Подключена</span>' : '<span class="text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->paypall ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
                 'format' => 'raw'
             ],
             [
@@ -119,8 +123,10 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'Количество платежей',
-                'value' => $ordersCount > 0 ? \yii\helpers\Html::a($ordersCount, \yii\helpers\Url::to(['/admin/order', 'OrdersSearch' => ['client_id' => $model->id, 'status' => 1, 'is_test' => 0]]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']) 
-                : $ordersCount,
+                'value' => function(app\models\Clients $model){
+                    $count = $model->getOrders()->where(['status' => 1, 'is_test' => 0])->count();
+                    return $count > 0 ? \yii\helpers\Html::a($count, \yii\helpers\Url::to(['/admin/order', 'OrdersSearch' => ['client_id' => $model->id, 'status' => 1, 'is_test' => 0]]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']) : $count;
+                },
                 'format' => 'raw'
             ],
             [
@@ -130,12 +136,47 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'attribute' => 'total_withdrawal',
+                'label' => 'Сумма выведенных ДС',
                 'value' => $model->total_withdrawal . ' RUB'
+            ],
+            [
+                'attribute' => 'activeWithdrawals',
+                'label' => 'Активные заявки на вывод ДС',
+                'value' => function(app\models\Clients $model){
+                    $count = $model->getWithdrawals()->where(['status' => 1, 'is_test' => 0])->count();
+                    return $count > 0 ? \yii\helpers\Html::a($count, \yii\helpers\Url::to(['/admin/withdrawal', 'WithdrawalsSearch' => ['client_id' => $model->id, 'status' => 1, 'is_test' => 0]]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']) : $count;
+                }
+            ],
+            [
+                'attribute' => 'completeWithdrawals',
+                'label' => 'Выплаченные заявки на вывод ДС',
+                'value' => function(app\models\Clients $model){
+                    $count = $model->getWithdrawals()->where(['status' => 3, 'is_test' => 0])->count();
+                    return $count > 0 ? \yii\helpers\Html::a($count, \yii\helpers\Url::to(['/admin/withdrawal', 'WithdrawalsSearch' => ['client_id' => $model->id, 'status' => 3, 'is_test' => 0]]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']) : $count;
+                }
+            ],
+            [
+                'attribute' => 'Сверка',
+                'value' => function(app\models\Clients $model){
+                    $count = $model->getOrders()->where(['status' => 1, 'is_test' => 0])->count();
+                    if($count === 0){
+                        return '<span class="fw-bold text-primary">' . $count . ' Сверка не требуется</span>';
+                    }
+                    $countComplete = $model->getOrdersCompletes()->count();
+                    return $countComplete < $count ? '<span class="fw-bold text-danger">' . $countComplete . ' Сверка не пройдена(ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-success">' . $countComplete . ' Сверка пройдена</span>';
+                },
+                'format' => 'raw'
             ],
             [
                 'attribute' => 'commissions',
                 'label' => 'Комиссии платежных систем',
-                'value' => $commissionsCount . ' RUB'
+                'value' => function(app\models\Clients $model){
+                    $summ = $model->getOrdersCompletes()->sum('fee');
+                    if($summ !== null){
+                        return round($summ, 2) . ' RUB';
+                    }
+                    return '0.00 RUB';
+                }
             ],
             [
                 'attribute' => 'statisticBlock',
@@ -177,11 +218,29 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'pt-4 bg-dark border-0'
                 ]
             ],
-            'test_balance',
-            'test_profit',
-            'test_blocked_balance',
-            'total_withdrawal_profit_test',
-            'test_total_withdrawal',
+            [
+                'attribute' => 'test_balance',
+                'label' => 'Тестовый баланс',
+                'value' => $model->test_balance . ' RUB'
+            ],
+            [
+                'attribute' => 'test_profit',
+                'value' => $model->test_profit . ' RUB'
+            ],
+            [
+                'attribute' => 'test_blocked_balance',
+                'label' => 'Заблокированный тестовый баланс',
+                'value' => $model->test_blocked_balance . ' RUB'
+            ],
+            [
+                'attribute' => 'total_withdrawal_profit_test',
+                'label' => 'Cумма выведенных ДС из тестовой прибыли',
+                'value' => $model->total_withdrawal_profit_test . ' RUB'
+            ],
+            [
+                'attribute' => 'test_total_withdrawal',
+                'value' => $model->test_total_withdrawal . ' RUB'
+            ]
         ],
         'options' => [
             'class' => 'table table-striped table-bordered detail-view bg-light text-nowrap'

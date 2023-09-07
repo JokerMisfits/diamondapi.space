@@ -26,15 +26,19 @@ class Withdrawals extends \yii\db\ActiveRecord{
     
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'withdrawals';
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['shop', 'count', 'card_number', 'confirmation_link', 'tg_member_id', 'client_id'], 'required'],
             [['count', 'status', 'is_test', 'commission', 'tg_member_id', 'client_id'], 'integer'],
@@ -49,8 +53,10 @@ class Withdrawals extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'shop' => 'Название магазина',
@@ -74,24 +80,25 @@ class Withdrawals extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient(){
+    public function getClient() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
    /** 
     * Gets query for [[TgMember]]. 
-    * 
+    *
     * @return \yii\db\ActiveQuery|TgMembersQuery
     */ 
-   public function getTgMember(){ 
+   public function getTgMember() : \yii\db\ActiveQuery|TgMembersQuery{ 
        return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
    }
 
     /**
      * {@inheritdoc}
+     *
      * @return WithdrawalsQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : WithdrawalsQuery{
         return new WithdrawalsQuery(get_called_class());
     }
 }

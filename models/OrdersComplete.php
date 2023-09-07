@@ -17,17 +17,22 @@ namespace app\models;
  * @property Orders $order
  */
 class OrdersComplete extends \yii\db\ActiveRecord{
+
     /**
      * {@inheritdoc}
+     *
+     * @return string
      */
-    public static function tableName(){
+    public static function tableName() : string{
         return 'orders_complete';
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function rules(){
+    public function rules() : array{
         return [
             [['shop', 'method', 'fee', 'order_id', 'client_id'], 'required'],
             [['fee'], 'number'],
@@ -41,8 +46,10 @@ class OrdersComplete extends \yii\db\ActiveRecord{
 
     /**
      * {@inheritdoc}
+     *
+     * @return array
      */
-    public function attributeLabels(){
+    public function attributeLabels() : array{
         return [
             'id' => 'ID',
             'shop' => 'Название магазина',
@@ -50,7 +57,7 @@ class OrdersComplete extends \yii\db\ActiveRecord{
             'payment_method' => 'Способ оплаты',
             'fee' => 'Комиссия платежной системы',
             'order_id' => 'ID заказа',
-            'client_id' => 'ID клиента',
+            'client_id' => 'ID клиента'
         ];
     }
 
@@ -59,7 +66,7 @@ class OrdersComplete extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient(){
+    public function getClient() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
@@ -68,15 +75,16 @@ class OrdersComplete extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|OrdersQuery
      */
-    public function getOrder(){
+    public function getOrder() : \yii\db\ActiveQuery|OrdersQuery{
         return $this->hasOne(Orders::class, ['id' => 'order_id']);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return OrdersCompleteQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : OrdersCompleteQuery{
         return new OrdersCompleteQuery(get_called_class());
     }
 }

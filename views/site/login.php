@@ -5,7 +5,7 @@
 $this->title = 'Авторизация';
 ?>
 
-<div class="site-login container col-12 col-md-6 offset-md-3 mt-2 p-2 rounded text-dark bg-light border">
+<div class="site-login container col-12 col-md-6 col-lg-4 offset-md-3 offset-lg-4 mt-2 p-2 rounded text-dark bg-light border">
     <?php 
         $form = yii\widgets\ActiveForm::begin([
             'action' => ['site/login'],

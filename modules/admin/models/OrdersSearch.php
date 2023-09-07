@@ -42,7 +42,10 @@ class OrdersSearch extends \app\models\Orders{
         $dataProvider = new \yii\data\ActiveDataProvider([
             'query' => $query,
             'sort' => [ 
-                'attributes' => [],// Отключение сортировки 
+                //'attributes' => [],// Отключение сортировки 
+                'defaultOrder' => [
+                    'id' => SORT_DESC
+                ]
             ], 
             'pagination' => [ 
                 'pageSize' => 25, 
@@ -75,10 +78,10 @@ class OrdersSearch extends \app\models\Orders{
             ->andFilterWhere(['like', 'currency', $this->currency])
             ->andFilterWhere(['like', 'paypal_order_id', $this->paypal_order_id]);
 
-        if(isset($this->created_time)){
+        if(isset($this->created_time) && $this->created_time !== ''){
             $query->andFilterWhere(['like', 'created_time', \Yii::$app->formatter->asDatetime(new \DateTime($this->created_time), 'php:Y-m-d')]); 
         }
-        if(isset($this->resulted_time)){
+        if(isset($this->resulted_time) && $this->resulted_time !== ''){
             $query->andFilterWhere(['like', 'resulted_time', \Yii::$app->formatter->asDatetime(new \DateTime($this->resulted_time), 'php:Y-m-d')]); 
         }
 

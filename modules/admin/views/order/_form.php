@@ -6,7 +6,10 @@
 
 <div class="orders-form">
 
-    <?php $form = yii\widgets\ActiveForm::begin(); ?>
+    <?php 
+        $form = yii\widgets\ActiveForm::begin(); 
+        echo $form->errorSummary($model);
+    ?>
 
     <?= $form->field($model, 'tg_user_id')->textInput(['maxlength' => true]); ?>
 

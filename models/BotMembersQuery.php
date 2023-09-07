@@ -15,17 +15,19 @@ class BotMembersQuery extends \yii\db\ActiveQuery{
 
     /**
      * {@inheritdoc}
+     *
      * @return BotMembers[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : BotMembers|array{
         return parent::all($db);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return BotMembers|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : BotMembers|array|null{
         return parent::one($db);
     }
 }

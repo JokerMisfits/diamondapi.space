@@ -37,20 +37,25 @@ class AppAdminController extends \yii\web\Controller{
             $security = new \yii\base\Security;
             $key = $_SERVER['API_KEY_0'];
             $key1 = $_SERVER['API_KEY_1'];
-            $return['bot_token'] = $security->decryptByPassword(base64_decode($result['bot_token']), $key);
+            if($result['bot_token'] !== null){
+                $return['bot_token'] = $security->decryptByPassword(base64_decode($result['bot_token']), $key);
+            }
+            else{
+                $return['bot_token'] = null;
+            }
             if($method != null && $method == 'bot_token'){
                 return $return;
             }
-            if($method == null || $method == 'robokassa'){
+            if(($method == null || $method == 'robokassa') && $result['robokassa'] !== null){
                 $robo = json_decode($security->decryptByPassword(base64_decode($result['robokassa']), $key1), true);
             }
-            if($method == null || $method == 'paykassa'){
+            if(($method == null || $method == 'paykassa') && $result['paykassa'] !== null){
                 $pay = json_decode($security->decryptByPassword(base64_decode($result['paykassa']), $key1), true);
             }
-            if($method == null || $method == 'freekassa'){
+            if(($method == null || $method == 'freekassa') && $result['freekassa'] !== null){
                 $free = json_decode($security->decryptByPassword(base64_decode($result['freekassa']), $key1), true);
             }
-            if($method == null || $method == 'paypall'){
+            if(($method == null || $method == 'paypall') && $result['paypall'] !== null){
                 $pp = json_decode($security->decryptByPassword(base64_decode($result['paypall']), $key1), true);
             }
             if(isset($robo['enable']) && $robo['enable'] === true && ($method == null || $method == 'robokassa')){

@@ -17,7 +17,7 @@ class TgMembersQuery extends \yii\db\ActiveQuery{
      * {@inheritdoc}
      * @return TgMembers[]|array
      */
-    public function all($db = null){
+    public function all($db = null) : TgMembers|array{
         return parent::all($db);
     }
 
@@ -25,7 +25,7 @@ class TgMembersQuery extends \yii\db\ActiveQuery{
      * {@inheritdoc}
      * @return TgMembers|array|null
      */
-    public function one($db = null){
+    public function one($db = null) : TgMembers|array|null{
         return parent::one($db);
     }
 }

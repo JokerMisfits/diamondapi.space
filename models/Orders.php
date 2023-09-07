@@ -29,9 +29,10 @@ namespace app\models;
  * @property TgMembers $tgMember 
  */
 class Orders extends \yii\db\ActiveRecord{
+
     /**
      * {@inheritdoc}
-     * 
+     *
      * @return string
      */
     public static function tableName() : string{
@@ -91,7 +92,7 @@ class Orders extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|ClientsQuery
      */
-    public function getClient(){
+    public function getClient() : \yii\db\ActiveQuery|ClientsQuery{
         return $this->hasOne(Clients::class, ['id' => 'client_id']);
     }
 
@@ -100,24 +101,25 @@ class Orders extends \yii\db\ActiveRecord{
      *
      * @return \yii\db\ActiveQuery|OrdersCompleteQuery
      */
-    public function getOrdersCompletes(){
+    public function getOrdersCompletes() : \yii\db\ActiveQuery|OrdersCompleteQuery{
         return $this->hasMany(OrdersComplete::class, ['order_id' => 'id']);
     }
 
    /** 
     * Gets query for [[TgMember]]. 
-    * 
+    *
     * @return \yii\db\ActiveQuery|TgMembersQuery 
     */ 
-   public function getTgMember(){ 
+   public function getTgMember() : \yii\db\ActiveQuery|TgMembersQuery { 
        return $this->hasOne(TgMembers::class, ['id' => 'tg_member_id']); 
    }
 
     /**
      * {@inheritdoc}
+     *
      * @return OrdersQuery the active query used by this AR class.
      */
-    public static function find(){
+    public static function find() : OrdersQuery{
         return new OrdersQuery(get_called_class());
     }
 }
