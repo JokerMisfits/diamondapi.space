@@ -22,9 +22,9 @@ class WithdrawalController extends AppAdminController{
                 'verbs' => [
                     'class' => \yii\filters\VerbFilter::class,
                     'actions' => [
-                        'delete' => ['POST'],
-                    ],
-                ],
+                        'delete' => ['POST']
+                    ]
+                ]
             ]
         );
     }
@@ -85,6 +85,12 @@ class WithdrawalController extends AppAdminController{
             if(isset($id)){
                 $model->client_id = $id;
                 $model->count = $model->getClient()->one()->min_count_withdrawal;
+            }
+            else{
+                $model->is_test = true;
+                $model->client_id = 2;// test
+                $model->count = 1000;
+                $model->card_number = 321123321123;
             }
         }
 

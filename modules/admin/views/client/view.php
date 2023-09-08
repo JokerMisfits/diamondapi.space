@@ -11,7 +11,7 @@ $this->params['breadcrumbs'][] = ['label' => 'Клиенты', 'url' => ['index'
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="clients-view table-responsive border rounded ">
+<div class="clients-view table-responsive border rounded">
 
     <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 
@@ -162,8 +162,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     if($count === 0){
                         return '<span class="fw-bold text-primary">' . $count . ' Сверка не требуется</span>';
                     }
-                    $countComplete = $model->getOrdersCompletes()->count();
-                    return $countComplete < $count ? '<span class="fw-bold text-danger">' . $countComplete . ' Сверка не пройдена(ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-success">' . $countComplete . ' Сверка пройдена</span>';
+                    $countComplete = $model->getOrdersCompletes()->where(['not', ['revise' => null]])->count();
+                    return $countComplete < $count ? '<span class="fw-bold fs-5 text-danger">' . $countComplete . ' Сверка не пройдена</span> ' . \yii\helpers\Html::a('Перейти', \yii\helpers\Url::to('/admin/revise'), ['class' => 'btn btn-sm btn-warning fw-bold', 'title' => 'Перейти', 'target' => '_self']) : '<span class="fw-bold fs-5 text-success">' . $countComplete . ' Сверка пройдена</span>';
                 },
                 'format' => 'raw'
             ],

@@ -13,6 +13,8 @@ yii\web\YiiAsset::register($this);
 
     <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 
+    <?= ($model->is_test && !$model->status) ? '<p>' . yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) . '</p>' : ''; ?> 
+
     <?= yii\widgets\DetailView::widget([
         'model' => $model,
         'attributes' => [
@@ -20,6 +22,16 @@ yii\web\YiiAsset::register($this);
                 'attribute' => 'is_test',
                 'visible' => $model->is_test,
                 'value' => '<span class="fw-bold text-danger">ТЕСТОВЫЙ ПЛАТЕЖ</span>',
+                'format' => 'raw'
+            ],
+            [
+                'attribute' => 'Сверка',
+                'visible' => ($model->status === 1 && $model->is_test === 0),
+                'value' => function(app\models\Orders $model){
+                    $order = $model->getOrdersCompletes();
+                    $count = $order->count();
+                    return $count === 1 ? ($order->one()->revise !== null ? '<span class="fw-bold fs-5 text-success">Сверка пройдена</span>' : '<span class="fw-bold fs-5 text-danger">Необходимо дополнить данные </span>' . yii\helpers\Html::a('Перейти', ['/admin/revise/view', 'id' => $order->one()->id], ['class' => 'btn btn-sm btn-warning fw-bold'])) : '<span class="fw-bolder fs-5 text-danger">Сверка не пройдена</span> ' . yii\helpers\Html::a('Пройти', ['revise', 'id' => $model->id], ['class' => 'btn btn-sm btn-warning fw-bold']);
+                },
                 'format' => 'raw'
             ],
             'id',
@@ -31,7 +43,7 @@ yii\web\YiiAsset::register($this);
             ],
             [
                 'attribute' => 'tg_member_id',
-                'label' => 'Отправитель платежа(Плательщик)',
+                'label' => 'Отправитель платежа(Пользователь)',
                 'value' => function(app\models\Orders $model){
                     $member = $model->getTgMember()->one();
                     if($member->tg_username !== null && $member->tg_username !== ''){
@@ -43,16 +55,12 @@ yii\web\YiiAsset::register($this);
             ],
             [
                 'attribute' => 'count',
-                'value' => $model->count . '<span class="fw-bold text-danger">(ПРОВЕРИТЬ КАК ВЕДЕТ СЕБЯ СИСТЕМА С ДРУГОЙ ВАЛЮТОЙ, ПРАВИЛЬНО ЛИ НАЧИСЛЯЕТСЯ БАЛАНС???)</span>',
+                'value' => $model->count . ' RUB',
                 'format' => 'raw'
             ],
             'method',
             'position_name',
             'access_days',
-            [
-                'attribute' => 'count',
-                'value' => $model->count . ' RUB'
-            ],
             'currency',
             [
                 'attribute' => 'count_in_currency',
@@ -66,8 +74,21 @@ yii\web\YiiAsset::register($this);
                 'attribute' => 'paypal_order_id',
                 'visible' => $model->method === 'PayPall'
             ],
-            'created_time',
-            'resulted_time',
+            [
+                'attribute' => 'created_time',
+                'value' => function(app\models\Orders $model){
+                    $dateTime = new DateTime($model->created_time, null);
+                    return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
+                }
+            ],
+            [
+                'attribute' => 'resulted_time',
+                'visible' => isset($model->resulted_time),
+                'value' => function(app\models\Orders $model){
+                    $dateTime = new DateTime($model->resulted_time, null);
+                    return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');
+                }
+            ],
             [
                 'attribute' => 'status',
                 'label' => 'Статус платежа:',

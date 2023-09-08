@@ -68,6 +68,9 @@ $config = [
             'class' => 'yii\captcha\CaptchaAction',
             'fixedVerifyCode' => null
         ],
+        'revise' => [
+            'class' => 'app\components\ReviseComponent',
+        ],
     ],
     'params' => $params
 ];

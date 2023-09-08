@@ -10,6 +10,7 @@ namespace app\models;
  * @property string $method Платежная система
  * @property string|null $payment_method Способ оплаты
  * @property float $fee Комиссия платежной системы
+ * @property string|null $revise Сведения о сверке
  * @property int $order_id ID заказа
  * @property int $client_id ID клиента
  *
@@ -36,6 +37,7 @@ class OrdersComplete extends \yii\db\ActiveRecord{
         return [
             [['shop', 'method', 'fee', 'order_id', 'client_id'], 'required'],
             [['fee'], 'number'],
+            [['revise'], 'safe'],
             [['order_id', 'client_id'], 'integer'],
             [['shop', 'payment_method'], 'string', 'max' => 255],
             [['method'], 'string', 'max' => 25],
@@ -56,6 +58,7 @@ class OrdersComplete extends \yii\db\ActiveRecord{
             'method' => 'Платежная система',
             'payment_method' => 'Способ оплаты',
             'fee' => 'Комиссия платежной системы',
+            'revise' => 'Сведения о сверке',
             'order_id' => 'ID заказа',
             'client_id' => 'ID клиента'
         ];

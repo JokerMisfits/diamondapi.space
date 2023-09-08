@@ -50,7 +50,7 @@ class TgMemberController extends AppAdminController{
      * @return string
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id) : string{
+    public function actionView(int $id) : string{
         return $this->render('view', [
             'model' => $this->findModel($id)
         ]);
@@ -85,7 +85,7 @@ class TgMemberController extends AppAdminController{
      * @return string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id) : string|\yii\web\Response{
+    public function actionUpdate(int $id) : string|\yii\web\Response{
         $model = $this->findModel($id);
         if($this->request->isPost && $model->load($this->request->post()) && $model->save()){
             return $this->redirect(['view', 'id' => $model->id]);
@@ -103,7 +103,7 @@ class TgMemberController extends AppAdminController{
      * @return \yii\web\Response
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id) : \yii\web\Response{
+    public function actionDelete(int $id) : \yii\web\Response{
         \Yii::$app->session->setFlash('warning', 'Удаление пользователей отключено.');
         return $this->redirect(['view', 'id' => $id]);
         // $this->findModel($id)->delete();
@@ -117,7 +117,7 @@ class TgMemberController extends AppAdminController{
      * @return TgMembers the loaded model
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id) : TgMembers{
+    protected function findModel(int $id) : TgMembers{
         if(($model = TgMembers::findOne(['id' => $id])) !== null){
             return $model;
         }

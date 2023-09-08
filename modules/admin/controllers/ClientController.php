@@ -23,7 +23,7 @@ class ClientController extends AppAdminController{
                     'class' => \yii\filters\VerbFilter::class,
                     'actions' => [
                         'delete' => ['POST']
-                    ],
+                    ]
                 ]
             ]
         );
@@ -50,7 +50,7 @@ class ClientController extends AppAdminController{
      * @return string
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id) : string{
+    public function actionView(int $id) : string{
         $model = $this->findModel($id);
         unset($model->bot_token);
 
@@ -111,7 +111,7 @@ class ClientController extends AppAdminController{
      * @return string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id) : string|\yii\web\Response{
+    public function actionUpdate(int $id) : string|\yii\web\Response{
 
         \Yii::$app->session->setFlash('warning', 'Изменение клиентов отключено.');
         return $this->redirect(['view', 'id' => $id]);
@@ -133,7 +133,7 @@ class ClientController extends AppAdminController{
      * @return \yii\web\Response
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id) : \yii\web\Response{
+    public function actionDelete(int $id) : \yii\web\Response{
         \Yii::$app->session->setFlash('warning', 'Удаление клиентов отключено.');
         return $this->redirect(['view', 'id' => $id]);
         //$this->findModel($id)->delete();
@@ -147,7 +147,7 @@ class ClientController extends AppAdminController{
      * @return Clients the loaded model
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
      */
-    protected function findModel($id) : Clients{
+    protected function findModel(int $id) : Clients{
         if(($model = Clients::findOne(['id' => $id])) !== null){
             return $model;
         }

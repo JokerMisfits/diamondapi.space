@@ -1,13 +1,12 @@
 <?php
-
 /** @var yii\web\View $this */
 /** @var string $name */
 /** @var string $message */
-/** @var Exception$exception */
+/** @var Exception $exception */
 
 $this->title = $name;
 ?>
-<div class="site-error container">
+<div class="site-error container py-0 my-0">
 
     <h1><?= yii\helpers\Html::encode($this->title); ?></h1>
 

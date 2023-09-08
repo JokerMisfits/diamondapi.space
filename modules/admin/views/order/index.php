@@ -11,6 +11,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="mx-1 mx-md-2">
         <p>
+        <?= yii\helpers\Html::a('Создать платеж', ['create'], ['class' => 'btn btn-success mt-1']); ?>
+        <?= yii\helpers\Html::a('Вывести сверку', ['index', 'revise' => true], ['class' => 'btn btn-warning fw-bold mt-1']); ?>
             <button id="order-search-button" class="btn btn-primary mt-1" onclick="showSearch()">Показать расширенный поиск</button>
             <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/admin/order?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
         </p>
@@ -28,8 +30,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn', 'contentOptions' => ['class' => 'text-center']],
             [
                 'attribute' => 'id',
-                'label' => 'Номер платежа',
-                'filter' => ''
+                'label' => 'Номер платежа'
             ],
             [
                 'attribute' => 'tg_user_id',
@@ -63,6 +64,21 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value' => function(app\models\Orders $model){
                     return $model->count . ' RUB';
                 }
+            ],
+            [
+                'attribute' => 'revise',
+                'label' => 'Сверка',
+                'value' => function(app\models\Orders $model){
+                    if(($model->status === 1 && $model->is_test === 0)){
+                        if($model->getOrdersCompletes()->where(['not', ['revise' => null]])->count() == 0){
+                            return \yii\helpers\Html::a('Перейти', \yii\helpers\Url::to(['/admin/revise/revise', 'id' => $model->id]), ['class' => 'btn btn-sm btn-warning fw-bold', 'title' => 'Перейти', 'target' => '_self']);
+                        }
+                        return '<span class="fw-bold text-success">Пройдена</span>';
+                    }
+                    return '<span class="fw-bold text-primary">Не требуется</span>';
+                },
+                'format' => 'raw',
+                'contentOptions' => ['class' => 'text-center']
             ],
             [
                 'attribute' => 'created_time',
