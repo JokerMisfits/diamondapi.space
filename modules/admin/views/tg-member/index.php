@@ -14,6 +14,10 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= yii\helpers\Html::a('Добавить пользователя', ['create'], ['class' => 'btn btn-success mt-1']); ?>
             <button id="tg-member-search-button" class="btn btn-primary mt-1" onclick="showSearch()">Показать расширенный поиск</button>
             <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/admin/tg-member?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
+            <?php
+                $count = app\models\TgMembers::find()-> where(['is_filled' => 0])->count();
+                echo $count > 0 ? yii\helpers\Html::a('Заполнить ' . $count . ' шт.', '/admin/tg-member/fill', ['class' => 'btn btn-dark mt-1']) : '';
+            ?>
         </p>
     </div>
 
@@ -32,12 +36,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'tg_first_name',
             'tg_last_name',
             [
-                'attribute' => 'is_filed',
+                'attribute' => 'is_filled',
                 'label' => 'Заполнено',
                 'value' => function(app\models\TgMembers $model){
-                    return $model->is_filed ? '<span class="fw-bold text-success">Да</span>' : '<span class="fw-bold text-danger">Нет</span>';
+                    return $model->is_filled ? '<span class="fw-bold text-success">Да</span>' : '<span class="fw-bold text-danger">Нет</span>';
                 },
-                'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'is_filed', [1 => 'Да', 0 => 'Нет'],
+                'filter' => yii\helpers\Html::activeDropDownList($searchModel, 'is_filled', [1 => 'Да', 0 => 'Нет'],
                 ['class' => 'form-control', 'prompt' => 'Все', 'style' => 'cursor: pointer;']),
                 'contentOptions' => ['class' => 'text-center'],
                 'format' => 'raw'

@@ -14,13 +14,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= yii\helpers\Html::a('Изменить', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']); ?>
-        <?= yii\helpers\Html::a('Заполнить(ДОДЕЛАТЬ)', ['update', 'id' => $model->id], ['class' => 'btn btn-success']); ?>
+        <?= strtotime($model->last_change) + 86400 < time() ? yii\helpers\Html::a('Заполнить', ['fill', 'id' => $model->tg_user_id], ['class' => 'btn btn-success']) : ''; ?>
     </p>
 
     <?= yii\widgets\DetailView::widget([
         'model' => $model,
         'attributes' => [
             'id',
+            [
+                'attribute' => 'account',
+                'label' => 'Учетная запись',
+                'value' => function(app\models\TgMembers $model){
+                    $user = $model->getUsers()->one();
+                    if($user === null){
+                        return null;
+                    }
+                    return yii\helpers\Html::a($user->username, \yii\helpers\Url::to(['/admin/user/view', 'id' => $user->id]), ['class' => 'link-primary', 'title' => 'Перейти', 'target' => '_self']);
+                },
+                'format' => 'raw'
+            ],
             [
                 'attribute' => 'Клиент?',
                 'value' => function(app\models\TgMembers $model){
@@ -44,11 +56,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'tg_bio',
             'tg_type',
             [
-                'attribute' => 'is_filed',
-                'value' => $model->is_filed ? 'Да' : 'Нет' 
+                'attribute' => 'is_filled',
+                'value' => $model->is_filled ? 'Да' : 'Нет' 
             ],
             [
                 'attribute' => 'last_change',
+                'label' => 'Дата последнего обновления',
                 'value' => function($model){
                     $dateTime = new DateTime($model->last_change, null);
                     return Yii::$app->formatter->asDatetime($dateTime, 'php:d.m.Y H:i:s');

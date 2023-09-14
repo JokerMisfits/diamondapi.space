@@ -154,6 +154,6 @@ class OrderController extends AppAdminController{
         if(($model = Orders::findOne(['id' => $id])) !== null){
             return $model;
         }
-        throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+        throw new \yii\web\NotFoundHttpException('Страница не найдена.');
     }
 }

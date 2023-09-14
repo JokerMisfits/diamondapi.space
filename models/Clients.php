@@ -21,6 +21,8 @@ namespace app\models;
  * @property float $total_withdrawal_profit Cумма выведенных ДС из прибыли(profit)
  * @property float $total_withdrawal_profit_test Cумма выведенных ДС из тестовой прибыли(test_profit)
  * @property int $min_count_withdrawal Минимальная сумма вывода
+ * @property string|null $config_version Версия генерации конфигурации 
+ * @property string|null $payment_alias Назначение платежа(юр лицо) 
  * @property string|null $bot_token Токен бота
  * @property string|null $robokassa Настройки RoboKassa
  * @property string|null $paykassa Настройки PayKassa
@@ -65,9 +67,9 @@ class Clients extends \yii\db\ActiveRecord{
             [['tg_user_id', 'shop', 'balance'], 'required'],
             [['tg_user_id', 'cost', 'commission', 'min_count_withdrawal', 'tg_chat_id', 'tg_private_chat_id', 'tg_member_id'], 'integer'],
             [['balance', 'blocked_balance', 'test_balance', 'test_blocked_balance', 'profit', 'test_profit', 'total_withdrawal', 'test_total_withdrawal', 'total_withdrawal_profit', 'total_withdrawal_profit_test'], 'number'],
-            [['robokassa', 'paykassa', 'freekassa', 'paypall'], 'string'], 
+            [['config_version', 'payment_alias', 'bot_token', 'robokassa', 'paykassa', 'freekassa', 'paypall'], 'string'],
             [['last_change'], 'safe'],
-            [['shop', 'bot_token'], 'string', 'max' => 255],
+            [['shop'], 'string', 'max' => 255],
             [['shop'], 'unique'],
             [['tg_chat_id'], 'unique'],
             [['tg_private_chat_id'], 'unique'],
@@ -100,6 +102,8 @@ class Clients extends \yii\db\ActiveRecord{
             'total_withdrawal_profit' => 'Cумма выведенных ДС из прибыли(profit)',
             'total_withdrawal_profit_test' => 'Cумма выведенных ДС из тестовой прибыли(test_profit)',
             'min_count_withdrawal' => 'Минимальная сумма вывода',
+            'config_version' => 'Версия генерации конфигурации', 
+            'payment_alias' => 'Назначение платежа(юр лицо)',
             'bot_token' => 'Токен бота',
             'robokassa' => 'Настройки RoboKassa',
             'paykassa' => 'Настройки PayKassa',

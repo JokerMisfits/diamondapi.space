@@ -46,6 +46,7 @@ class ClientController extends AppAdminController{
 
     /**
      * Displays a single Clients model.
+     *
      * @param int $id ID
      * @return string
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
@@ -55,6 +56,7 @@ class ClientController extends AppAdminController{
         unset($model->bot_token);
 
         $cfg = AppAdminController::getConfig($model->shop, true);
+
         $model->robokassa = 0;
         $model->paykassa = 0;
         $model->freekassa = 0;
@@ -81,6 +83,7 @@ class ClientController extends AppAdminController{
     /**
      * Creates a new Clients model.
      * If creation is successful, the browser will be redirected to the 'view' page.
+     *
      * @return string|\yii\web\Response
      */
     public function actionCreate() : string|\yii\web\Response{
@@ -107,6 +110,7 @@ class ClientController extends AppAdminController{
     /**
      * Updates an existing Clients model.
      * If update is successful, the browser will be redirected to the 'view' page.
+     *
      * @param int $id ID
      * @return string|\yii\web\Response
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
@@ -129,6 +133,7 @@ class ClientController extends AppAdminController{
     /**
      * Deletes an existing Clients model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
      * @param int $id ID
      * @return \yii\web\Response
      * @throws \yii\web\NotFoundHttpException if the model cannot be found
@@ -138,6 +143,75 @@ class ClientController extends AppAdminController{
         return $this->redirect(['view', 'id' => $id]);
         //$this->findModel($id)->delete();
         //return $this->redirect(['index']);
+    }
+
+    /**
+     * Connect payment system to Clients model.
+     * If deletion is successful, the browser will be redirected to the 'index' page.
+     *
+     * @param int $id ID
+     * @param string $method method
+     * @return \yii\web\Response
+     * @throws \yii\web\NotFoundHttpException if the model cannot be found
+     */
+    public function actionConnect(int $id, string $method) : \yii\web\Response{
+        $model = $this->findModel($id);
+        $security = new \yii\base\Security;
+        $config['config_version'] = null;
+
+        if($model->$method === null){
+            $isNew = true;
+            $config['payment_alias'] = $model->payment_alias;
+            if($config['payment_alias'] !== null){
+                
+                $config['payment_alias'] = $security->decryptByPassword(base64_decode($model->payment_alias), $_SERVER['API_KEY_0']);
+            }
+            $config[$method] = AppAdminController::generateConfig($config['payment_alias'], $method);
+            $config['bot_token'] = null;
+        }
+        else{
+            $isNew = false;
+            $config = AppAdminController::getConfig($model->shop, false, $method, true);
+            $config[$method]['enable'] = !$config[$method]['enable'];
+        }
+
+        if($method === 'robokassa'){
+            $newConfig = AppAdminController::generateEncryptedConfig($config['config_version'], $config['payment_alias'], $config['bot_token'], $config['robokassa'], null, null, null);
+        }
+        elseif($method === 'paykassa'){
+            $newConfig = AppAdminController::generateEncryptedConfig($config['config_version'], $config['payment_alias'], $config['bot_token'], null, $config['paykassa'], null, null);
+        }
+        elseif($method === 'freekassa'){
+            $newConfig = AppAdminController::generateEncryptedConfig($config['config_version'], $config['payment_alias'], $config['bot_token'], null, null, $config['freekassa'], null);
+        }
+        elseif($method === 'paypall'){
+            $newConfig = AppAdminController::generateEncryptedConfig($config['config_version'], $config['payment_alias'], $config['bot_token'], null, null, null, $config['paypall']);
+        }
+        else{
+            throw new \yii\web\NotFoundHttpException('Страница не найдена.');
+        }
+        
+        if($isNew){
+            $model->config_version = $newConfig['config_version'];
+            $model->payment_alias = $newConfig['payment_alias'];
+            $model->$method = $newConfig[$method];
+            if($model->update(true, ['config_version', 'payment_alias', $method]) !== false){
+                $config[$method]['enable'] ? \Yii::$app->session->setFlash('success', $method . ' Успешно подключена.') : \Yii::$app->session->setFlash('success', $method . ' Успешно отключена.');
+            }
+            else{
+                \Yii::$app->session->setFlash('error', 'Не удалось сохранить изменения.');
+            }
+        }
+        else{
+            $model->$method = $newConfig[$method];
+            if($model->update(true, [$method]) !== false){
+                $config[$method]['enable'] ? \Yii::$app->session->setFlash('success', $method . ' Успешно подключена.') : \Yii::$app->session->setFlash('success', $method . ' Успешно отключена.');
+            }
+            else{
+                \Yii::$app->session->setFlash('error', 'Не удалось сохранить изменения.');
+            }
+        }
+        return $this->redirect(['view', 'id' => $id]);
     }
 
     /**
@@ -151,6 +225,6 @@ class ClientController extends AppAdminController{
         if(($model = Clients::findOne(['id' => $id])) !== null){
             return $model;
         }
-        throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+        throw new \yii\web\NotFoundHttpException('Страница не найдена.');
     }
 }

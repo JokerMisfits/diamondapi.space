@@ -20,7 +20,7 @@
 
     <?= $form->field($model, 'card_number'); ?>
 
-    <?= $form->field($model, 'comment')->textarea(['rows' => 2]); ?>
+    <?= $form->field($model, 'comment')->textarea(['rows' => 1]); ?>
 
     <div class="form-group">
         <?= yii\helpers\Html::submitButton('Поиск', ['class' => 'btn btn-primary']); ?>

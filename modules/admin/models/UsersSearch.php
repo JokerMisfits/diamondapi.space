@@ -3,9 +3,9 @@
 namespace app\modules\admin\models;
 
 /**
- * TgMembersSearch represents the model behind the search form of `app\models\TgMembers`.
+ * UsersSearch represents the model behind the search form of `app\models\Users`.
  */
-class TgMembersSearch extends \app\models\TgMembers{
+class UsersSearch extends \app\models\Users{
 
     /**
      * {@inheritdoc}
@@ -14,8 +14,8 @@ class TgMembersSearch extends \app\models\TgMembers{
      */
     public function rules() : array{
         return [
-            [['id', 'tg_user_id', 'is_filled'], 'integer'],
-            [['tg_username', 'tg_first_name', 'tg_last_name', 'tg_bio', 'tg_type', 'last_change'], 'safe']
+            [['id', 'tg_member_id'], 'integer'],
+            [['username', 'password', 'email', 'phone', 'auth_key', 'last_activity', 'registration_date'], 'safe']
         ];
     }
 
@@ -25,6 +25,7 @@ class TgMembersSearch extends \app\models\TgMembers{
      * @return array
      */
     public function scenarios() : array{
+        // bypass scenarios() implementation in the parent class
         return parent::scenarios();
     }
 
@@ -36,12 +37,12 @@ class TgMembersSearch extends \app\models\TgMembers{
      * @return \yii\data\ActiveDataProvider
      */
     public function search($params) : \yii\data\ActiveDataProvider{
-        $query = \app\models\TgMembers::find();
+        $query = \app\models\Users::find();
 
         // add conditions that should always apply here
 
         $dataProvider = new \yii\data\ActiveDataProvider([
-            'query' => $query,
+            'query' => $query
         ]);
 
         $this->load($params);
@@ -55,16 +56,16 @@ class TgMembersSearch extends \app\models\TgMembers{
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'tg_user_id' => $this->tg_user_id,
-            'is_filled' => $this->is_filled,
-            'last_change' => $this->last_change,
+            'last_activity' => $this->last_activity,
+            'registration_date' => $this->registration_date,
+            'tg_member_id' => $this->tg_member_id,
         ]);
 
-        $query->andFilterWhere(['like', 'tg_username', $this->tg_username])
-            ->andFilterWhere(['like', 'tg_first_name', $this->tg_first_name])
-            ->andFilterWhere(['like', 'tg_last_name', $this->tg_last_name])
-            ->andFilterWhere(['like', 'tg_bio', $this->tg_bio])
-            ->andFilterWhere(['like', 'tg_type', $this->tg_type]);
+        $query->andFilterWhere(['like', 'username', $this->username])
+            ->andFilterWhere(['like', 'password', $this->password])
+            ->andFilterWhere(['like', 'email', $this->email])
+            ->andFilterWhere(['like', 'phone', $this->phone])
+            ->andFilterWhere(['like', 'auth_key', $this->auth_key]);
 
         return $dataProvider;
     }

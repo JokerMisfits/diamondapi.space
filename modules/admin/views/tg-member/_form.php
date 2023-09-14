@@ -24,7 +24,7 @@
 
     <?= $form->field($model, 'tg_type')->textInput(['maxlength' => true]); ?>
 
-    <?= $form->field($model, 'is_filed')->dropDownList([0 => 'Нет', 1 => 'Да'], ['class' => 'form-control', 'style' => 'cursor: pointer;']); ?>
+    <?= $form->field($model, 'is_filled')->dropDownList([0 => 'Нет', 1 => 'Да'], ['class' => 'form-control', 'style' => 'cursor: pointer;']); ?>
 
     <div class="form-group">
         <?= yii\helpers\Html::submitButton('Сохранить', ['class' => 'btn btn-success']); ?>

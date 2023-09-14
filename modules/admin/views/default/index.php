@@ -1,2 +1,1 @@
-<div class="admin-default-index">
-</div>
+<div class="admin-default-index"></div>

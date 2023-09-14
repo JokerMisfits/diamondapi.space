@@ -12,7 +12,7 @@ class ClientsSearch extends \app\models\Clients{
     public function rules() : array{
         return [
             [['id', 'tg_user_id', 'cost', 'commission', 'min_count_withdrawal', 'tg_chat_id', 'tg_private_chat_id', 'tg_member_id'], 'integer'],
-            [['shop', 'bot_token', 'robokassa', 'paykassa', 'freekassa', 'paypall', 'last_change'], 'safe'],
+            [['shop', 'payment_alias', 'config_version', 'bot_token', 'robokassa', 'paykassa', 'freekassa', 'paypall', 'last_change'], 'safe'],
             [['balance', 'blocked_balance', 'test_balance', 'test_blocked_balance', 'profit', 'test_profit', 'total_withdrawal', 'test_total_withdrawal', 'total_withdrawal_profit', 'total_withdrawal_profit_test'], 'number'],
         ];
     }
@@ -72,6 +72,8 @@ class ClientsSearch extends \app\models\Clients{
         ]);
 
         $query->andFilterWhere(['like', 'shop', $this->shop])
+            ->andFilterWhere(['like', 'payment_alias', $this->payment_alias])
+            ->andFilterWhere(['like', 'config_version', $this->config_version])
             ->andFilterWhere(['like', 'bot_token', $this->bot_token])
             ->andFilterWhere(['like', 'robokassa', $this->robokassa])
             ->andFilterWhere(['like', 'paykassa', $this->paykassa])

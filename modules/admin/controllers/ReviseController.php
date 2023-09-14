@@ -12,7 +12,7 @@ class ReviseController extends AppAdminController{
      * @return bool
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function beforeAction($action){
+    public function beforeAction($action) : bool{
         $referrer = \Yii::$app->request->referrer;
         if($action->id === 'index'){
             return parent::beforeAction($action);
@@ -38,7 +38,7 @@ class ReviseController extends AppAdminController{
      *
      * @return string
      */
-    public function actionIndex(){
+    public function actionIndex() : string{
         $searchModel = new OrdersCompleteSearch();
         $dataProvider = $searchModel->search($this->request->queryParams);
 
@@ -67,11 +67,34 @@ class ReviseController extends AppAdminController{
 
         if(($model = Orders::findOne(['id' => $id])) !== null){
             if($model->status === 0 || $model->is_test === 1){
-                throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+                throw new \yii\web\NotFoundHttpException('Страница не найдена.');
             }
             $method = mb_strtolower($model->method);
             $config = AppAdminController::getConfig($model->shop, false, $method);
-            $response = \Yii::$app->get('revise')->invoise($config[$method]['shop'], $id, $config[$method][1]);
+
+            if($config === false){
+                \Yii::$app->session->setFlash('warning', 'Не удалось извлечь конфигурацию.');
+                return \Yii::$app->response->redirect('index');
+            }
+            elseif($method === 'robokassa'){
+                $response = \Yii::$app->get('revise')->invoise($method, ['shop' => $config[$method]['shop'], 'id' => $id, 'pwd' => $config[$method][1]]);
+            }
+            elseif($method === 'paykassa'){
+                $response = null;
+            }
+            elseif($method === 'freekassa'){
+                $response = null;
+                //$response = \Yii::$app->get('revise')->invoise($method, ['shopId' => $config[$method]['merchant_id'], 'id' => $id, 'apiKey' => $config[$method]['api_key']]);
+            }
+            elseif($method === 'paypall'){
+                $response = null;
+            }
+            elseif($method === 'paypalych'){
+                $response = null;
+            }
+            else{
+                $response = null;
+            }            
             if($response !== null){
                 return $this->render('revise', [
                     'model' => $model,
@@ -81,11 +104,12 @@ class ReviseController extends AppAdminController{
                 ]);
             }
             else{
-                return \Yii::$app->response->redirect('/admin');
+                \Yii::$app->session->setFlash('warning', 'Не удалось получить ответ от платежной системы.');
+                return \Yii::$app->response->redirect('index');
             }
 
         }
-        throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+        throw new \yii\web\NotFoundHttpException('Страница не найдена.');
     }
 
     /**
@@ -97,11 +121,11 @@ class ReviseController extends AppAdminController{
     public function actionConfirm(int $id, int $orderId) : string|\yii\web\Response{
         if(($model = OrdersComplete::findOne(['id' => $id, 'order_id' => $orderId])) !== null){
             if($model->revise !== null){
-                throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+                throw new \yii\web\NotFoundHttpException('Страница не найдена.');
             }
             $method = mb_strtolower($model->method);
             $config = AppAdminController::getConfig($model->shop, false, $method);
-            $response = \Yii::$app->get('revise')->invoise($config[$method]['shop'], $orderId, $config[$method][1]);
+            $response = \Yii::$app->get('revise')->invoise($method,['shop' => $config[$method]['shop'], 'id' => $orderId, 'pwd' => $config[$method][1]]);
             if($response !== null){
                 if($response['State']['Code'] == 100 && isset($response['CommssionPercent']) && isset($response['Commission'])){
                     $response['Revise']['Status'] = true;
@@ -119,7 +143,7 @@ class ReviseController extends AppAdminController{
                 return \Yii::$app->response->redirect('/admin');
             }
         }
-        throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+        throw new \yii\web\NotFoundHttpException('Страница не найдена.');
     }
 
     /**
@@ -145,7 +169,7 @@ class ReviseController extends AppAdminController{
         if(($model = OrdersComplete::findOne(['id' => $id])) !== null){
             return $model;
         }
-        throw new \yii\web\NotFoundHttpException('The requested page does not exist.');
+        throw new \yii\web\NotFoundHttpException('Страница не найдена.');
     }
 
 }

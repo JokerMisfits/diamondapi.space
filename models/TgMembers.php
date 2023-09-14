@@ -12,7 +12,7 @@ namespace app\models;
  * @property string|null $tg_last_name Фамилия пользователя в telegram
  * @property string|null $tg_bio Описания пользователя в telegram
  * @property string|null $tg_type Тип аккаунта telegram
- * @property int $is_filed Заполнено?
+ * @property int $is_filled Заполнено?
  * @property string $last_change Последнее изминение
  * @property Clients[] $clients
  * @property Orders[] $orders
@@ -38,7 +38,7 @@ class TgMembers extends \yii\db\ActiveRecord{
     public function rules() : array{
         return [
             [['tg_user_id'], 'required'],
-            [['tg_user_id', 'is_filed'], 'integer'],
+            [['tg_user_id', 'is_filled'], 'integer'],
             [['last_change'], 'safe'],
             [['tg_username', 'tg_first_name', 'tg_last_name', 'tg_bio', 'tg_type'], 'string', 'max' => 255],
             [['tg_user_id'], 'unique']
@@ -59,7 +59,7 @@ class TgMembers extends \yii\db\ActiveRecord{
             'tg_last_name' => 'Фамилия пользователя в telegram',
             'tg_bio' => 'Описание пользователя в telegram',
             'tg_type' => 'Тип аккаунта telegram',
-            'is_filed' => 'Заполнено?',
+            'is_filled' => 'Заполнено?',
             'last_change' => 'Последнее изминение',
         ];
     }

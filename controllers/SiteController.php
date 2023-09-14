@@ -7,6 +7,7 @@ class SiteController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return bool
      * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
      */
@@ -16,13 +17,14 @@ class SiteController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return array
      */
     public function actions() : array{
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction'
-            ],
+            ]
         ];
     }
 
@@ -30,6 +32,7 @@ class SiteController extends AppController{
      * Displays homepage.
      *
      * @return string
+     *
      * @throws \yii\web\ForbiddenHttpException
      */
     public function actionIndex() : string{

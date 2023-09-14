@@ -29,40 +29,92 @@ class ReviseComponent extends \yii\base\Component{
             ],
             'commissions' => [
                 'BankCardPSR' => 3.9, //3,9% 3,3% 2,9% 2,7% 2,5%
+                'BankCardPSBR' => 3.9, //3,9% 3,3% 2,9% 2,7% 2,5%
+                'SBPPSR' => 2, //1,8% 1,8% 1,8% 1,65% 1,5%
                 'SBPPSBR' => 2, //1,8% 1,8% 1,8% 1,65% 1,5%
                 'YandexPayPSR' => 3.9, //3,9% 3,3% 2,9% 2,7% 2,5%
+                'YandexPayPSBR' => 3.9, //3,9% 3,3% 2,9% 2,7% 2,5%
+                'Podeli30R' => 5.5, //5,5%
                 'MtsPayPSR' => 3.9, //3,9% 3,3% 2,9% 2,7% 2,5%
                 'MirPayPSR' => 3.9, //3,9% 3,3% 2,9% 2,7% 2,5%
                 'BankCardForeignPSR' => 9.9, //9,9%
-                'BankCardPSBR' => 3.9, //3,9% 3,3% 2,9% 2,7% 2,5%
+                'BankCardForeignPSBR' => 9.9, //9,9%
                 'Qiwi40PS' => 7 //6-7% 5,5-6,5% 4,5-5,5%
+            ]
+        ],
+        'freekassa' => [
+            'url' => 'https://api.freekassa.ru/v1/orders',
+            'orders' => [
+                'status' => [
+                    0 => 'Новый',
+                    1 => 'Оплачен',
+                    8 => 'Ошибка',
+                    9 => 'Отмена'
+                ]
             ]
         ]
     ];
 
-    public function init(){
+    /**
+     * Init component
+     *
+     * @return void
+     */
+    public function init() : void{
         parent::init();
     }
 
-    // Обязательный метод, в котором выполняется основная логика компонента
-    public function run(){
+    /**
+     * Run component
+     *
+     * @return void
+     */
+    public function run() : void{
+        // Обязательный метод, в котором выполняется основная логика компонента
         // В этом методе должна быть основная логика компонента
     }
 
     /**
      * Gets invoise status
-     * @param string $shop shop name
-     * @param int $id ID
-     * @param string $pwd shop pwd
+     *
+     * @param string $method shop name
+     * @param array $data
+     * @param bool $mode
      * @return array|null
      */
-    public function invoise(string $shop, int $id, string $pwd) : array|null{
-        $hash = self::getHash($shop, $id, $pwd);
+    public function invoise(string $method, array $data, bool $mode = true) : array|null{
+        if($method === 'robokassa'){
+            return self::invoiceRobo($data, $mode);
+        }
+        elseif($method === 'paykassa'){
+            return null;
+        }
+        elseif($method === 'freekassa'){
+            return self::invoiceFree($data, $mode);
+        }
+        elseif($method === 'paypall'){
+            return null;
+        }
+        elseif($method === 'paypalych'){
+            return null;
+        }
+        return null;
+    }
+
+    /**
+     * Gets invoise status robokassa
+     *
+     * @param array $data
+     * @param bool $mode
+     * @return array|null
+     */
+    private static function invoiceRobo(array $data, bool $mode) : array|null{
+        $crc = self::getSignature('robokassa', $data);
         $http = new \yii\httpclient\Client();
         $params = [
-            'MerchantLogin' => $shop,
-            'InvoiceID' => $id,
-            'Signature' => $hash
+            'MerchantLogin' => $data['shop'],
+            'InvoiceID' => $data['id'],
+            'Signature' => $crc
         ];
         $response = $http->createRequest()
         ->setMethod('POST')
@@ -84,18 +136,137 @@ class ReviseComponent extends \yii\base\Component{
                 return $data;
             }
             else{
-                \Yii::$app->session->setFlash('error', self::$state['robokassa']['Result']['Code'][$data['Result']['Code']]);
+                if($mode){
+                    \Yii::$app->session->setFlash('error', self::$state['robokassa']['Result']['Code'][$data['Result']['Code']]);
+                }
                 return null;
             }
         }
         else{
-            \Yii::$app->session->setFlash('error', 'Произошла ошибка при выполнении запроса: ' . $response->statusText);
+            if($mode){
+                \Yii::$app->session->setFlash('error', 'Произошла ошибка при выполнении запроса: ' . $response->statusText);
+            }
             return null;
         }
     }
 
-    private static function getHash(string $shop, int $id, string $pwd) : string{
-        return md5($shop . ':' . $id . ':' .$pwd);
+    /**
+     * Gets invoise status paykassa
+     *
+     * @param array $data
+     * @param bool $mode
+     * @return array|null
+     */
+    private static function invoicePay(array $data, bool $mode) : array|null{
+        return null;
+    }
+
+    /**
+     * Gets invoise status fleekassa
+     *
+     * @param array $data
+     * @param bool $mode
+     * @return array|null
+     */
+    private static function invoiceFree(array $data, bool $mode) : array|null{
+        $crc = self::getSignature('freekassa', $data);
+        $nonce = $crc[1];
+        $crc = $crc[0];
+
+        $http = new \yii\httpclient\Client();
+        $params = [
+            'shopId' => (int)$data['shopId'],
+            'nonce' => $nonce,
+            'paymentId' => $data['id']
+        ];
+        ksort($params);
+        $params['signature'] = $crc;
+
+        $response = $http->createRequest()
+        ->setMethod('GET')
+        ->setUrl(self::$state['freekassa']['url'])
+        ->setOptions([
+            'timeout' => 10,
+        ])
+        ->setHeaders([
+            'Content-Type' => 'application/json',
+        ])
+        ->setData(json_encode($params))
+        ->send();
+
+        if($response->isOk){
+            return $response->data;
+        }
+
+        // $statusCode = $response->statusCode;
+        // $content = $response->content;
+        // $headers = $response->headers;
+    
+        // // Вывести информацию об ошибке
+        // echo "HTTP Status Code: $statusCode<br>";
+        // echo "Response Content: $content<br>";
+        
+        // // Вывести заголовки ответа
+        // echo "Response Headers:<pre>";
+        // print_r($headers);
+        // echo "</pre>";
+
+        return null;
+    }
+
+    /**
+     * Gets invoise status paypall
+     *
+     * @param array $data
+     * @param bool $mode
+     * @return array|null
+     */
+    private static function invoicePP(array $data, bool $mode) : array|null{
+        return null;
+    }
+
+    /**
+     * Gets invoise status paypalych
+     *
+     * @param array $data
+     * @param bool $mode
+     * @return array|null
+     */
+    private static function invoicePalych(array $data, bool $mode) : array|null{
+        return null;
+    }
+
+    /**
+     * Return signature for payment system
+     *
+     * @param string $method
+     * @param array $data
+     * @return string|null
+     */
+    private static function getSignature(string $method, array $data) : string|null|array{
+        if($method === 'robokassa'){
+            return md5($data['shop'] . ':' . $data['id'] . ':' . $data['pwd']);
+        }
+        elseif($method === 'paykassa'){
+
+        }
+        elseif($method === 'freekassa'){
+            $nonce = time();
+            $toHash = [
+                'shopId' => (int)$data['shopId'],
+                'nonce' => $nonce,
+                'paymentId' => $data['id']
+            ];
+            ksort($toHash);
+            return [hash_hmac('sha256', implode('|', $toHash), $data['apiKey']), $nonce];
+        }
+        elseif($method === 'paypall'){
+
+        }
+        elseif($method === 'paypalych'){
+
+        }
+        return null;
     }
 
 }

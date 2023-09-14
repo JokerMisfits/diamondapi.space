@@ -13,6 +13,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return array
      */
     public function behaviors() : array{
@@ -31,6 +32,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return bool
      * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
      */
@@ -109,6 +111,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     public function actionIndex() : string{
@@ -120,6 +123,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     public function actionChannels() : string{
@@ -131,6 +135,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     public function actionPayments() : string{
@@ -144,6 +149,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     public function actionSubscriptions() : string{
@@ -152,6 +158,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     public function actionFinance() : string{
@@ -308,6 +315,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     public function actionOptions() : string{
@@ -316,6 +324,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     public function actionVerify() : string{
@@ -344,6 +353,7 @@ class LkController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @throws \yii\web\ForbiddenHttpException
      */
     public function actionConfirmation(){

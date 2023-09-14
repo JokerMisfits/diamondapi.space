@@ -11,8 +11,9 @@ class PaymentController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return bool
-     * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function beforeAction($action) : bool{
         $params = \Yii::$app->request->get();
@@ -28,29 +29,14 @@ class PaymentController extends AppController{
                         return parent::beforeAction($action);
                     }
                 }
-                else{
-                    return false;
-                }
             }
-            else{
-                return false;
-            }
+            return false;
         }
         elseif($action->id == 'route'){
             if(array_key_exists('webApp', $params) && $params['webApp'] != ''){
                 return parent::beforeAction($action);
             }
-            else{
-                return false;
-            }
-        }
-        elseif($action->id == 'confirmation'){//Todo удалить после теста ЭТО ДЛЯ PAYPALL ПОДТВЕРЖДЕНИЕ ВЫПОЛНЕНИЯ ЗАКАЗА
-            if(array_key_exists('token', $params)){
-                return false;
-            }
-            else{
-                return false;
-            }
+            return false;
         }
         elseif($action->id === 'success'){
             $this->enableCsrfValidation = false;
@@ -62,26 +48,20 @@ class PaymentController extends AppController{
                 sleep(10);
                 return parent::beforeAction($action); 
             }
-            else{
-                return false;
-            }
+            return false;
         }
         elseif($action->id === 'fail'){
             if(\Yii::$app->request->isPost){
                 $this->enableCsrfValidation = false;
                 return parent::beforeAction($action);
             }
-            else{
-                return false;
-            }
         }
-        else{
-            return false;
-        }
+        throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
     }
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      * @throws \yii\web\ForbiddenHttpException
      */
@@ -97,6 +77,7 @@ class PaymentController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return void
      * @throws \yii\web\ForbiddenHttpException
      */
@@ -391,162 +372,26 @@ class PaymentController extends AppController{
                                             \Yii::$app->getResponse()->redirect($response->getData()['links'][1]['href'])->send();
                                             exit(0);
                                         }
-                                        else{
-                                            throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                                        }
-                                    }
-                                    else{
-                                        throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                                     }
                                 }
-                                else{
-                                    throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                                }
                             }
-                            else{
-                                throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                            }
+                            throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                         }
-                        else{
-                            \Yii::error('Method paypal db, не получилось записать INSERT: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
-                        }
+                        \Yii::error('Method paypal db, не получилось записать INSERT: ' . \Yii::$app->db->getSchema()->errorInfo() . PHP_EOL . ' Параметры: ' . json_encode($params));
                     }
                     catch(\Exception|\Throwable $e){
                         \Yii::error('Ошибка в PaymentController paypal: ' . $e->getMessage() . PHP_EOL . ' Параметры: ' . json_encode($params));
                         throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
                     }
                 }
-                else{
-                    throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                }
-            }
-            else{
-                throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
             }
         }
-        else{
-            throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-        }
+        throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
     }
 
     /**
      * {@inheritdoc}
-     * @return void
-     * @throws \yii\web\ForbiddenHttpException
-     */
-    public function actionConfirmation() : void{
-        $params = \Yii::$app->request->get();
-        if(isset($params['token']) && isset($params['PayerID'])){
-            try{
-                $sql = "SELECT id, status, shop FROM orders WHERE paypal_order_id = :ppid ORDER BY id DESC limit 1";
-                $result = \Yii::$app->db->createCommand($sql)
-                    ->bindValue(':ppid', $params['token'])
-                    ->queryOne();
-                if($result != false){
-                    if(isset($result['id']) && isset($result['status']) && isset($result['shop']) && $result['status'] == 0){
-                        $config = \Yii::$app->params['shops'][$result['shop']]['PayPal'];
-                        $base64Token = base64_encode($config['clientId'] . ':' . $config['secret']);
-                        if(isset($config)){
-                            $client = new \yii\httpclient\Client();
-                            $url = 'https://api-m.paypal.com/v1/oauth2/token';//For test https://api-m.sandbox.paypal.com/v1/oauth2/token
-                            $headers = [
-                                'Content-Type' => 'application/x-www-form-urlencoded',
-                                'Authorization' => 'Basic ' . $base64Token
-                            ];
-                            $data = [
-                                'grant_type' => 'client_credentials',
-                            ];
-                            $response = $client->createRequest()// Отправка POST-запроса на получение токена доступа
-                            ->setMethod('POST')
-                            ->setUrl($url)
-                            ->setHeaders($headers)
-                            ->setData($data)
-                            ->send();
-                            if($response->isOk){
-                                $accessToken = $response->data['access_token'];
-                                $request = $client->createRequest()
-                                ->setMethod('GET')
-                                ->setUrl('https://api-m.paypal.com/v2/checkout/orders/' . $params['token'])//For test https://api-m.sandbox.paypal.com/v2/checkout/orders/
-                                ->addHeaders([
-                                    'Content-Type' => 'application/json',
-                                    'Authorization' => 'Bearer ' . $accessToken
-                                ]);
-                                $response = $request->send();
-                                if($response->isOk){
-                                    $response = $response->getData();
-                                    if(isset($response['status']) && isset($response['payer']['payer_id']) && $response['status'] == 'APPROVED' && $response['payer']['payer_id'] == $params['PayerID']){
-                                        $id = $response['id'];
-                                        $paymentId = $response['purchase_units'][0]['reference_id'];
-                                        if($id == $params['token']){
-                                            $sql = "UPDATE orders SET status = :status_bool, resulted_time = NOW() WHERE id = :order_id; AND paypal_order_id = :ppd";
-                                            $result = \Yii::$app->db->createCommand($sql)
-                                                ->bindValue(':status_bool', 1)
-                                                ->bindValue(':order_id', $paymentId)
-                                                ->bindValue(':ppd', $id)
-                                                ->execute();
-                                            if($result !== false){//Todo сделать транзакцию с момента апдейта и до конца
-                                                $url = 'https://api-m.paypal.com/v2/checkout/orders/' . $id . '/capture';//For test https://api-m.sandbox.paypal.com/v2/checkout/orders/' . $id . '/capture'
-                                                $headers = [
-                                                    'Content-Type' => 'application/json',
-                                                    'Authorization' => 'Basic ' . $base64Token
-                                                ];
-                                                $response = $client->createRequest()
-                                                ->setMethod('POST')
-                                                ->setUrl($url)
-                                                ->setHeaders($headers)
-                                                ->send();
-                                                if($response->isOk){
-                                                    echo $id . '|success';//Todo если тг отправить ответ answer web app query
-                                                    exit(0);
-                                                }
-                                                else{//Todo ЕСТЬ ТАКАЯ МЫСЛЬ, ЧТО ЕСЛИ ДОЛГО НЕ ПОДТВЕРЖДАТЬ, PAYPAL ШЛЕТ НАС
-                                                    throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);//Todo rollback + message
-                                                }
-                                            }
-                                            else{
-                                                throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                                            }  
-                                        }
-                                        else{
-                                            throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                                        }
-                                    }
-                                    else{
-                                        throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                                    }
-                                }
-                                else{
-                                    throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                                }
-                            }
-                            else{
-                                throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                            }
-                        }
-                        else{
-                            throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                        }
-                    }
-                    else{
-                        throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                    }
-                }
-                else{
-                    throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-                }
-            }
-            catch(\Exception|\Throwable $e){
-                \Yii::error('Ошибка в PaymentController Confirmation: ' . $e->getMessage());
-                throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-            }
-        }
-        else{
-            throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);
-        }
-    }
-
-    /**
-     * {@inheritdoc}
+     *
      * @return void
      * @throws \yii\web\ForbiddenHttpException
      */
@@ -711,6 +556,7 @@ class PaymentController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return void
      * @throws \yii\web\ForbiddenHttpException
      */
@@ -727,7 +573,7 @@ class PaymentController extends AppController{
             if($result !== false && $result['status'] == 0 && $result['method'] == 'RoboKassa'){
                 $days = $result['access_days'];
                 $userId = $result['tg_user_id'];
-                if(isset($params['isTest']) && $params['isTest'] = 1){
+                if(array_key_exists('isTest', $params) && $params['isTest'] = 1){
                     $crc = strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][3]));
                 }
                 else{
@@ -873,6 +719,7 @@ class PaymentController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return void
      * @throws \yii\web\ForbiddenHttpException
      */
@@ -927,6 +774,9 @@ class PaymentController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
+     * @param int $userId useer id
+     * @param int $days days
      * @return array
      */
     private static function getResultButton(int $userId, int $days) : array{
@@ -949,6 +799,12 @@ class PaymentController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
+     * @param int $invId invoice id
+     * @param int $shop shop
+     * @param int $method method
+     * @param float $fee fee
+     * @param string|null $paymentMethod payment method
      * @return void
      */
     private static function orderComplete(int $invId, string $shop, string $method, float $fee, string|null $paymentMethod = null) : void{
@@ -977,6 +833,7 @@ class PaymentController extends AppController{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     private static function getIP() : string{

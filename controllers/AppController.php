@@ -7,6 +7,7 @@ class AppController extends \yii\web\Controller{
 
     /**
      * {@inheritdoc}
+     *
      * @return array
      */
     public function behaviors() : array{
@@ -33,6 +34,7 @@ class AppController extends \yii\web\Controller{
     
     /**
      * {@inheritdoc}
+     *
      * @return bool
      * @throws \yii\web\BadRequestHttpException|\yii\web\ForbiddenHttpException
      */
@@ -43,6 +45,7 @@ class AppController extends \yii\web\Controller{
 
     /**
      * {@inheritdoc}
+     *
      * @return void
      */
     protected static function debug($data, $mode = false) : void{
@@ -54,6 +57,7 @@ class AppController extends \yii\web\Controller{
 
     /**
      * {@inheritdoc}
+     *
      * @return array|false
      */
     protected static function getConfig(string $shop, bool $checkEnable = false, $method = null) : array|false{
@@ -143,6 +147,7 @@ class AppController extends \yii\web\Controller{
 
     /**
      * {@inheritdoc}
+     *
      * @return string|false
      */
     private static function getBotToken(string $shop) : string|false{
@@ -160,6 +165,7 @@ class AppController extends \yii\web\Controller{
 
     /**
      * {@inheritdoc}
+     *
      * @return string|bool
      */
     protected static function curlSendData(array $data, string $shop, string $method = '/sendMessage') : string|bool{
@@ -179,6 +185,7 @@ class AppController extends \yii\web\Controller{
 
     /**
      * {@inheritdoc}
+     *
      * @return bool
      */
     protected static function sendMail(string $to, string $subject, string $message, string $from = 'noreply@diamondapi.space', array $copy = null) : bool{
@@ -188,6 +195,7 @@ class AppController extends \yii\web\Controller{
 
     /**
      * {@inheritdoc}
+     *
      * @return string
      */
     private static function getHeaders(string $from = 'noreply@diamondapi.space', array $copy = null) : string{

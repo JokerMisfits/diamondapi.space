@@ -81,25 +81,25 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'attribute' => 'robokassa',
                 'label' => 'RoboKassa',
-                'value' => $model->robokassa ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->robokassa ? '<a href="connect?id=' . $model->id . '&method=robokassa" class="btn btn-sm btn-outline-danger fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Выключить</a>' : '<a href="connect?id=' . $model->id . '&method=robokassa" class="btn btn-sm btn-outline-primary fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Подключить</a>',
                 'format' => 'raw'
             ],
             [
                 'attribute' => 'paykassa',
                 'label' => 'PayKassa',
-                'value' => $model->paykassa ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->paykassa ? '<a href="connect?id=' . $model->id . '&method=paykassa" class="btn btn-sm btn-outline-danger fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Выключить</a>' : '<a href="connect?id=' . $model->id . '&method=paykassa" class="btn btn-sm btn-outline-primary fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Подключить</a>',
                 'format' => 'raw'
             ],
             [
                 'attribute' => 'freekassa',
                 'label' => 'FreeKassa',
-                'value' => $model->freekassa ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->freekassa ? '<a href="connect?id=' . $model->id . '&method=freekassa" class="btn btn-sm btn-outline-danger fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Выключить</a>' : '<a href="connect?id=' . $model->id . '&method=freekassa" class="btn btn-sm btn-outline-primary fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Подключить</a>',
                 'format' => 'raw'
             ],
             [
                 'attribute' => 'paypall',
                 'label' => 'PayPall',
-                'value' => $model->paypall ? '<span class="fw-bold text-success">Подключена(ОТКЛЮЧИТЬ ДОДЕЛАТЬ)</span>' : '<span class="fw-bold text-primary">Подключить(ДОДЕЛАТЬ)</span>',
+                'value' => $model->paypall ? '<a href="connect?id=' . $model->id . '&method=paypall" class="btn btn-sm btn-outline-danger fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Выключить</a>' : '<a href="connect?id=' . $model->id . '&method=paypall" class="btn btn-sm btn-outline-primary fs-5 text-dark fw-bolder font-monospace" style="width: 128px;">Подключить</a>',
                 'format' => 'raw'
             ],
             [
