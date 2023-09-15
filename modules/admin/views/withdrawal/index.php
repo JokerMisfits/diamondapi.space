@@ -23,6 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php echo '<div id="withdrawal-search" style="display: none;">' . $this->render('_search', ['model' => $searchModel]) . '</div>'; ?>
 
+<div class="table-responsive text-nowrap">
     <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -115,6 +116,7 @@ $this->params['breadcrumbs'][] = $this->title;
         }
     ]);
     ?>
+</div>
 
     <?= yii\bootstrap5\LinkPager::widget([
             'pagination' => $dataProvider->pagination,

@@ -70,7 +70,7 @@ class ReviseController extends AppAdminController{
                 throw new \yii\web\NotFoundHttpException('Страница не найдена.');
             }
             $method = mb_strtolower($model->method);
-            $config = AppAdminController::getConfig($model->shop, false, $method);
+            $config = AppAdminController::getConfigTrait($model->shop, false, $method);
 
             if($config === false){
                 \Yii::$app->session->setFlash('warning', 'Не удалось извлечь конфигурацию.');
@@ -124,7 +124,7 @@ class ReviseController extends AppAdminController{
                 throw new \yii\web\NotFoundHttpException('Страница не найдена.');
             }
             $method = mb_strtolower($model->method);
-            $config = AppAdminController::getConfig($model->shop, false, $method);
+            $config = AppAdminController::getConfigTrait($model->shop, false, $method);
             $response = \Yii::$app->get('revise')->invoise($method,['shop' => $config[$method]['shop'], 'id' => $orderId, 'pwd' => $config[$method][1]]);
             if($response !== null){
                 if($response['State']['Code'] == 100 && isset($response['CommssionPercent']) && isset($response['Commission'])){

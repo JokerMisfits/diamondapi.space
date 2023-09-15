@@ -69,8 +69,11 @@ $config = [
             'fixedVerifyCode' => null
         ],
         'revise' => [
-            'class' => 'app\components\ReviseComponent',
+            'class' => 'app\components\ReviseComponent'
         ],
+        'payment' => [
+            'class' => 'app\components\PaymentComponent'
+        ]
     ],
     'params' => $params
 ];

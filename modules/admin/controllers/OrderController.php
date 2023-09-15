@@ -144,6 +144,19 @@ class OrderController extends AppAdminController{
     }
 
     /**
+     *
+     * @var \app\components\PaymentComponent $payment payment compoonent
+     * @return string
+     * @throws 
+     */
+    public function actionPayment() : string{
+        $payment = \Yii::$app->get('payment');
+        $payment->shop = 'club-dimitriev';
+        $payment->run();
+        return $this->render('payment', ['payment' => $payment->getSafe()]);
+    }
+
+    /**
      * Finds the Orders model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param int $id ID

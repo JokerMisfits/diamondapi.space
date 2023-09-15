@@ -11,10 +11,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="mx-1 mx-md-2">
         <p>
-        <?= yii\helpers\Html::a('Создать платеж', ['create'], ['class' => 'btn btn-success mt-1']); ?>
-        <?= yii\helpers\Html::a('Вывести сверку', ['index', 'revise' => true], ['class' => 'btn btn-warning fw-bold mt-1']); ?>
+            <?= yii\helpers\Html::a('Создать платеж', ['create'], ['class' => 'btn btn-success mt-1']); ?>
+            <?= yii\helpers\Html::a('Вывести сверку', ['index', 'revise' => true], ['class' => 'btn btn-warning fw-bold mt-1']); ?>
             <button id="order-search-button" class="btn btn-primary mt-1" onclick="showSearch()">Показать расширенный поиск</button>
             <?= yii\helpers\Html::a('Сбросить все фильтры и сортировки', ['/admin/order?sort='], ['class' => 'btn btn-outline-secondary mt-1']); ?>
+            <?= yii\helpers\Html::a('Оплатить', ['payment'], ['class' => 'btn btn-outline-primary mt-1']); ?>
         </p>
     </div>
 
@@ -22,6 +23,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php echo '<div id="order-search" style="display: none;">' . $this->render('_search', ['model' => $searchModel]) . '</div>'; ?>
 
+<div class="table-responsive text-nowrap">
     <?= yii\grid\GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -103,9 +105,10 @@ $this->params['breadcrumbs'][] = $this->title;
                 'data-href' => \yii\helpers\Url::to(['order/view', 'id' => $model->id]),
                 'onclick' => 'window.location.href = "' . \yii\helpers\Url::to(['order/view', 'id' => $model->id]) . '"'
             ];
-        },
+        }
     ]);
     ?>
+</div>
 
     <?= yii\bootstrap5\LinkPager::widget([
             'pagination' => $dataProvider->pagination,

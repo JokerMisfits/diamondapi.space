@@ -14,8 +14,9 @@ class WithdrawalsSearch extends \app\models\Withdrawals{
      */
     public function rules() : array{
         return [
-            [['id', 'count', 'status', 'is_test', 'commission', 'tg_member_id', 'client_id'], 'integer'],
-            [['shop', 'card_number', 'comment', 'created_time', 'confirmed_time', 'resulted_time', 'confirmation_link'], 'safe']
+            [['id', 'status', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
+            [['shop', 'card_number', 'comment', 'created_time', 'confirmed_time', 'resulted_time', 'confirmation_link'], 'safe'],
+            [['count', 'commission'], 'number']
         ];
     }
 

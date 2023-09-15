@@ -14,9 +14,9 @@ class OrdersSearch extends \app\models\Orders{
      */
     public function rules() : array{
         return [
-            [['id', 'tg_user_id', 'status', 'count', 'access_days', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
-            [['method', 'shop', 'position_name', 'created_time', 'resulted_time', 'web_app_query_id', 'currency', 'paypal_order_id'], 'safe'],
-            [['count_in_currency', 'commission'], 'number'],
+            [['id', 'tg_user_id', 'status', 'access_days', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
+            [['count', 'count_in_currency', 'commission'], 'number'],
+            [['method', 'shop', 'currency', 'created_time', 'resulted_time', 'position_name', 'web_app_query_id', 'paypal_order_id'], 'safe']
         ];
     }
 
@@ -64,8 +64,8 @@ class OrdersSearch extends \app\models\Orders{
             'status' => $this->status,
             'count' => $this->count,
             'access_days' => $this->access_days,
-            'is_test' => $this->is_test,
             'count_in_currency' => $this->count_in_currency,
+            'is_test' => $this->is_test,
             'commission' => $this->commission,
             'tg_member_id' => $this->tg_member_id,
             'client_id' => $this->client_id
@@ -73,9 +73,9 @@ class OrdersSearch extends \app\models\Orders{
 
         $query->andFilterWhere(['like', 'method', $this->method])
             ->andFilterWhere(['like', 'shop', $this->shop])
+            ->andFilterWhere(['like', 'currency', $this->currency])
             ->andFilterWhere(['like', 'position_name', $this->position_name])
             ->andFilterWhere(['like', 'web_app_query_id', $this->web_app_query_id])
-            ->andFilterWhere(['like', 'currency', $this->currency])
             ->andFilterWhere(['like', 'paypal_order_id', $this->paypal_order_id]);
 
         if(isset($this->created_time) && $this->created_time !== ''){

@@ -39,8 +39,7 @@ class OrdersComplete extends \yii\db\ActiveRecord{
             [['fee'], 'number'],
             [['revise'], 'safe'],
             [['order_id', 'client_id'], 'integer'],
-            [['shop', 'payment_method'], 'string', 'max' => 255],
-            [['method'], 'string', 'max' => 25],
+            [['shop', 'method', 'payment_method'], 'string', 'max' => 255],
             [['client_id'], 'exist', 'skipOnError' => true, 'targetClass' => Clients::class, 'targetAttribute' => ['client_id' => 'id']],
             [['order_id'], 'exist', 'skipOnError' => true, 'targetClass' => Orders::class, 'targetAttribute' => ['order_id' => 'id']]
         ];

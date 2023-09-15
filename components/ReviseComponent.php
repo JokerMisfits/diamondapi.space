@@ -70,8 +70,7 @@ class ReviseComponent extends \yii\base\Component{
      * @return void
      */
     public function run() : void{
-        // Обязательный метод, в котором выполняется основная логика компонента
-        // В этом методе должна быть основная логика компонента
+        parent::run();
     }
 
     /**

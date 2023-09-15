@@ -7,10 +7,10 @@ namespace app\models;
  *
  * @property int $id ID
  * @property string $shop Название магазина
- * @property int $count Сумма
+ * @property float $count Сумма
  * @property int $status Статус вывода ДС
  * @property int $is_test Тест? 
- * @property int $commission Комиссия 
+ * @property float $commission Комиссия
  * @property string $card_number Номер карты 
  * @property string|null $comment Комментарий 
  * @property string $created_time Дата создания заявки на вывод ДС
@@ -21,6 +21,7 @@ namespace app\models;
  * @property int $client_id ID клиента
  *
  * @property Clients $client
+ * @property TgMembers $tgMember
  */
 class Withdrawals extends \yii\db\ActiveRecord{
     
@@ -41,7 +42,8 @@ class Withdrawals extends \yii\db\ActiveRecord{
     public function rules() : array{
         return [
             [['shop', 'count', 'card_number', 'confirmation_link', 'tg_member_id', 'client_id'], 'required'],
-            [['count', 'status', 'is_test', 'commission', 'tg_member_id', 'client_id'], 'integer'],
+            [['count', 'commission'], 'number'],
+            [['status', 'is_test', 'tg_member_id', 'client_id'], 'integer'],
             [['comment'], 'string'],
             [['created_time', 'confirmed_time', 'resulted_time'], 'safe'],
             [['shop', 'confirmation_link'], 'string', 'max' => 255],

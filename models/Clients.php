@@ -12,7 +12,7 @@ namespace app\models;
  * @property float $blocked_balance Заблокированный баланс клиента
  * @property float $test_balance Тестовый баланс клиента
  * @property float $test_blocked_balance Заблокированный тестовый баланс клиента
- * @property int $cost Стоимость подключения
+ * @property float $cost Стоимость подключения
  * @property float $profit Прибыль
  * @property float $test_profit Тестовая прибыль
  * @property int $commission Процент прибыли
@@ -20,7 +20,7 @@ namespace app\models;
  * @property float $test_total_withdrawal Тестовая сумма выведенных ДС клиентом
  * @property float $total_withdrawal_profit Cумма выведенных ДС из прибыли(profit)
  * @property float $total_withdrawal_profit_test Cумма выведенных ДС из тестовой прибыли(test_profit)
- * @property int $min_count_withdrawal Минимальная сумма вывода
+ * @property float $min_count_withdrawal Минимальная сумма вывода
  * @property string|null $config_version Версия генерации конфигурации 
  * @property string|null $payment_alias Назначение платежа(юр лицо) 
  * @property string|null $bot_token Токен бота
@@ -40,6 +40,7 @@ namespace app\models;
  * @property BotTickets[] $botTickets
  * @property Orders[] $orders
  * @property OrdersComplete[] $ordersCompletes
+ * @property Products[] $products
  * @property TgChats $tgChat 
  * @property TgChats[] $tgChats 
  * @property TgMembers $tgMember
@@ -65,8 +66,8 @@ class Clients extends \yii\db\ActiveRecord{
     public function rules() : array{
         return [
             [['tg_user_id', 'shop', 'balance'], 'required'],
-            [['tg_user_id', 'cost', 'commission', 'min_count_withdrawal', 'tg_chat_id', 'tg_private_chat_id', 'tg_member_id'], 'integer'],
-            [['balance', 'blocked_balance', 'test_balance', 'test_blocked_balance', 'profit', 'test_profit', 'total_withdrawal', 'test_total_withdrawal', 'total_withdrawal_profit', 'total_withdrawal_profit_test'], 'number'],
+            [['tg_user_id', 'commission', 'tg_chat_id', 'tg_private_chat_id', 'tg_member_id'], 'integer'],
+            [['balance', 'blocked_balance', 'test_balance', 'test_blocked_balance', 'cost', 'profit', 'test_profit', 'total_withdrawal', 'test_total_withdrawal', 'total_withdrawal_profit', 'total_withdrawal_profit_test', 'min_count_withdrawal'], 'number'],
             [['config_version', 'payment_alias', 'bot_token', 'robokassa', 'paykassa', 'freekassa', 'paypall'], 'string'],
             [['last_change'], 'safe'],
             [['shop'], 'string', 'max' => 255],
@@ -178,6 +179,15 @@ class Clients extends \yii\db\ActiveRecord{
     public function getOrdersCompletes() : \yii\db\ActiveQuery|OrdersCompleteQuery{
         return $this->hasMany(OrdersComplete::class, ['client_id' => 'id']);
     }
+
+    /**
+    * Gets query for [[Products]].
+    *
+    * @return \yii\db\ActiveQuery|ProductsQuery
+    */
+   public function getProducts() : \yii\db\ActiveQuery|ProductsQuery{
+       return $this->hasMany(Products::class, ['client_id' => 'id']);
+   }
 
    /**
     * Gets query for [[TgChat]].

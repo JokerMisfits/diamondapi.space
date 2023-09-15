@@ -67,9 +67,9 @@ class PaymentController extends AppController{
      */
     public function actionIndex() : string{
         $params = \Yii::$app->request->get();
-        $config = AppController::getConfig($params['shop'], true);
+        $config = AppController::getConfigTrait($params['shop'], true);
         if(isset($config['paykassa'])){
-            $pk = AppController::getConfig($params['shop'], false, 'paykassa');
+            $pk = AppController::getConfigTrait($params['shop'], false, 'paykassa');
             $params['pk'] = new \Paykassa\PaykassaSCI($pk['paykassa']["merchant_id"], $pk['paykassa']["merchant_password"], $pk['paykassa']["is_test"]);
         }
         return $this->render('index', ['params' => $params, 'csrf' => \Yii::$app->session->get('csrf'), 'config' => $config]);
@@ -86,7 +86,7 @@ class PaymentController extends AppController{
         $name = $params['name'];
         $count = intval($params['count']);
         if($params['method'] == 'RoboKassa'){//RoboKassa start
-            $config = AppController::getConfig($params['shop'], false, 'robokassa')['robokassa'];
+            $config = AppController::getConfigTrait($params['shop'], false, 'robokassa')['robokassa'];
             if(!empty($config)){
                 $isTest = $config['is_test'];
                 $sql = "INSERT INTO orders (tg_user_id, count, method, shop, position_name, access_days, created_time, is_test, web_app_query_id, currency, count_in_currency) 
@@ -149,7 +149,7 @@ class PaymentController extends AppController{
             }
         }
         elseif($params['method'] == 'PayKassa'){//PayKassa start
-            $config = AppController::getConfig($params['shop'], false, 'paykassa')['paykassa'];
+            $config = AppController::getConfigTrait($params['shop'], false, 'paykassa')['paykassa'];
             if(!empty($config)){
                 $isTest = $config['is_test'];
                 $pk = new \Paykassa\PaykassaSCI($config['merchant_id'], $config['merchant_password'], $isTest);
@@ -223,7 +223,7 @@ class PaymentController extends AppController{
             }
         }
         elseif($params['method'] == 'FreeKassa'){//FreeKassa start
-            $config = AppController::getConfig($params['shop'], false, 'freekassa')['freekassa'];
+            $config = AppController::getConfigTrait($params['shop'], false, 'freekassa')['freekassa'];
             if(!empty($config)){
                 $isTest = $config['is_test'];
                 $sql = "INSERT INTO orders (tg_user_id, count, method, shop, position_name, access_days, created_time, is_test, web_app_query_id, currency, count_in_currency)
@@ -276,7 +276,7 @@ class PaymentController extends AppController{
             }
         }
         elseif($params['method'] == 'PayPall'){//PayPal start
-            $config = AppController::getConfig($params['shop'], false, 'paypall')['paypall'];
+            $config = AppController::getConfigTrait($params['shop'], false, 'paypall')['paypall'];
             if(!empty($config)){
                 $isTest = $config['is_test'];
                 $client = new \yii\httpclient\Client();
@@ -408,10 +408,10 @@ class PaymentController extends AppController{
                 $accessDays = $result['access_days'];
                 $webAppQueryId = $result['web_app_query_id'];
                 if(isset($params['isTest']) && $params['isTest'] == 1){
-                    $crc = md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][2]);
+                    $crc = md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfigTrait($shop, false, 'robokassa')['robokassa'][2]);
                 }
                 else{
-                    $crc= md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][0]);
+                    $crc= md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfigTrait($shop, false, 'robokassa')['robokassa'][0]);
                 }
                 if($params['SignatureValue'] != $crc){//Валидация crc
                     \Yii::error('Method RoboKassa|Success crc: ' . json_encode($params));
@@ -461,7 +461,7 @@ class PaymentController extends AppController{
                 $shop = $result['shop'];
                 $accessDays = $result['access_days'];
                 $webAppQueryId = $result['web_app_query_id'];
-                $config = AppController::getConfig($shop, false, 'paykassa')['paykassa'];
+                $config = AppController::getConfigTrait($shop, false, 'paykassa')['paykassa'];
                 $crc = array($params['amount'], $config['merchant_id'], $params['order_id'], $params['status'], $config['merchant_password']);
                 if(md5(implode(':', $crc) != $params['sign'])){
                     \Yii::error('Method PayKassa|Success crc: ' . json_encode($params));
@@ -574,10 +574,10 @@ class PaymentController extends AppController{
                 $days = $result['access_days'];
                 $userId = $result['tg_user_id'];
                 if(array_key_exists('isTest', $params) && $params['isTest'] = 1){
-                    $crc = strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][3]));
+                    $crc = strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfigTrait($shop, false, 'robokassa')['robokassa'][3]));
                 }
                 else{
-                    $crc = strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfig($shop, false, 'robokassa')['robokassa'][1]));
+                    $crc = strtoupper(md5($params['OutSum'] . ':' . $invId . ':' . AppController::getConfigTrait($shop, false, 'robokassa')['robokassa'][1]));
                 }
                 if($params['crc'] != $crc){//Валидация crc
                     echo 'OK' . $invId . '\n';
@@ -624,7 +624,7 @@ class PaymentController extends AppController{
             if($result !== false && $result['status'] == 0 && $result['method'] == 'PayKassa'){
                 $userId = $result['tg_user_id'];
                 $days = $result['access_days'];
-                $config = AppController::getConfig($shop, false, 'paykassa')['paykassa'];
+                $config = AppController::getConfigTrait($shop, false, 'paykassa')['paykassa'];
                 $paykassa = new \Paykassa\PaykassaSCI($config['merchant_id'], $config['merchant_password'], $config['is_test']);
                 $result = $paykassa->checkOrderIpn($params['private_hash']);
                 if($result['error']){
@@ -675,7 +675,7 @@ class PaymentController extends AppController{
             if($result !== false && $result['status'] == 0 && $result['method'] == 'FreeKassa'){
                 $userId = $result['tg_user_id'];
                 $days = $result['access_days'];
-                if($params['SIGN'] != md5($params['MERCHANT_ID'] . ':' . $params['AMOUNT'] . ':' . AppController::getConfig($shop, false, 'freekassa')['freekassa']['secret'][1] . ':' . $params['MERCHANT_ORDER_ID'])){//CRC
+                if($params['SIGN'] != md5($params['MERCHANT_ID'] . ':' . $params['AMOUNT'] . ':' . AppController::getConfigTrait($shop, false, 'freekassa')['freekassa']['secret'][1] . ':' . $params['MERCHANT_ORDER_ID'])){//CRC
                     echo 'OK' . $invId . '\n';
                     \Yii::error('Method FreeKassa|Result crc: ' . json_encode($params));
                     throw new \yii\web\ForbiddenHttpException('You are not allowed to perform this action.', 403);

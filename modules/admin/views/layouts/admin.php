@@ -36,7 +36,8 @@ $name = Yii::$app->name;
                     ['label' => 'Клиенты', 'url' => ['/admin/client/index']],
                     ['label' => 'Пользователи', 'url' => ['/admin/tg-member/index']],
                     ['label' => 'Заявки', 'url' => ['/admin/withdrawal/index']],
-                    ['label' => 'Сверка', 'url' => ['/admin/revise/index']]
+                    ['label' => 'Сверка', 'url' => ['/admin/revise/index']],
+                    ['label' => 'Товары', 'url' => ['/admin/product/index']]
                 ]
             ]);
             echo yii\bootstrap5\Nav::widget([

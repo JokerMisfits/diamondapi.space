@@ -43,7 +43,6 @@ class ClientController extends AppAdminController{
             'dataProvider' => $dataProvider
         ]);
     }
-
     /**
      * Displays a single Clients model.
      *
@@ -55,7 +54,7 @@ class ClientController extends AppAdminController{
         $model = $this->findModel($id);
         unset($model->bot_token);
 
-        $cfg = AppAdminController::getConfig($model->shop, true);
+        $cfg = AppAdminController::getConfigTrait($model->shop, true);
 
         $model->robokassa = 0;
         $model->paykassa = 0;
@@ -171,7 +170,7 @@ class ClientController extends AppAdminController{
         }
         else{
             $isNew = false;
-            $config = AppAdminController::getConfig($model->shop, false, $method, true);
+            $config = AppAdminController::getConfigTrait($model->shop, false, $method, true);
             $config[$method]['enable'] = !$config[$method]['enable'];
         }
 
